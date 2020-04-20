@@ -77,8 +77,7 @@ str(mod)
 \seealso{
 Other model: 
 \code{\link{fit_gravity}()},
-\code{\link{fit_prob_travel}()},
-\code{\link{summarize_mobility}()}
+\code{\link{fit_prob_travel}()}
 }
 \author{
 John Giles

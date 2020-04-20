@@ -4,13 +4,10 @@ orig_id <- LETTERS[1:n_orig]
 N <- rpois(n_orig, 50)     # population size of each origin
 p <- rbeta(n_orig, 2, 5)   # probability of leaving origin
 
-
-
 V_travel <- setNames(rbinom(n_orig, N, p), orig_id)
 V_tot <- setNames(N, orig_id)
 
 i <- sample(1:n_orig, 10) # missing observations
-
 V_travel[i] <- V_tot[i] <- NA
 
 prob_trav <- fit_prob_travel(travel=V_travel,

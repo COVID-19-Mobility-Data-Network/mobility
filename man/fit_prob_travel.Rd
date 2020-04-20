@@ -18,6 +18,8 @@ fit_prob_travel(
 \arguments{
 \item{travel}{named vector of number of people that reported travelling outside their home location}
 
+\item{total}{named vector of the total number of individuals in travel survey for each location}
+
 \item{n_chain}{number of MCMC sampling chains}
 
 \item{n_burn}{number of iterations to discard before sampling of chains begins (burn in)}
@@ -29,8 +31,6 @@ fit_prob_travel(
 \item{DIC}{logical indicating whether or not to calculate the Deviance Information Criterion (DIC)}
 
 \item{parallel}{logical indicating whether or not to run MCMC chains in parallel or sequentially (default = FALSE)}
-
-\item{tot}{named vector of the total number of individuals in travel survey for each location}
 
 \item{n_adapt}{number of adaptive iterations}
 }
@@ -50,13 +50,10 @@ orig_id <- LETTERS[1:n_orig]
 N <- rpois(n_orig, 50)     # population size of each origin
 p <- rbeta(n_orig, 2, 5)   # probability of leaving origin
 
-
-
 V_travel <- setNames(rbinom(n_orig, N, p), orig_id)
 V_tot <- setNames(N, orig_id)
 
 i <- sample(1:n_orig, 10) # missing observations
-
 V_travel[i] <- V_tot[i] <- NA
 
 prob_trav <- fit_prob_travel(travel=V_travel,
@@ -83,15 +80,9 @@ ggplot(data=prob_trav) +
 \seealso{
 Other model: 
 \code{\link{fit_gravity}()},
-\code{\link{fit_jags}()},
-\code{\link{summarize_mobility}()}
-
-Other gravity: 
-\code{\link{fit_gravity}()},
-\code{\link{sim_gravity}()}
+\code{\link{fit_jags}()}
 }
 \author{
 John Giles
 }
-\concept{gravity}
 \concept{model}

@@ -94,3 +94,57 @@ sim_gravity <- function(
   dimnames(x) <- list(origin=dimnames(D)[[1]], destination=dimnames(D)[[2]])
   return(x)
 }
+
+
+##' Calculate summary statistics for a model
+##'
+##' This is a wrapper function for \code{\link[MCMCvis:MCMCsummary]{MCMCsummary}} that calculates summary statistics
+##' for each parameter in an mcmc.list object. If the model contains deviance and penalty calculations, then
+##' Deviance Information Criterion (DIC) is calculated and appended to the summary.
+##'
+##' @param mod an mcmc.list object
+##' @param ac_lags vector of lags over which to calculate autocorrelation of samples within chains (default = c(2,5,10))
+##'
+##' @return a dataframe with summary statistics
+##'
+##' @author John Giles
+##'
+##' @example R/examples/summarize_mobility.R
+##'
+##' @export
+##'
+
+summarize_mobility <- function(mod, ac_lags=c(2,5,10)) {
+
+  if (!(class(mod) == 'mcmc.list')) stop('Model object must be mcmc.list')
+
+  param_names <- dimnames(mod[[1]])[[2]]
+
+  s <- MCMCvis::MCMCsummary(mod,
+                            func=function(x, lags=ac_lags) {
+                              acf(x, lag.max=lags[length(lags)], plot=FALSE)$acf[lags]
+                            },
+                            func_name=stringr::str_c('AC', ac_lags))
+
+  names(s)[c(1:5,7)] <- c('Mean', 'SD', 'CI2.5', 'CI50', 'CI97.5', 'SSeff')
+
+  if (all(c('deviance', 'pD') %in% param_names)) {
+
+    # include DIC in summary object
+    sel <- rownames(s) %in% c('deviance', 'pD')
+    s <- rbind(
+      s[!sel,],
+      s[sel,],
+      matrix(NA, nrow=1, ncol=ncol(s), dimnames=list('DIC', colnames(s)))
+    )
+
+    s['DIC', 'Mean'] <- s['deviance','Mean'] + 2*s['pD','Mean']
+    s['pD', !(colnames(s) == 'Mean')] <- NA
+
+    return(s)
+
+  } else {
+
+    return(s)
+  }
+}

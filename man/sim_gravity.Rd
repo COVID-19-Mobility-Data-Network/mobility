@@ -73,8 +73,7 @@ M_hat <- sim_gravity(N=N,
 }
 \seealso{
 Other gravity: 
-\code{\link{fit_gravity}()},
-\code{\link{fit_prob_travel}()}
+\code{\link{fit_gravity}()}
 }
 \author{
 John Giles
