@@ -1,11 +1,16 @@
 Package: mobility
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Title: Tools for analyzing human mobility data
+Version: 0.0.1
+Date: 2020-04-19
+Author: John R Giles
+Maintainer: John R Giles <giles@jhu.edu>
+Description: Functions for parsing data, fitting models, and simulating human mobility patterns.
+License: GPL (>=2)
+RoxygenNote: 7.0.1
 Encoding: UTF-8
 LazyData: true
+Imports: lattice, plot3D, gtools, sp, rgdal, rgeos, stringr, truncnorm, abind, MCMCvis, Metrics, reshape2, rjags, Matrix, dplyr
+Depends: doParallel, foreach, R (>= 2.10)
+Suggests: knitr, rmarkdown
+VignetteBuilder: knitr
