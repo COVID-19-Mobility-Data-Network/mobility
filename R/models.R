@@ -12,7 +12,7 @@
 ##' @param n_samp number of iterations to sample each chain
 ##' @param n_thin interval to thin samples
 ##' @param DIC logical indicating whether or not to calculate the Deviance Information Criterion (DIC)
-##' @param parallel logical indicating whether or not to run MCMC chains in parallel or sequentially (default = FALSE)
+##' @param parallel logical indicating whether or not to run MCMC chains in parallel or sequentially (default = FALSE). An even number of chains is recommended when running in parallel.
 ##'
 ##' @details If JAGS library not already installed, install here: \url{https://sourceforge.net/projects/mcmc-jags/files/JAGS/3.x/}
 ##'
@@ -39,7 +39,6 @@ fit_jags <- function(
   parallel=FALSE
 ) {
 
-
   if (parallel == FALSE) {
 
     suppressMessages(rjags::load.module('lecuyer'))
@@ -64,6 +63,8 @@ fit_jags <- function(
                                  n.iter=n_samp,
                                  thin=n_thin)
 
+      mod <- rjags_to_mcmc(mod)
+
     } else if (DIC == TRUE) {
 
       if (n_chain < 2) stop('Calculation of DIC requires at least 2 sampling chains')
@@ -81,17 +82,21 @@ fit_jags <- function(
       mod <- rjags::jags.samples(mod,
                                  variable.names=c(params, 'deviance', 'pD'),
                                  n.iter=n_samp,
-                                 thin=n_thin) # thin in jags samples reduces total samps rather than multiplying it
+                                 thin=n_thin)
 
       # clean up penalty output
       tmp <- mod[[which(!(names(mod) %in% c('deviance', 'pD')))[1]]]
       mod$pD <- array(mean(mod$pD), dim=dim(tmp))
       attributes(mod$pD) <- attributes(tmp)
       attributes(mod$pD)$varname <- 'pD'
+
+      # convert mcmc and add DIC
+      mod <- coda::as.mcmc.list(lapply(rjags_to_mcmc(mod), function(x){
+        coda::as.mcmc(cbind(x, DIC=apply(x, 1, function(y) y['deviance'] + 2*y['pD'])))
+      }))
     }
 
-    # return mcmc list object
-    return(rjags_mcmc_list(mod))
+    return(mod)
 
   } else if (parallel == TRUE) {
 
@@ -102,7 +107,7 @@ fit_jags <- function(
       cl <- parallel::makeCluster(n_chain)
       doParallel::registerDoParallel(cl)
 
-      out <- foreach(i=1:n_chain, .combine='rjags_combine', .packages=c('rjags', 'abind')) %dopar% {
+      out <- foreach(i=1:n_chain, .combine='combine_rjags', .packages=c('rjags', 'abind')) %dopar% {
 
         rjags::load.module('lecuyer')
 
@@ -121,7 +126,7 @@ fit_jags <- function(
                             thin=n_thin)
       }
 
-      return(rjags_mcmc_list(out))
+      out <- rjags_to_mcmc(out)
 
     } else if (DIC == TRUE) {
 
@@ -130,7 +135,7 @@ fit_jags <- function(
       cl <- parallel::makeCluster(n_chain/2)
       doParallel::registerDoParallel(cl)
 
-      out <- foreach(i=1:(n_chain/2), .combine='rjags_combine', .packages=c('rjags', 'abind')) %dopar% {
+      out <- foreach(i=1:(n_chain/2), .combine='combine_rjags', .packages=c('rjags', 'abind')) %dopar% {
 
         rjags::load.module('lecuyer')
         rjags::load.module('dic')
@@ -162,18 +167,23 @@ fit_jags <- function(
         mod
       }
 
-      return(rjags_mcmc_list(out))
+      # convert mcmc and add DIC
+      out <- coda::as.mcmc.list(lapply(rjags_to_mcmc(out), function(x){
+        coda::as.mcmc(cbind(x, DIC=apply(x, 1, function(y) y['deviance'] + 2*y['pD'])))
+      }))
     }
 
     parallel::stopCluster(cl)
+    return(out)
   }
 }
 
 
 
+
 ##' Convert rjags object to mcmc.list
 ##'
-##' This function converts an rjags object to an mcmc.list.
+##' This function converts an rjags object to an \code{\link[coda:mcmc.list]{mcmc.list}} object
 ##'
 ##' @param x an rjags list
 ##'
@@ -184,7 +194,7 @@ fit_jags <- function(
 ##' @export
 ##'
 
-rjags_mcmc_list <- function(x) {
+rjags_to_mcmc <- function(x) {
 
   n_chain <- max(unlist(lapply(x, function(x) dim(x)[length(dim(x))])))
 
@@ -232,7 +242,7 @@ rjags_mcmc_list <- function(x) {
 ##' @export
 ##'
 
-rjags_combine <- function(a, b) {
+combine_rjags <- function(a, b) {
 
   out <- a
 
@@ -259,8 +269,8 @@ rjags_combine <- function(a, b) {
 ##' @param M named matrix of trip counts among all \eqn{ij} location pairs
 ##' @param D named matrix of distances among all \eqn{ij} location pairs
 ##' @param N named vector of population sizes for all locations (either N or both n_orig and n_dest must be supplied)
-##' @param n_orig named vector of population sizes for each origin
-##' @param n_dest named vector of population sizes for each destination_
+##' @param N_orig named vector of population sizes for each origin
+##' @param N_dest named vector of population sizes for each destination_
 ##' @param n_chain number of MCMC sampling chains
 ##' @param n_burn number of iterations to discard before sampling of chains begins (burn in)
 ##' @param n_samp number of iterations to sample each chain
@@ -284,8 +294,8 @@ fit_gravity <- function(
   M,
   D,
   N=NULL,
-  n_orig=NULL,
-  n_dest=NULL,
+  N_orig=NULL,
+  N_dest=NULL,
   n_chain=2,
   n_burn=1000,
   n_samp=1000,
@@ -296,20 +306,20 @@ fit_gravity <- function(
 ) {
 
   # Check data
-  if (all(!is.null(N), is.null(n_orig), is.null(n_dest))) {
-    n_dest <- n_orig <- N
-  } else if (all(is.null(N), !is.null(n_orig), is.null(n_dest))) {
-    n_dest <- n_orig
+  if (all(!is.null(N), is.null(N_orig), is.null(N_dest))) {
+    N_dest <- N_orig <- N
+  } else if (all(is.null(N), !is.null(N_orig), is.null(N_dest))) {
+    N_dest <- N_orig
   }
 
-  if (!(identical(dim(M)[1], dim(D)[1], length(n_orig)))) stop('Dimensions of input data must match')
-  if (!(identical(dim(M)[2], dim(D)[2], length(n_dest)))) stop('Dimensions of input data must match')
+  if (!(identical(dim(M)[1], dim(D)[1], length(N_orig)))) stop('Dimensions of input data must match')
+  if (!(identical(dim(M)[2], dim(D)[2], length(N_dest)))) stop('Dimensions of input data must match')
 
-  if ( !(identical(dimnames(M)[[1]], dimnames(D)[[1]])) | !(identical(dimnames(M)[[1]], names(n_orig))) ) {
+  if ( !(identical(dimnames(M)[[1]], dimnames(D)[[1]])) | !(identical(dimnames(M)[[1]], names(N_orig))) ) {
     stop('Dimension names of input data do not match.')
   }
 
-  if ( !(identical(dimnames(M)[[2]], dimnames(D)[[2]])) | !(identical(dimnames(M)[[2]], names(n_dest))) ) {
+  if ( !(identical(dimnames(M)[[2]], dimnames(D)[[2]])) | !(identical(dimnames(M)[[2]], names(N_dest))) ) {
     stop('Dimension names of input data do not match.')
   }
 
@@ -322,10 +332,10 @@ fit_gravity <- function(
           sep=' ')
   )
 
-  if (!all(unlist(lapply(list(M, n_orig, n_dest), is.integer)))) {
+  if (!all(unlist(lapply(list(M, N_orig, N_dest), is.integer)))) {
     M[,] <- as.integer(M)
-    n_orig[] <- as.integer(n_orig)
-    n_dest[] <- as.integer(n_dest)
+    N_orig[] <- as.integer(N_orig)
+    N_dest[] <- as.integer(N_dest)
   }
 
   if (is.null(prior)) {
@@ -345,8 +355,8 @@ fit_gravity <- function(
   jags_data <- list(
     M=M,
     D=D,
-    n_orig=n_orig,
-    n_dest=n_dest,
+    N_orig=N_orig,
+    N_dest=N_dest,
     prior_theta=prior$theta,
     prior_omega_1=prior$omega_1,
     prior_omega_2=prior$omega_2,
@@ -357,23 +367,23 @@ fit_gravity <- function(
   model {
 
     # Poisson likelihood
-    for (i in 1:length(n_orig)) {
-      for (j in 1:length(n_dest)) {
+    for (i in 1:length(N_orig)) {
+      for (j in 1:length(N_dest)) {
 
-        M[i,j] ~ dpois(pi[i,j]*n_orig[i])
+        M[i,j] ~ dpois(pi_hat[i,j]*N_orig[i])
       }
 
-      pi[i,1:length(n_dest)] <- c[i,]/sum(c[i,])
+      pi_hat[i,1:length(N_dest)] <- x[i,]/sum(x[i,])
     }
 
     # Gravity model
-    for (i in 1:length(n_orig)) {
-      for (j in 1:length(n_dest)) {
+    for (i in 1:length(N_orig)) {
+      for (j in 1:length(N_dest)) {
 
-        c[i,j] <- ifelse(
+        x[i,j] <- ifelse(
           i == j,
           0,
-          exp(log(theta) + (omega_1*log(n_dest[i]) + omega_2*log(n_orig[j]) - log( f_d[i,j] )))
+          exp(log(theta) + (omega_1*log(N_dest[i]) + omega_2*log(N_orig[j]) - log( f_d[i,j] )))
         )
 
         f_d[i,j] <- D[i,j]^gamma
@@ -532,3 +542,5 @@ fit_prob_travel <- function(
     )
   }
 }
+
+

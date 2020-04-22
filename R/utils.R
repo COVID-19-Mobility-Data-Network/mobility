@@ -119,32 +119,47 @@ summarize_mobility <- function(mod, ac_lags=c(2,5,10)) {
   if (!(class(mod) == 'mcmc.list')) stop('Model object must be mcmc.list')
 
   param_names <- dimnames(mod[[1]])[[2]]
+  param_DIC <- c('deviance', 'pD', 'DIC')
 
-  s <- MCMCvis::MCMCsummary(mod,
+  out <- tryCatch({
+
+    tmp <- MCMCvis::MCMCsummary(mod,
                             func=function(x, lags=ac_lags) {
                               acf(x, lag.max=lags[length(lags)], plot=FALSE)$acf[lags]
                             },
                             func_name=stringr::str_c('AC', ac_lags))
 
-  names(s)[c(1:5,7)] <- c('Mean', 'SD', 'CI2.5', 'CI50', 'CI97.5', 'SSeff')
+    names(tmp)[c(1:5,7)] <- c('Mean', 'SD', 'CI2.5', 'CI50', 'CI97.5', 'SSeff')
 
-  if (all(c('deviance', 'pD') %in% param_names)) {
+    if (all(param_DIC %in% param_names)) {
 
-    # include DIC in summary object
-    sel <- rownames(s) %in% c('deviance', 'pD')
-    s <- rbind(
-      s[!sel,],
-      s[sel,],
-      matrix(NA, nrow=1, ncol=ncol(s), dimnames=list('DIC', colnames(s)))
+      tmp['pD', !(colnames(tmp) == 'Mean')] <- NA
+      sel <- rownames(tmp) %in% param_DIC
+      tmp <- rbind(tmp[!sel,], tmp[sel,])
+
+    }
+
+    tmp
+
+  }, error = function(e) {
+
+    message('ERROR: cannot calculate DIC for this model')
+
+    mod <- coda::as.mcmc.list(
+      lapply(mod, function(x) coda::as.mcmc(x[,!(colnames(x) %in% param_DIC)]))
     )
 
-    s['DIC', 'Mean'] <- s['deviance','Mean'] + 2*s['pD','Mean']
-    s['pD', !(colnames(s) == 'Mean')] <- NA
+    tmp <- MCMCvis::MCMCsummary(mod,
+                                func=function(x, lags=ac_lags) {
+                                  acf(x, lag.max=lags[length(lags)], plot=FALSE)$acf[lags]
+                                },
+                                func_name=stringr::str_c('AC', ac_lags))
 
-    return(s)
+    names(tmp)[c(1:5,7)] <- c('Mean', 'SD', 'CI2.5', 'CI50', 'CI97.5', 'SSeff')
+    tmp
 
-  } else {
+  })
 
-    return(s)
-  }
+    return(out)
+
 }

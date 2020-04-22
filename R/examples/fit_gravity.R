@@ -1,4 +1,4 @@
-n <- 5
+n <- 10
 ids <- LETTERS[1:n]
 
 # Distance matrix
@@ -19,5 +19,5 @@ M <- sim_gravity(N=N,
                  gamma=1.5,
                  counts=TRUE)
 
-mod <- fit_gravity(M, D, N)
+mod <- fit_gravity(M, D, N, DIC=TRUE, parallel = T)
 summarize_mobility(mod)
