@@ -70,10 +70,12 @@ params <- c('lambda')
 
 mod <- fit_jags(jags_data=jags_data,
                 jags_model=jags_model,
+                params=params)
+
+mod <- fit_jags(jags_data=jags_data,
+                jags_model=jags_model,
                 params=params,
                 DIC=T)
-
-str(mod)
 }
 \seealso{
 Other model: 

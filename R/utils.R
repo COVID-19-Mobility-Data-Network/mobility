@@ -119,7 +119,7 @@ summarize_mobility <- function(mod, ac_lags=c(2,5,10)) {
   if (!(class(mod) == 'mcmc.list')) stop('Model object must be mcmc.list')
 
   param_names <- dimnames(mod[[1]])[[2]]
-  param_DIC <- c('deviance', 'pD', 'DIC')
+  param_DIC <- c('DIC', 'deviance', 'pD')
 
   out <- tryCatch({
 
@@ -134,9 +134,7 @@ summarize_mobility <- function(mod, ac_lags=c(2,5,10)) {
     if (all(param_DIC %in% param_names)) {
 
       tmp['pD', !(colnames(tmp) == 'Mean')] <- NA
-      sel <- rownames(tmp) %in% param_DIC
-      tmp <- rbind(tmp[!sel,], tmp[sel,])
-
+      tmp <- rbind(tmp[!(rownames(tmp) %in% param_DIC),], tmp[param_DIC,])
     }
 
     tmp

@@ -20,6 +20,25 @@ for each parameter in an mcmc.list object. If the model contains deviance and pe
 Deviance Information Criterion (DIC) is calculated and appended to the summary.
 }
 \examples{
+# Gravity model
+M <- mobility_matrices$M
+D <- mobility_matrices$D
+N <- mobility_matrices$N
+
+mod <- fit_gravity(M, D, N)
+summarize_mobility(mod)
+
+mod <- fit_gravity(M, D, N, DIC=T)
+summarize_mobility(mod)
+
+# Probability of travel
+
+
+
+
+
+
+# Other models
 N <- 100
 lambda <- 10
 y <- rpois(n=N, lambda=lambda)
@@ -43,8 +62,15 @@ params <- c('lambda')
 
 mod <- fit_jags(jags_data=jags_data,
                 jags_model=jags_model,
+                params=params)
+
+summarize_mobility(mod)
+
+
+mod <- fit_jags(jags_data=jags_data,
+                jags_model=jags_model,
                 params=params,
-                DIC=TRUE)
+                DIC=T)
 
 summarize_mobility(mod)
 }

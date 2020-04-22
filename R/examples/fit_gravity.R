@@ -1,23 +1,12 @@
-n <- 10
-ids <- LETTERS[1:n]
+M <- mobility_matrices$M
+D <- mobility_matrices$D
+N <- mobility_matrices$N
 
-# Distance matrix
-D <- get_distance_matrix(x=rnorm(n, 100, 5),
-                         y=rnorm(n, 20, 2),
-                         id=ids)
+mod <- fit_gravity(M, D, N)
+summarize_mobility(mod)
 
-# Vector of population sizes
-N <- rpois(n, 1000)
-names(N) <- ids
+mod <- fit_gravity(M, D, N, DIC=T)
+summarize_mobility(mod)
 
-# Simulate trip counts based on model parameters
-M <- sim_gravity(N=N,
-                 D=D,
-                 theta=20,
-                 omega_1=15,
-                 omega_2=0.75,
-                 gamma=1.5,
-                 counts=TRUE)
-
-mod <- fit_gravity(M, D, N, DIC=TRUE, parallel = T)
+mod <- fit_gravity(M, D, N, DIC=T, parallel=T)
 summarize_mobility(mod)

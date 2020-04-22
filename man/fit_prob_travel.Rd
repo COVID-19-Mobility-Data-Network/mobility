@@ -61,7 +61,8 @@ prob_trav <- fit_prob_travel(travel=V_travel,
                              n_chain=4,
                              n_burn=1000,
                              n_samp=1000,
-                             n_thin=2)
+                             n_thin=2,
+                             DIC=TRUE)
 
 head(prob_trav)
 

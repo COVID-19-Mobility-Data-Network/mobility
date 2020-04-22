@@ -1,4 +1,4 @@
-survey.template <- data.frame(
+template_travel_data <- data.frame(
      date_start=as.Date(character()),
      date_stop=as.Date(character()),
      date_span=as.difftime(numeric(), units='days'),
@@ -29,4 +29,4 @@ survey.template <- data.frame(
      trips=numeric(),          # Total number of trips individual made from origin to destination during time span of travel survey
 stringsAsFactors=FALSE)
 
-save(survey.template, file='data/survey.template.rda')
+save(template_travel_data, file='data/template_travel_data.rda')

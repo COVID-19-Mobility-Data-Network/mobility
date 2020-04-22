@@ -2,7 +2,7 @@ n_orig <- 20
 orig_id <- LETTERS[1:n_orig]
 
 N <- rpois(n_orig, 50)     # population size of each origin
-p <- rbeta(n_orig, 2, 5)   # probability of leaving origin
+p <- rbeta(n_orig, 2, 2)   # probability of leaving origin
 
 V_travel <- setNames(rbinom(n_orig, N, p), orig_id)
 V_tot <- setNames(N, orig_id)
@@ -15,7 +15,8 @@ prob_trav <- fit_prob_travel(travel=V_travel,
                              n_chain=4,
                              n_burn=1000,
                              n_samp=1000,
-                             n_thin=2)
+                             n_thin=2,
+                             DIC=TRUE)
 
 head(prob_trav)
 
