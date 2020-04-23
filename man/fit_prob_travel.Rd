@@ -8,9 +8,9 @@ fit_prob_travel(
   travel,
   total,
   n_chain = 4,
-  n_burn = 1000,
+  n_burn = 2000,
   n_samp = 1000,
-  n_thin = 1,
+  n_thin = 2,
   DIC = FALSE,
   parallel = FALSE,
   format_locations = FALSE

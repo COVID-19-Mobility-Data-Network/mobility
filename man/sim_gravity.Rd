@@ -17,7 +17,7 @@ sim_gravity(
 \arguments{
 \item{N}{vector of population sizes}
 
-\item{D}{matrix of distances among all \eqn{ij} pairs}
+\item{D}{matrix giving distances among the origins and destinations}
 
 \item{theta}{scalar giving the proportionality constant of gravity formula (default = 1)}
 
@@ -80,6 +80,10 @@ M_hat <- sim_gravity(N=N,
                      counts=TRUE)
 }
 \seealso{
+Other simulation: 
+\code{\link{get_beta_params}()},
+\code{\link{sim_prob_travel}()}
+
 Other gravity: 
 \code{\link{fit_gravity}()}
 }

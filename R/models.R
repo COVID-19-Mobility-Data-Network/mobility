@@ -259,8 +259,8 @@ combine_rjags <- function(a, b) {
 
 ##' Fit gravity model to movement matrix
 ##'
-##' This function fits gravity model parameters to a supplied movement matrix using Bayesian MCMC inference. The function defines the model and serves as a wrapper for the \code{\link{run_jags}}
-##' function in the \code{\link{runjags}} package. Gravity model formula:
+##' This function fits gravity model parameters to a supplied movement matrix using Bayesian MCMC inference. The function defines the model and serves as a wrapper for the \code{\link{fit_jags}}
+##' function. Gravity model formula:
 ##' \deqn{
 ##'     \theta * ( N_i^\omega_1 N_j^\omega_2 / f(d_ij) )
 ##' }
@@ -269,13 +269,13 @@ combine_rjags <- function(a, b) {
 ##' @param D named matrix of distances among all \eqn{ij} location pairs
 ##' @param N named vector of population sizes for all locations (either N or both n_orig and n_dest must be supplied)
 ##' @param N_orig named vector of population sizes for each origin
-##' @param N_dest named vector of population sizes for each destination_
+##' @param N_dest named vector of population sizes for each destination
 ##' @param n_chain number of MCMC sampling chains
 ##' @param n_burn number of iterations to discard before sampling of chains begins (burn in)
 ##' @param n_samp number of iterations to sample each chain
 ##' @param n_thin interval to thin samples
-##' @param DIC logical indicating whether or not to calculate the Deviance Information Criterion (DIC) (default = FALSE)
-##' @param parallel logical indicating whether or not to run MCMC chains in parallel or sequentially (default = FALSE)
+##' @param DIC logical indicating whether or not to calculate the Deviance Information Criterion (DIC) (default = \code{FALSE})
+##' @param parallel logical indicating whether or not to run MCMC chains in parallel or sequentially (default = \code{FALSE})
 ##'
 ##' @return a runjags model object containing fitted gravity model paramters
 ##'
@@ -450,9 +450,9 @@ fit_prob_travel <- function(
   travel,
   total,
   n_chain=4,
-  n_burn=1000,
+  n_burn=2000,
   n_samp=1000,
-  n_thin=1,
+  n_thin=2,
   DIC=FALSE,
   parallel=FALSE,
   format_locations=FALSE

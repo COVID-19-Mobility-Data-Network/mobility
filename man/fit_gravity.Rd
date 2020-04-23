@@ -28,7 +28,7 @@ fit_gravity(
 
 \item{N_orig}{named vector of population sizes for each origin}
 
-\item{N_dest}{named vector of population sizes for each destination_}
+\item{N_dest}{named vector of population sizes for each destination}
 
 \item{n_chain}{number of MCMC sampling chains}
 
@@ -38,16 +38,16 @@ fit_gravity(
 
 \item{n_thin}{interval to thin samples}
 
-\item{DIC}{logical indicating whether or not to calculate the Deviance Information Criterion (DIC) (default = FALSE)}
+\item{DIC}{logical indicating whether or not to calculate the Deviance Information Criterion (DIC) (default = \code{FALSE})}
 
-\item{parallel}{logical indicating whether or not to run MCMC chains in parallel or sequentially (default = FALSE)}
+\item{parallel}{logical indicating whether or not to run MCMC chains in parallel or sequentially (default = \code{FALSE})}
 }
 \value{
 a runjags model object containing fitted gravity model paramters
 }
 \description{
-This function fits gravity model parameters to a supplied movement matrix using Bayesian MCMC inference. The function defines the model and serves as a wrapper for the \code{\link{run_jags}}
-function in the \code{\link{runjags}} package. Gravity model formula:
+This function fits gravity model parameters to a supplied movement matrix using Bayesian MCMC inference. The function defines the model and serves as a wrapper for the \code{\link{fit_jags}}
+function. Gravity model formula:
 \deqn{
     \theta * ( N_i^\omega_1 N_j^\omega_2 / f(d_ij) )
 }
