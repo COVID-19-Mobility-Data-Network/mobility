@@ -1,24 +1,28 @@
-n_orig <- 20
+n_orig <- 6
+n_missing <- 3
 orig_id <- LETTERS[1:n_orig]
 
-N <- rpois(n_orig, 50)     # population size of each origin
+N <- rpois(n_orig, 100)    # population size of each origin
 p <- rbeta(n_orig, 2, 2)   # probability of leaving origin
 
 V_travel <- setNames(rbinom(n_orig, N, p), orig_id)
 V_tot <- setNames(N, orig_id)
 
-miss <- sample(1:n_orig, 10) # missing observations
+miss <- sample(1:n_orig, n_missing) # missing observations
 V_travel[miss] <- V_tot[miss] <- NA
 
+# Estimate probability of travel for observed locations and population mean
 prob_trav <- fit_prob_travel(travel=V_travel,
-                             tot=V_tot,
-                             n_chain=4,
-                             n_burn=1000,
-                             n_samp=1000,
-                             n_thin=2,
+                             total=V_tot,
                              DIC=TRUE)
+prob_trav
 
-head(prob_trav)
+# Estimate probability of travel for each locations (missing locations regress to mean)
+prob_trav <- fit_prob_travel(travel=V_travel,
+                             total=V_tot,
+                             format_locations=TRUE)
+prob_trav
+
 
 library(ggplot2)
 ggplot(data=prob_trav) +

@@ -1,7 +1,7 @@
 Package: mobility
 Type: Package
 Title: Tools for analyzing human mobility data
-Version: 0.0.1
+Version: 0.0.2
 Date: 2020-04-19
 Author: John Giles <giles@jhu.edu> and Amy Wesolowaki <awesolowski@jhu.edu>
 Maintainer: John Giles <giles@jhu.edu>

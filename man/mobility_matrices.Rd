@@ -17,12 +17,6 @@ mobility_matrices
 This data object is a list containing named matrices required by the \code{\link{sim_gravity}} and \code{\link{fit_gravity}} functions.
 The matrices provide hypothetical trip counts representing travel among 10 locations (\eqn{M}), along with distances (\eqn{D}) and population sizes (\eqn{N}).
 }
-\examples{
-\dontrun{
- mobility_matrices
-}
-
-}
 \author{
 John Giles
 }

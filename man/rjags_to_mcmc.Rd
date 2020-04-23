@@ -13,7 +13,7 @@ rjags_to_mcmc(x)
 an \code{\link[coda:mcmc.list]{mcmc.list}} object
 }
 \description{
-This function converts an rjags object to an \code{\link[coda:mcmc.list]{mcmc.list}} object
+This function converts an rjags model object to an \code{\link[coda:mcmc.list]{mcmc.list}} object.
 }
 \author{
 John Giles

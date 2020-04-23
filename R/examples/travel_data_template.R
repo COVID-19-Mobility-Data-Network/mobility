@@ -1,8 +1,8 @@
 #--------------------------------
-# Travel within the same district
+# Travel among locations
 #--------------------------------
 
-trip <- survey.template
+trip <- travel_data_template
 n <- 3 # Add some observations
 trip[1:n,] <- NA
 
@@ -47,7 +47,7 @@ head(trip)
 # Stays in home location
 #-----------------------
 
-stay <- survey.template
+stay <- travel_data_template
 n <- 3 # add some observations
 stay[1:n,] <- NA
 
@@ -85,7 +85,7 @@ head(survey_data)
 # Dataset with which to extrapolate model
 #----------------------------------------
 
-pred <- survey.template
+pred <- travel_data_template
 n <- 6 # Add some observations
 pred[1:n,] <- NA
 
@@ -102,6 +102,6 @@ pred$orig_y <- rnorm(n, 20, 2)
 pred$orig_pop <- rpois(n, 1e+05)
 
 # Number of reported trips (unobserved for extrapolation data)
-trip$trips <- NA 
+trip$trips <- NA
 
 head(pred)

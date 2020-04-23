@@ -7,13 +7,15 @@
 combine_rjags(a, b)
 }
 \arguments{
-\item{x}{an rjags list}
+\item{a}{an rjags list}
+
+\item{b}{an rjags list}
 }
 \value{
-an rjags list
+an rjags list containing model ouput from \code{a} and \code{b}
 }
 \description{
-This function combines two rjags objects.
+This function combines two rjags model objects.
 }
 \author{
 John Giles

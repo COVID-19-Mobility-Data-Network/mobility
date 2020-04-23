@@ -12,7 +12,8 @@ fit_prob_travel(
   n_samp = 1000,
   n_thin = 1,
   DIC = FALSE,
-  parallel = FALSE
+  parallel = FALSE,
+  format_locations = FALSE
 )
 }
 \arguments{
@@ -30,9 +31,13 @@ fit_prob_travel(
 
 \item{DIC}{logical indicating whether or not to calculate the Deviance Information Criterion (DIC)}
 
-\item{parallel}{logical indicating whether or not to run MCMC chains in parallel or sequentially (default = FALSE)}
+\item{parallel}{logical indicating whether or not to run MCMC chains in parallel or sequentially (default = \code{FALSE})}
 
-\item{n_adapt}{number of adaptive iterations}
+\item{format_locations}{logical indicating which format to return results:
+\describe{
+  \item{\code{FALSE}}{returns only summary of estimated parameters (default)}
+  \item{\code{TRUE}}{returns probability of travel with input data, including missing locations}
+}}
 }
 \value{
 dataframe giving input data along with estimates of travel probability for each location
@@ -44,27 +49,31 @@ the origin-level probability of travel (tau_i). Further this method is designed 
 data with high temporal resolution or travel survey data. When data are missing, unobserved routes of travel regress to the population mean.
 }
 \examples{
-n_orig <- 20
+n_orig <- 6
+n_missing <- 3
 orig_id <- LETTERS[1:n_orig]
 
-N <- rpois(n_orig, 50)     # population size of each origin
-p <- rbeta(n_orig, 2, 5)   # probability of leaving origin
+N <- rpois(n_orig, 100)    # population size of each origin
+p <- rbeta(n_orig, 2, 2)   # probability of leaving origin
 
 V_travel <- setNames(rbinom(n_orig, N, p), orig_id)
 V_tot <- setNames(N, orig_id)
 
-miss <- sample(1:n_orig, 10) # missing observations
+miss <- sample(1:n_orig, n_missing) # missing observations
 V_travel[miss] <- V_tot[miss] <- NA
 
+# Estimate probability of travel for observed locations and population mean
 prob_trav <- fit_prob_travel(travel=V_travel,
-                             tot=V_tot,
-                             n_chain=4,
-                             n_burn=1000,
-                             n_samp=1000,
-                             n_thin=2,
+                             total=V_tot,
                              DIC=TRUE)
+prob_trav
 
-head(prob_trav)
+# Estimate probability of travel for each locations (missing locations regress to mean)
+prob_trav <- fit_prob_travel(travel=V_travel,
+                             total=V_tot,
+                             format_locations=TRUE)
+prob_trav
+
 
 library(ggplot2)
 ggplot(data=prob_trav) +

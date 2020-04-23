@@ -85,9 +85,8 @@ fit_jags <- function(
                                  thin=n_thin)
 
       # clean up penalty output
-      tmp <- mod[[which(!(names(mod) %in% c('deviance', 'pD')))[1]]]
-      mod$pD <- array(mean(mod$pD), dim=dim(tmp))
-      attributes(mod$pD) <- attributes(tmp)
+      mod$pD <- array(mean(mod$pD), dim=dim(mod$deviance))
+      attributes(mod$pD) <- attributes(mod$deviance)
       attributes(mod$pD)$varname <- 'pD'
 
       # convert mcmc and add DIC
@@ -159,9 +158,8 @@ fit_jags <- function(
                                    thin=n_thin)
 
         # clean up penalty output
-        tmp <- mod[[which(!(names(mod) %in% c('deviance', 'pD')))[1]]]
-        mod$pD <- array(mean(mod$pD), dim=dim(tmp))
-        attributes(mod$pD) <- attributes(tmp)
+        mod$pD <- array(mean(mod$pD), dim=dim(mod$deviance))
+        attributes(mod$pD) <- attributes(mod$deviance)
         attributes(mod$pD)$varname <- 'pD'
 
         mod
@@ -426,12 +424,16 @@ fit_gravity <- function(
 ##' @param travel named vector of number of people that reported travelling outside their home location
 ##' @param total named vector of the total number of individuals in travel survey for each location
 ##' @param n_chain number of MCMC sampling chains
-##' @param n_adapt number of adaptive iterations
 ##' @param n_burn number of iterations to discard before sampling of chains begins (burn in)
 ##' @param n_samp number of iterations to sample each chain
 ##' @param n_thin interval to thin samples
 ##' @param DIC logical indicating whether or not to calculate the Deviance Information Criterion (DIC)
-##' @param parallel logical indicating whether or not to run MCMC chains in parallel or sequentially (default = FALSE)
+##' @param parallel logical indicating whether or not to run MCMC chains in parallel or sequentially (default = \code{FALSE})
+##' @param format_locations logical indicating which format to return results:
+##' \describe{
+##'   \item{\code{FALSE}}{returns only summary of estimated parameters (default)}
+##'   \item{\code{TRUE}}{returns probability of travel with input data, including missing locations}
+##' }
 ##'
 ##' @return dataframe giving input data along with estimates of travel probability for each location
 ##'
@@ -452,7 +454,8 @@ fit_prob_travel <- function(
   n_samp=1000,
   n_thin=1,
   DIC=FALSE,
-  parallel=FALSE
+  parallel=FALSE,
+  format_locations=FALSE
 ) {
 
   # Check data
@@ -513,34 +516,43 @@ fit_prob_travel <- function(
              parallel=parallel)
   )
 
-  options(row.names=NULL, stringsAsFactors=FALSE)
+  if (!format_locations) {
 
-  if (na.fix) {
+    return(mod)
 
-    # Merge with missing obs
-    out <- merge(
-      data.frame(orig_id=names(travel),
-                 travel=travel,
-                 total=total),
-      data.frame(orig_id=names(travel[sel]),
-                 travel=travel[sel],
-                 total=total[sel],
-                 mod[-which(rownames(mod) == 'tau_pop'),]),
-      all=T
-    )
+  } else if (format_locations) {
 
-    # Set missing obs to population mean
-    for(i in which(is.na(out$Mean))) out[i, -(1:3)] <- mod['tau_pop',]
-    return(out)
+    options(row.names=NULL, stringsAsFactors=FALSE)
+    ignore <- 'tau_pop'
+    if (DIC) ignore <- c(ignore, "DIC", "deviance", "pD")
 
-  } else {
+    if (na.fix) {
 
-    return(
-      data.frame(orig_id=names(travel),
-                 travel=travel,
-                 total=total,
-                 mod[-which(rownames(mod) =='tau_pop'),])
-    )
+      # Merge with missing obs
+      out <- merge(
+        data.frame(orig_id=names(travel),
+                   travel=travel,
+                   total=total),
+        data.frame(orig_id=names(travel[sel]),
+                   travel=travel[sel],
+                   total=total[sel],
+                   mod[-which(rownames(mod) %in% ignore),]),
+        all=T
+      )
+
+      # Set missing obs to population mean
+      for(i in which(is.na(out$Mean))) out[i, -(1:3)] <- mod['tau_pop',]
+      return(out)
+
+    } else {
+
+      return(
+        data.frame(orig_id=names(travel),
+                   travel=travel,
+                   total=total,
+                   mod[-which(rownames(mod) %in% ignore),])
+      )
+    }
   }
 }
 
