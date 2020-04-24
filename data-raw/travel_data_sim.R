@@ -10,7 +10,7 @@ trip[1:n,] <- NA # add rows for each location
 # Time span of travel data
 trip$date_start <- as.Date("2020-01-01")
 trip$date_stop <- trip$date_start + 7
-trip$date_span <- difftime(trip$date_stop, trip$date_start, units='days')
+trip$date_span <- difftime(stay$date_stop, stay$date_start, units='days')
 
 # Origin info: some counties within the same state
 trip$orig_adm0 <- trip$dest_adm0 <- 'A' # Country
