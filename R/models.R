@@ -1,4 +1,4 @@
-##' Fit model using JAGS
+##' Fit Bayesian model using MCMC
 ##'
 ##' This is a general wrapper function for fitting a model to data using the JAGS MCMC algorithm.
 ##' The function uses code adapted from the \code{\link[rjags]{rjags}} package. Options include
@@ -344,7 +344,7 @@ fit_gravity <- function(
     prior <- list(theta=prior,
                   omega_1=prior,
                   omega_2=prior,
-                  gamma=prior)
+                  gamma=c(1,0.5))
 
   } else {
 
@@ -381,7 +381,7 @@ fit_gravity <- function(
 
         x[i,j] <- ifelse(
           i == j,
-          0,
+          1e-06,
           exp(log(theta) + (omega_1*log(N_dest[i]) + omega_2*log(N_orig[j]) - log( f_d[i,j] )))
         )
 

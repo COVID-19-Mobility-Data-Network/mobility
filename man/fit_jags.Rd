@@ -2,7 +2,7 @@
 % Please edit documentation in R/models.R
 \name{fit_jags}
 \alias{fit_jags}
-\title{Fit model using JAGS}
+\title{Fit Bayesian model using MCMC}
 \usage{
 fit_jags(
   jags_data,
@@ -79,6 +79,7 @@ mod <- fit_jags(jags_data=jags_data,
 }
 \seealso{
 Other model: 
+\code{\link{check_gravity}()},
 \code{\link{fit_gravity}()},
 \code{\link{fit_prob_travel}()}
 }

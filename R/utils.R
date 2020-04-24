@@ -326,6 +326,39 @@ get_pop_vec <- function(data,
 }
 
 
+##' Build distance matrix from XY coordinates
+##'
+##' This function builds the pairwise distance matrix from vectors of XY coordinates and associated names.
+##'
+##' @param x vector giving X coordinates
+##' @param y vector giving Y coordinates
+##' @param id vector of names for each location
+##'
+##' @return a named matrix of pairwise distances among locations
+##'
+##' @author John Giles
+##'
+##' @example R/examples/get_distance_matrix.R
+##'
+##' @family data synthesis
+##'
+##' @export
+##'
+
+get_distance_matrix <- function(x,   # x coord
+                                y,   # y coord
+                                id   # name associated with each element
+) {
+  xy <- cbind(x, y)
+  window <- spatstat::bounding.box.xy(xy)
+  out <- spatstat::pairdist(spatstat::as.ppp(xy, window, check=FALSE))
+  dimnames(out) <- list(origin=id, destination=id)
+  out[order(dimnames(out)$origin), order(dimnames(out)$destination)]
+}
+
+
+
+
 ##' Get distance matrix for two different set of coordinates
 ##'
 ##' Takes XY coordinates of two sets of locations and returns cross distance for all entries.
@@ -436,6 +469,104 @@ summarize_mobility <- function(mod, ac_lags=c(2,5,10)) {
     return(out)
 
 }
+
+
+
+##' Check goodness of fit of a gravity model
+##'
+##' This function takes a fitted gravity model and calculates goodness of fit metrics for observed routes. If the
+##' Deviance Information Criterin (DIC) was calculated in the supplied model object, it is included in output.
+##' When \code{plot_check = TRUE}, two plots are shown containing the posterior distribution of trip counts compared to observed data
+##' and a Normal Q-Q plot showing the quantiles of model residuals against those expected from a Normal distribution.
+##' Goodness of fit metrics include:
+##' \describe{
+##'   \item{DIC}{\href{https://en.wikipedia.org/wiki/Deviance_information_criterion}{Deviance Information Criterion}}
+##'   \item{RMSE}{\href{https://en.wikipedia.org/wiki/Root-mean-square_deviation}{Root Mean Squared Error}}
+##'   \item{MAPE}{\href{https://en.wikipedia.org/wiki/Mean_absolute_percentage_error}{Mean Absolute Percent Error}}
+##'   \item{R2}{\href{https://en.wikipedia.org/wiki/Coefficient_of_determination}{R-squared}}
+##' }
+##'
+##' @param M named matrix of trip counts among all \eqn{ij} location pairs
+##' @param D named matrix of distances among all \eqn{ij} location pairs
+##' @param N named vector of population sizes for all locations (either N or both n_orig and n_dest must be supplied)
+##' @param mod model output from either the \code{\link{fit_gravity}} or \code{\link{summarize_mobility}} functions
+##' @param plot_check logical indicating whether to plot the Posterior Predictive Check and Normal Q-Q Plot (default = \code{TRUE})
+##'
+##' @return a list of goodness of fit measures
+##'
+##' @author John Giles
+##'
+##' @example R/examples/check_gravity.R
+##'
+##' @family model
+##' @family gravity
+##'
+##' @export
+##'
+
+check_gravity <- function(M,
+                          D,
+                          N,
+                          mod,
+                          plot_check=TRUE
+) {
+
+  if (coda::is.mcmc.list(mod)) mod <- summarize_mobility(mod)
+
+  M_hat <- sim_gravity(N=N,
+                       D=D,
+                       theta=mod['theta', 'Mean'],
+                       omega_1=mod['omega_1', 'Mean'],
+                       omega_2=mod['omega_2', 'Mean'],
+                       gamma=mod['gamma', 'Mean'],
+                       count=T)
+
+  err_rsq <- err_perc <- err_rmse <- rep(NA, nrow(M))
+  for(i in 1:nrow(M)) {
+
+    sel <- which(!is.na(M[i,]))
+    err_perc[i] <- Metrics::mape(M[i, sel], M_hat[i,sel])
+    err_rmse[i] <- Metrics::rmse(M[i, sel], M_hat[i,sel])
+    err_rsq[i] <- cor(M[i, sel], M_hat[i,sel])^2
+  }
+
+  if (plot_check) {
+
+    sel <- which(!is.na(M))
+    M <- M[sel]
+    M_hat <- M_hat[sel]
+
+    par(mfrow=c(1,2))
+    dens_M <- density(M)
+    dens_M_hat <- density(M_hat)
+    plot(dens_M, lwd=2, col='red',
+         xlab='Trip count',
+         main='Posterior predictive check',
+         ylim=c(0, max(c(dens_M$y, dens_M_hat$y))))
+    lines(dens_M_hat, lwd=2)
+
+    err <- M - M_hat
+    qqnorm(err, cex=1.25)
+    qqline(err, lwd=2, col=2)
+  }
+
+  if ('DIC' %in% rownames(mod)) {
+
+    return(
+      list(DIC=mod['DIC', 'Mean'],
+           RMSE=mean(err_rmse, na.rm=T),
+           MAPE=mean(err_perc, na.rm=T),
+           R2=mean(err_rsq, na.rm=T))
+    )
+
+  } else {
+
+    list(RMSE=mean(err_rmse, na.rm=T),
+         MAPE=mean(err_perc, na.rm=T),
+         R2=mean(err_rsq, na.rm=T))
+  }
+}
+
 
 
 

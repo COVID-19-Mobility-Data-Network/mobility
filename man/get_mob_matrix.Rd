@@ -52,7 +52,8 @@ ggplot(data=reshape2::melt(M)) +
 }
 \seealso{
 Other data synthesis: 
-\code{\link{get_crossdist}()}
+\code{\link{get_crossdist}()},
+\code{\link{get_distance_matrix}()}
 }
 \author{
 John Giles

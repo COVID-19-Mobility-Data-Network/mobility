@@ -85,6 +85,7 @@ Other simulation:
 \code{\link{sim_prob_travel}()}
 
 Other gravity: 
+\code{\link{check_gravity}()},
 \code{\link{fit_gravity}()}
 }
 \author{

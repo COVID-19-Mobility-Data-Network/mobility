@@ -89,6 +89,7 @@ ggplot(data=prob_trav) +
 }
 \seealso{
 Other model: 
+\code{\link{check_gravity}()},
 \code{\link{fit_gravity}()},
 \code{\link{fit_jags}()}
 }

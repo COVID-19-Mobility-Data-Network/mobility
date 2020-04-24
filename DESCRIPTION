@@ -1,11 +1,11 @@
 Package: mobility
 Type: Package
 Title: Tools for analyzing human mobility data
-Version: 0.0.2
+Version: 0.0.3
 Date: 2020-04-19
-Author: John Giles <giles@jhu.edu> and Amy Wesolowaki <awesolowski@jhu.edu>
+Author: John Giles <giles@jhu.edu> and Amy Wesolowski <awesolowski@jhu.edu>
 Maintainer: John Giles <giles@jhu.edu>
-Description: Functions for parsing data, fitting models, and simulating human mobility patterns.
+Description: Functions for parsing travel data, fitting models, and simulating mobility patterns.
 License: GPL (>=2)
 RoxygenNote: 7.0.1
 Encoding: UTF-8

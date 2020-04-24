@@ -7,9 +7,9 @@
 get_beta_params(mu, sigma)
 }
 \arguments{
-\item{mu}{scalar or vector giving the mean \eqn{\mu} of the proportion}
+\item{mu}{scalar or vector giving the mean of the proportion}
 
-\item{sigma}{scalar or vector giving the standard deviation \eqn{\sigma} of the proportion}
+\item{sigma}{scalar or vector giving the standard deviation of the proportion}
 }
 \value{
 A list containing the two shape parameters of the Beta distribution
