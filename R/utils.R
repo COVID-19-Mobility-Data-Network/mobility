@@ -198,12 +198,12 @@ get_unique_coords <- function(data,
                               dest=TRUE
 ) {
 
-  require(dplyr)
+  require(dplyr, quietly=TRUE)
 
   if (!all(c('orig_id', 'dest_id') %in% colnames(data))) {
 
     data <- cbind(data, get_unique_ids(data))
-    warning('Added missing unique location names.')
+    message('Added missing unique location names.')
   }
 
   if (is.factor(data$orig_id)) data$orig_id <- as.character(data$orig_id)
@@ -273,12 +273,12 @@ get_pop_vec <- function(data,
                         dest=TRUE
 ) {
 
-  require(dplyr)
+  require(dplyr, quietly=TRUE)
 
   if (!all(c('orig_id', 'dest_id') %in% colnames(data))) {
 
     data <- cbind(data, get_unique_ids(data))
-    warning('Added missing unique location names.')
+    message('Added missing unique location names.')
   }
 
   if (is.factor(data$orig_id)) data$orig_id <- as.character(data$orig_id)
@@ -350,8 +350,15 @@ get_distance_matrix <- function(x,   # x coord
                                 id   # name associated with each element
 ) {
   xy <- cbind(x, y)
-  window <- spatstat::bounding.box.xy(xy)
-  out <- spatstat::pairdist(spatstat::as.ppp(xy, window, check=FALSE))
+
+  suppressMessages(
+    out <- spatstat::pairdist(
+      spatstat::as.ppp(xy,
+                       spatstat::bounding.box.xy(xy),
+                       check=FALSE)
+    )
+  )
+
   dimnames(out) <- list(origin=id, destination=id)
   out[order(dimnames(out)$origin), order(dimnames(out)$destination)]
 }
@@ -419,6 +426,8 @@ get_crossdist <- function(xy1,
 ##'
 ##' @example R/examples/summarize_mobility.R
 ##'
+##' @family model
+##'
 ##' @export
 ##'
 
@@ -432,12 +441,13 @@ summarize_mobility <- function(mod, ac_lags=c(2,5,10)) {
   out <- tryCatch({
 
     tmp <- MCMCvis::MCMCsummary(mod,
-                            func=function(x, lags=ac_lags) {
-                              acf(x, lag.max=lags[length(lags)], plot=FALSE)$acf[lags]
-                            },
-                            func_name=stringr::str_c('AC', ac_lags))
+                                HPD=TRUE,
+                                func=function(x, lags=ac_lags) {
+                                  acf(x, lag.max=lags[length(lags)], plot=FALSE)$acf[lags]
+                                },
+                                func_name=stringr::str_c('AC', ac_lags))
 
-    names(tmp)[c(1:5,7)] <- c('Mean', 'SD', 'CI2.5', 'CI50', 'CI97.5', 'SSeff')
+    names(tmp)[c(1:4,6)] <- c('Mean', 'SD', 'HPD2.5', 'HPD97.5', 'SSeff')
 
     if (all(param_DIC %in% param_names)) {
 
@@ -456,18 +466,18 @@ summarize_mobility <- function(mod, ac_lags=c(2,5,10)) {
     )
 
     tmp <- MCMCvis::MCMCsummary(mod,
+                                HPD=TRUE,
                                 func=function(x, lags=ac_lags) {
                                   acf(x, lag.max=lags[length(lags)], plot=FALSE)$acf[lags]
                                 },
                                 func_name=stringr::str_c('AC', ac_lags))
 
-    names(tmp)[c(1:5,7)] <- c('Mean', 'SD', 'CI2.5', 'CI50', 'CI97.5', 'SSeff')
+    names(tmp)[c(1:4,6)] <- c('Mean', 'SD', 'HPD2.5', 'HPD97.5', 'SSeff')
     tmp
 
   })
 
-    return(out)
-
+  out
 }
 
 
@@ -477,7 +487,7 @@ summarize_mobility <- function(mod, ac_lags=c(2,5,10)) {
 ##' This function takes a fitted gravity model and calculates goodness of fit metrics for observed routes. If the
 ##' Deviance Information Criterin (DIC) was calculated in the supplied model object, it is included in output.
 ##' When \code{plot_check = TRUE}, two plots are shown containing the posterior distribution of trip counts compared to observed data
-##' and a Normal Q-Q plot showing the quantiles of model residuals against those expected from a Normal distribution.
+##' and a Normal \href{https://en.wikipedia.org/wiki/Q%E2%80%93Q_plot}{Q-Q plot} showing the quantiles of model residuals against those expected from a Normal distribution.
 ##' Goodness of fit metrics include:
 ##' \describe{
 ##'   \item{DIC}{\href{https://en.wikipedia.org/wiki/Deviance_information_criterion}{Deviance Information Criterion}}
@@ -488,7 +498,7 @@ summarize_mobility <- function(mod, ac_lags=c(2,5,10)) {
 ##'
 ##' @param M named matrix of trip counts among all \eqn{ij} location pairs
 ##' @param D named matrix of distances among all \eqn{ij} location pairs
-##' @param N named vector of population sizes for all locations (either N or both n_orig and n_dest must be supplied)
+##' @param N named vector of population sizes for all locations
 ##' @param mod model output from either the \code{\link{fit_gravity}} or \code{\link{summarize_mobility}} functions
 ##' @param plot_check logical indicating whether to plot the Posterior Predictive Check and Normal Q-Q Plot (default = \code{TRUE})
 ##'
@@ -511,6 +521,7 @@ check_gravity <- function(M,
                           plot_check=TRUE
 ) {
 
+  if (!(identical(dim(M)[1], dim(D)[1], length(N)))) stop('Dimensions of input data must match')
   if (coda::is.mcmc.list(mod)) mod <- summarize_mobility(mod)
 
   M_hat <- sim_gravity(N=N,
@@ -519,11 +530,10 @@ check_gravity <- function(M,
                        omega_1=mod['omega_1', 'Mean'],
                        omega_2=mod['omega_2', 'Mean'],
                        gamma=mod['gamma', 'Mean'],
-                       count=T)
+                       count=TRUE)
 
   err_rsq <- err_perc <- err_rmse <- rep(NA, nrow(M))
   for(i in 1:nrow(M)) {
-
     sel <- which(!is.na(M[i,]))
     err_perc[i] <- Metrics::mape(M[i, sel], M_hat[i,sel])
     err_rmse[i] <- Metrics::rmse(M[i, sel], M_hat[i,sel])
@@ -554,16 +564,16 @@ check_gravity <- function(M,
 
     return(
       list(DIC=mod['DIC', 'Mean'],
-           RMSE=mean(err_rmse, na.rm=T),
-           MAPE=mean(err_perc, na.rm=T),
-           R2=mean(err_rsq, na.rm=T))
+           RMSE=mean(err_rmse, na.rm=TRUE),
+           MAPE=mean(err_perc, na.rm=TRUE),
+           R2=mean(err_rsq, na.rm=TRUE))
     )
 
   } else {
 
-    list(RMSE=mean(err_rmse, na.rm=T),
-         MAPE=mean(err_perc, na.rm=T),
-         R2=mean(err_rsq, na.rm=T))
+    list(RMSE=mean(err_rmse, na.rm=TRUE),
+         MAPE=mean(err_perc, na.rm=TRUE),
+         R2=mean(err_rsq, na.rm=TRUE))
   }
 }
 
@@ -640,7 +650,7 @@ sim_gravity <- function(
 
 
 
-##' Get parameters for Beta distribution
+##' Get parameters of Beta distribution
 ##'
 ##' This function finds the two shape parameters for the Beta distribution of a random variable between 0 and 1.
 ##'
@@ -653,7 +663,7 @@ sim_gravity <- function(
 ##'
 ##' @example R/examples/get_beta_params.R
 ##'
-##' @family simulation
+##' @family utility
 ##'
 ##' @export
 ##'
@@ -668,6 +678,205 @@ get_beta_params <- function(
   list(shape1=shape1, shape2=shape1 * (1 / mu-1))
 }
 
+
+
+##' Get parameters of Gamma distribution
+##'
+##' A function that finds the \code{shape} and \code{rate} parameters required by the Gamma distribution given the observed
+##' mean \code{mu} and standard deviation \code{sigma} of the response variable. Parameters are found numerically using a
+##' two-dimensional Nelder-Mead optimization algorithm.
+##'
+##' @param mu the desired mean of the Gamma distribution
+##' @param sigma the desired standard deviation of the Gamma distribution
+##'
+##' @return a named numeric vector giving the \code{shape} and \code{rate} parameters of the Gamma distribution
+##'
+##' @family simulation
+##'
+##' @author John Giles
+##'
+##' @example R/examples/get_gamma_params.R
+##'
+##' @family utility
+##'
+##' @export
+##'
+
+get_gamma_params <- function(mu, sigma) {
+
+  suppressWarnings(
+    params <- optim(par=c(mu*2, 2),
+                    fn=function(x) abs(mu - x[1]/x[2]) + abs(sigma - sqrt(x[1]/(x[2]^2))),
+                    method='Nelder-Mead')$par
+  )
+
+  names(params) <- c('shape', 'rate')
+  return(params)
+}
+
+
+
+##' Make data set of travel and stays
+##'
+##' This function builds a data set containing the number of individuals that remain in their home location (stay) or travel to another location
+##' during the time span of the survey. The output is designed to provide data for the \code{\link{fit_prob_travel}} function. The admin unit used to aggregate the travel/stay
+##' counts depend on the arguemtns supplied:
+##' \enumerate{
+##' \item When \code{data_pred} is supplied and \code{agg_adm = NULL}, the lowest admin unit of \code{data_pred} is used
+##' \item When both \code{data_pred} and \code{agg_adm} are \code{NULL}, the lowest admin unit of \code{data} is used
+##' }
+##'
+##' @param data generalized data frame described in \code{\link{travel_data_sim}} or derivative thereof
+##' @param data_pred generalized data frame containing the admin units at which to predict probability of travel
+##' @param agg_adm optional argument (logical) giving an arbitarary admin unit over which to aggregate travel/stay counts
+##'
+##' @return dataframe with same columns as \code{\link{travel_data_sim}} data with columns for counts of travel/stay/total
+##'
+##' @author John Giles
+##'
+##' @example R/examples/get_stay_data.R
+##'
+##' @family data synthesis
+##' @family travel probability
+##'
+##' @export
+##'
+
+get_stay_data <- function(data,
+                          data_pred=NULL,
+                          agg_adm=NULL
+) {
+
+  suppressMessages(
+    require(dplyr, quietly=TRUE)
+  )
+
+  if (all(is.null(data_pred), is.null(agg_adm))) agg_adm <- get_admin_level(data)
+  if (!is.null(data_pred) & is.null(agg_adm)) agg_adm <- get_admin_level(data_pred)
+
+  ids <- c('orig_id', 'dest_id')
+
+  if (any(ids %in% colnames(data))) {
+
+    data[,ids] <- get_unique_ids(data, adm_stop=agg_adm)
+
+  } else {
+
+    data <- cbind(data, get_unique_ids(data, adm_stop=agg_adm))
+    message('Added missing unique location names.')
+  }
+
+  sel <- data$orig_id == data$dest_id
+  data_trip <- data[!sel,]
+  data_stay <- data[sel,]
+
+  if (!is.null(data_pred)) {
+
+    if (any(ids %in% colnames(data_pred))) {
+
+      data_pred[,ids] <- get_unique_ids(data_pred, adm_stop=agg_adm)
+
+    } else {
+
+      data_pred <- cbind(data_pred, get_unique_ids(data_pred, adm_stop=agg_adm))
+    }
+  }
+
+  trip_count_method <- all(is.na(data$indiv_id)) | !('indiv_id' %in% colnames(data))
+
+  if (trip_count_method) {
+
+    message('Using total trip count method')
+    out <- merge(
+      data_stay %>%
+        group_by(orig_id) %>%
+        mutate(stay=sum(trips, na.rm=T)) %>%
+        distinct(orig_id, .keep_all=T) %>%
+        select(-trips) %>%
+        data.frame(),
+      data_trip %>%
+        group_by(orig_id) %>%
+        mutate(travel=sum(trips, na.rm=T)) %>%
+        distinct(orig_id, .keep_all=T) %>%
+        select(orig_id, travel) %>%
+        data.frame(),
+      by='orig_id',
+      all.y=T
+    )
+
+  } else if (!trip_count_method) {
+
+    message('Using individual count method')
+    out <- merge(
+      data_stay %>%
+        dplyr::group_by(orig_id) %>%
+        dplyr::mutate(stay=n_distinct(indiv_id, na.rm=T)) %>%
+        dplyr::distinct(orig_id, .keep_all=T) %>%
+        data.frame(),
+      data_trip %>%
+        dplyr::group_by(orig_id) %>%
+        dplyr::mutate(travel=n_distinct(indiv_id, na.rm=T)) %>%
+        dplyr::mutate(travel=ifelse(travel == 0, NA, travel)) %>%
+        dplyr::distinct(orig_id, .keep_all=T) %>%
+        dplyr::select(orig_id, travel) %>%
+        data.frame(),
+      by='orig_id',
+      all.y=T
+    )
+
+    out$indiv_id <- out$indiv_age <- out$indiv_sex <- NA
+  }
+
+  out$total <- out$stay + out$travel
+
+  # If prediction data supplied, aggregate to level of prediction and merge with prediction locations
+  if (!is.null(data_pred)) {
+
+    # check all stays in prediction data
+    if (all(out$orig_id %in% data_pred$orig_id)) warning('Not all locations in stay data are present in prediction data')
+
+    sel_row <- !(data_pred$orig_id %in% out$orig_id) # only admins not in V already
+    sel_col <- which(apply(data_pred, 2, function(x) !all(is.na(x)))) # only cols with data
+    out <- dplyr::full_join(out, data_pred[sel_row, sel_col])
+    out <- out[,c(colnames(data_trip), c('stay', 'travel', 'total'))]
+  }
+
+  out
+}
+
+##' Find the lowest admin unit
+##'
+##' This function checks which admin levels are in a generalized a data frame formatting like \code{\link{travel_data_sim}} and
+##' returns the lowest admin unit.
+##'
+##' @param data generalized data frame described in \code{\link{travel_data_template}} or derivative thereof
+##'
+##' @return integer
+##'
+##' @author John Giles
+##'
+##' @examples get_admin_level(travel_data_sim)
+##'
+##' @family utility
+##'
+##' @export
+##'
+
+get_admin_level <- function(data) {
+
+  admins <- grep('orig_adm', colnames(data))
+
+  keep <- apply(
+    data[,admins],
+    2,
+    function(x) all(!is.na(x))
+  )
+
+  admins <- admins[keep]
+  admins <- sort(colnames(data)[admins])
+  agg_adm <- admins[length(admins)]
+  as.integer(substr(agg_adm, nchar(agg_adm), nchar(agg_adm)))
+}
 
 
 
@@ -689,6 +898,7 @@ get_beta_params <- function(
 ##' @example R/examples/sim_prob_travel.R
 ##'
 ##' @family simulation
+##' @family travel probability
 ##'
 ##' @export
 ##'
@@ -701,16 +911,17 @@ sim_prob_travel <- function(mu,
   if (any(c(mu > 1, mu < 0, sigma > 1, sigma < 0))) stop('mu and sigma must be between 0 and 1')
   if (!(length(mu) == length(sigma))) stop('mu and sigma must have same length')
 
-  bp <- get_beta_params(mu, sigma)
+  bp <- get_beta_params(mu, sigma^2)
 
   out <- rep(NA, length(mu))
 
   for (i in seq_along(mu)) {
-
-    out[i] <- rbeta(1, bp$shape1[i], bp$shape2[i])
+    suppressWarnings(
+      out[i] <- rbeta(1, bp$shape1[i], bp$shape2[i])
+    )
   }
 
   if (!is.null(id)) names(out) <- id
 
-  return(out)
+  out
 }

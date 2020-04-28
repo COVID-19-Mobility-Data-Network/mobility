@@ -9,6 +9,10 @@
   \item{date_start}{date: beginning of the time interval for the trip count}
   \item{date_stop}{date: end of the time interval for the trip count}
   \item{date_span}{integer: time span in days}
+  \item{indiv_id}{integer: unique individual identifier}
+  \item{indiv_age}{numeric: age of participant}
+  \item{indiv_sex}{logical: gender of perticipant}
+  \item{indiv_type}{factor: if individual participants belong to different groups}
   \item{orig_adm0}{character: name of highest administration level of origin location (Country)}
   \item{orig_adm1}{character: name of administration level 1 of origin location (e.g. Division, State)}
   \item{orig_adm2}{character: name of administration level 2 of origin location (e.g. District, County)}

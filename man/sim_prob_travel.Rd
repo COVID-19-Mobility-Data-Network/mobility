@@ -56,10 +56,15 @@ sim_prob_travel(mu=prob_trav$Mean,
 }
 \seealso{
 Other simulation: 
-\code{\link{get_beta_params}()},
+\code{\link{get_gamma_params}()},
 \code{\link{sim_gravity}()}
+
+Other travel probability: 
+\code{\link{fit_prob_travel}()},
+\code{\link{get_stay_data}()}
 }
 \author{
 John Giles
 }
 \concept{simulation}
+\concept{travel probability}

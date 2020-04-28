@@ -42,7 +42,8 @@ D*111.35 # decimal degrees to km
 \seealso{
 Other data synthesis: 
 \code{\link{get_crossdist}()},
-\code{\link{get_mob_matrix}()}
+\code{\link{get_mob_matrix}()},
+\code{\link{get_stay_data}()}
 }
 \author{
 John Giles

@@ -2,18 +2,15 @@
 title: "A generalized format for longform travel data"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Travel_data_template}
+  %\VignetteIndexEntry{A generalized format for longform travel data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}
 library(mobility)
-library(ggplot2)
+library(dplyr)
 library(reshape2)
-library(viridis)
-library(ggstance)
-library(knitr)
 
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -22,11 +19,15 @@ knitr::opts_chunk$set(
 )
 ```
 
-There are many sources of travel data that researchers wish to fit models to. So, we have designed a generalized data frame template to standardize travel data from various sources into a longform format that is compatible with the modeling and simulation tools in this package. The \code{travel_data_sim} object contains simulated content to illustrate the structure of the data. This example data set contains simulated values of location information and observed number of trips *among* origin and destination locations and *within* home locations.
+There are many sources of travel data that researchers wish to fit models to. So, we have designed a generalized data frame template to standardize travel data from various sources into a longform format that is compatible with the modeling and simulation tools in this package. The `travel_data_sim` object contains simulated content to illustrate the structure of the data. This example data set contains simulated values of location information and observed number of trips *among* origin and destination locations and *within* home locations.
+
+### A simulated example
 ```{r}
 str(travel_data_sim)
 ```
 
+
+### Detailed variable descriptions
 ```{r, echo=FALSE}
 tab <- matrix(
   c('date_start', 'date', 'beginning of the time interval for the trip count',
@@ -59,11 +60,14 @@ tab <- matrix(
 
 colnames(tab) <- c('Variable', 'Class', 'Description')
 
-knitr::kable(tab)
-
+knitr::kable(tab, "html") 
+#%>% kableExtra::row_spec(1:nrow(tab), color='black', background = 'white')
 ```
 
-This data template can be populated by starting with the \code{travel_data_template} object and adding rows.
+
+
+### Populating a travel data template from scratch
+This data template can be populated by starting with the `travel_data_template` object and adding rows. The code below starts by adding information on trips from an origin to a destination.
 
 ```{r trips}
 # Travel among some locations
@@ -98,7 +102,7 @@ trip$trips <- rnbinom(n, size=1, mu=100) # Number of reported trips
 trip <- trip[!(trip$orig_adm2 == trip$dest_adm2),]
 ```
 
-
+In some cases it may be easier to fill in stays (the number of trips within the origin or home location) in a different data frame and then merge the two.
 
 ```{r stays}
 # Stays in home location
@@ -127,7 +131,10 @@ for (i in 1:length(origins)) {
 # Number of reported trip within home county
 stay$trips <- rnbinom(length(origins), size=10, mu=1000)
 
-# Combine
-travel_data2 <- dplyr::full_join(trip, stay)
+# Combine trips and stays
+suppressMessages(
+  travel_data <- dplyr::full_join(trip, stay)
+)
 
+head(travel_data, n=3)
 ```

@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{get_beta_params}
 \alias{get_beta_params}
-\title{Get parameters for Beta distribution}
+\title{Get parameters of Beta distribution}
 \usage{
 get_beta_params(mu, sigma)
 }
@@ -24,11 +24,14 @@ n <- 5
 get_beta_params(mu=runif(n, 0, 1), sigma=runif(n, 0, 0.05))
 }
 \seealso{
-Other simulation: 
-\code{\link{sim_gravity}()},
-\code{\link{sim_prob_travel}()}
+Other utility: 
+\code{\link{get_admin_level}()},
+\code{\link{get_gamma_params}()},
+\code{\link{get_pop_vec}()},
+\code{\link{get_unique_coords}()},
+\code{\link{get_unique_ids}()}
 }
 \author{
 John Giles
 }
-\concept{simulation}
+\concept{utility}

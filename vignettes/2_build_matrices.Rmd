@@ -1,0 +1,109 @@
+---
+title: "Building matrices from longform travel data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Building matrices from longform travel data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  autodep=TRUE
+)
+```
+
+```{r setup, include=FALSE}
+library(mobility)
+library(ggplot2)
+library(reshape2)
+library(viridis)
+library(ggstance)
+```
+
+
+Once the travel data has been converted the to gerenalized travel data format in the `travel_data_template` and `travel_data_sim` objects, utility functions can be used to build the data matrices required for fitting and simulating models. For fitting gravity models the data must be converted into data matrices representing travel among locations ($M$), along with distances ($D$) and population sizes ($N$). 
+
+
+### Unique IDs
+The first step is to add unique IDs to the travel data. If the data have all unique names at the lowest admin level then hierarchical IDs are not needed. However, if the data include repeated admin names, then higher admin levels must be included in the unique IDs.
+
+```{r example IDs}
+travel_data <- travel_data_sim
+
+# Add unique identifiers using Country, State, and County
+example_ids <- get_unique_ids(travel_data, adm_start=0, adm_stop=2)
+head(example_ids)
+
+# Assume all County names here are unique, we can use only County level as ID.
+example_ids <- get_unique_ids(travel_data, adm_start=2)
+head(example_ids)
+```
+
+
+### Build mobility matrix
+```{r build M}
+# Add unique identifiers using County
+travel_data <- cbind(travel_data, get_unique_ids(travel_data, adm_start=2))
+
+# Build mobility matrix from the longform data
+M <- get_mob_matrix(orig=travel_data$orig_id,
+                    dest=travel_data$dest_id,
+                    value=travel_data$trips)
+```
+```{r plot M, fig.height=7, fig.width=7, echo=FALSE}
+ggplot(data=melt(M)) +
+  geom_tile(aes(x=factor(destination),
+                y=factor(origin),
+                fill=value)) +
+  xlab('Destination') + ylab("Origin") +
+  theme_bw() + theme(axis.text.x=element_text(size=10),
+                     axis.text.y=element_text(size=10),
+                     axis.title.x=element_text(size=12, margin = margin(t = 15)),
+                     axis.title.y=element_text(size=12, margin = margin(r = 15)),
+                     legend.position='bottom') +
+  viridis::scale_fill_viridis(option='inferno', direction=1) +
+  guides(fill=guide_colorbar(title='Observed trips',
+                             title.position='top',
+                             label.theme=element_text(size=9),
+                             barwidth=20,
+                             barheight=0.5,
+                             frame.colour='black',
+                             ticks=TRUE))
+```
+
+Many times there are missing observations in travel data. This is especially the case when the travel data span a short time period which increase the likelihood that travel along some routes will not be observed. It can be difficult to see these missing routes of travel in longform data, but when you make a matrix with each row $i$ representing and origin and each column $j$ representing a destination, the missing data are readily apparent (shown as grey cells in the simulated matrix above).
+
+
+### Build distance matrix
+Gravity models require that distances be provided for all routes even is these observations are missing in the mobility matrix ($M$). A distance matrix for all unique routes can be built by getting all unique coordinates in the travel data using the `get_unique_coords` function and then calculating the distances among all locations with `get_distance_matrix`.
+
+```{r}
+xy <- get_unique_coords(travel_data)
+
+D <- get_distance_matrix(x=xy[,1],
+                         y=xy[,2],
+                         id=xy[,3])
+
+D <- D*111.35 # decimal degrees to km
+D[1:5, 1:5]
+```
+
+### Population size vector
+Fitting gravity models and models of travel peobability require a vector of population size for each location that is the same length the number of rows and columns in the mobility matrix ($M$) and distance matrix ($D$).
+
+```{r}
+N <- get_pop_vec(travel_data)
+head(N)
+```
+
+Note that since the distance matrix ($N$) and population vector ($N$) are covariates used by models, they cannot have missing values and must all have matching dimensions. Code below checks that all data dimensions match. 
+```{r}
+# check
+all(
+     sapply(list(dim(D)[1], length(N)), FUN = identical, dim(M)[1]),
+     sapply(list(dimnames(D)$origin, names(N)), FUN = identical, dimnames(M)$origin)
+)
+```

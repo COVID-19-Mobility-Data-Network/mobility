@@ -4,10 +4,10 @@ travel_data_template <- data.frame(
   date_start=as.Date(character()),
   date_stop=as.Date(character()),
   date_span=as.difftime(numeric(), units='days'),
-  #     indiv_id=integer(),      # unique individual identifier
-  #     indiv_age=numeric(),     # Age of participant
-  #     indiv_sex=logical(),     # Gender of perticipant
-  #     indiv_type=character(),     # If individual participants belong to different groups
+  indiv_id=integer(),      # unique individual identifier
+  indiv_age=numeric(),     # Age of participant
+  indiv_sex=logical(),     # Gender of perticipant
+  indiv_type=character(),     # If individual participants belong to different groups
   orig_adm0=character(),   # Name of highest administration level of origin location (country)
   orig_adm1=character(),   # Name of administration level 1 of origin location
   orig_adm2=character(),   # Name of administration level 2 of origin location

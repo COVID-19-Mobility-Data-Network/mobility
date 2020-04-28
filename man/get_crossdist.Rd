@@ -40,7 +40,8 @@ D
 \seealso{
 Other data synthesis: 
 \code{\link{get_distance_matrix}()},
-\code{\link{get_mob_matrix}()}
+\code{\link{get_mob_matrix}()},
+\code{\link{get_stay_data}()}
 }
 \author{
 John Giles

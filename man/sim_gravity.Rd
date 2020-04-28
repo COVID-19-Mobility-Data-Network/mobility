@@ -81,7 +81,7 @@ M_hat <- sim_gravity(N=N,
 }
 \seealso{
 Other simulation: 
-\code{\link{get_beta_params}()},
+\code{\link{get_gamma_params}()},
 \code{\link{sim_prob_travel}()}
 
 Other gravity: 

@@ -36,6 +36,9 @@ get_unique_coords(travel_data_sim)
 }
 \seealso{
 Other utility: 
+\code{\link{get_admin_level}()},
+\code{\link{get_beta_params}()},
+\code{\link{get_gamma_params}()},
 \code{\link{get_pop_vec}()},
 \code{\link{get_unique_ids}()}
 }

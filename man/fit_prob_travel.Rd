@@ -7,10 +7,10 @@
 fit_prob_travel(
   travel,
   total,
-  n_chain = 4,
-  n_burn = 2000,
+  n_chain = 2,
+  n_burn = 1000,
   n_samp = 1000,
-  n_thin = 2,
+  n_thin = 1,
   DIC = FALSE,
   parallel = FALSE,
   format_locations = FALSE
@@ -35,8 +35,8 @@ fit_prob_travel(
 
 \item{format_locations}{logical indicating which format to return results:
 \describe{
-  \item{\code{FALSE}}{returns only summary of estimated parameters (default)}
-  \item{\code{TRUE}}{returns probability of travel with input data, including missing locations}
+  \item{\code{FALSE}}{returns raw model output}
+  \item{\code{TRUE}}{returns summarized probability of travel with input data, including missing locations}
 }}
 }
 \value{
@@ -91,9 +91,15 @@ ggplot(data=prob_trav) +
 Other model: 
 \code{\link{check_gravity}()},
 \code{\link{fit_gravity}()},
-\code{\link{fit_jags}()}
+\code{\link{fit_jags}()},
+\code{\link{summarize_mobility}()}
+
+Other travel probability: 
+\code{\link{get_stay_data}()},
+\code{\link{sim_prob_travel}()}
 }
 \author{
 John Giles
 }
 \concept{model}
+\concept{travel probability}

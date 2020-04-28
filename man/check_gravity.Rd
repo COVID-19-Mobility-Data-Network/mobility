@@ -11,7 +11,7 @@ check_gravity(M, D, N, mod, plot_check = TRUE)
 
 \item{D}{named matrix of distances among all \eqn{ij} location pairs}
 
-\item{N}{named vector of population sizes for all locations (either N or both n_orig and n_dest must be supplied)}
+\item{N}{named vector of population sizes for all locations}
 
 \item{mod}{model output from either the \code{\link{fit_gravity}} or \code{\link{summarize_mobility}} functions}
 
@@ -21,17 +21,7 @@ check_gravity(M, D, N, mod, plot_check = TRUE)
 a list of goodness of fit measures
 }
 \description{
-This function takes a fitted gravity model and calculates goodness of fit metrics for observed routes. If the
-Deviance Information Criterin (DIC) was calculated in the supplied model object, it is included in output.
-When \code{plot_check = TRUE}, two plots are shown containing the posterior distribution of trip counts compared to observed data
-and a Normal Q-Q plot showing the quantiles of model residuals against those expected from a Normal distribution.
-Goodness of fit metrics include:
-\describe{
-  \item{DIC}{\href{https://en.wikipedia.org/wiki/Deviance_information_criterion}{Deviance Information Criterion}}
-  \item{RMSE}{\href{https://en.wikipedia.org/wiki/Root-mean-square_deviation}{Root Mean Squared Error}}
-  \item{MAPE}{\href{https://en.wikipedia.org/wiki/Mean_absolute_percentage_error}{Mean Absolute Percent Error}}
-  \item{R2}{\href{https://en.wikipedia.org/wiki/Coefficient_of_determination}{R-squared}}
-}
+
 }
 \examples{
 M <- mobility_matrices$M
@@ -46,7 +36,8 @@ check_gravity(M=M, N=N, D=D, mod=mod)
 Other model: 
 \code{\link{fit_gravity}()},
 \code{\link{fit_jags}()},
-\code{\link{fit_prob_travel}()}
+\code{\link{fit_prob_travel}()},
+\code{\link{summarize_mobility}()}
 
 Other gravity: 
 \code{\link{fit_gravity}()},

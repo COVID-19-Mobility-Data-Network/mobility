@@ -1,6 +1,6 @@
 ## code to prepare `travel_data_sim` dataset goes here
 
-set.seed(1234)
+set.seed(123)
 
 # Travel among locations
 trip <- travel_data_template
@@ -24,10 +24,10 @@ trip$orig_y <- rnorm(n, 30, 1)
 trip$dest_x <- rnorm(n, -90, 2)
 trip$dest_y <- rnorm(n, 30, 1)
 
-trip$orig_pop <- rnbinom(n, size=5, mu=5000)
-trip$dest_pop <- rnbinom(n, size=10, mu=10000)
+trip$orig_pop <- rnbinom(n, size=1, mu=5000)
+trip$dest_pop <- rnbinom(n, size=5, mu=10000)
 
-trip$trips <- rnbinom(n, size=1, mu=100) # Number of reported trips
+trip$trips <- rnbinom(n, size=0.5, mu=100) # Number of reported trips
 trip <- trip[!(trip$orig_adm2 == trip$dest_adm2),]
 
 
@@ -55,7 +55,7 @@ for (i in 1:length(origins)) {
 }
 
 # Number of reported trip within home county
-stay$trips <- rnbinom(length(origins), size=10, mu=1000)
+stay$trips <- rnbinom(length(origins), size=5, mu=1000)
 
 # Combine
 travel_data_sim <- dplyr::full_join(trip, stay)

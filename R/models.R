@@ -399,17 +399,19 @@ fit_gravity <- function(
 
   params <- c('omega_1', 'omega_2', 'theta', 'gamma')
 
-  return(
-    fit_jags(jags_data=jags_data,
-             jags_model=jags_model,
-             params=params,
-             n_chain=n_chain,
-             n_burn=n_burn,
-             n_samp=n_samp,
-             n_thin=n_thin,
-             DIC=DIC,
-             parallel=parallel)
-  )
+  t <- Sys.time()
+  out <- fit_jags(jags_data=jags_data,
+                  jags_model=jags_model,
+                  params=params,
+                  n_chain=n_chain,
+                  n_burn=n_burn,
+                  n_samp=n_samp,
+                  n_thin=n_thin,
+                  DIC=DIC,
+                  parallel=parallel)
+
+  message(paste('Complete. Elapsed time:', round(difftime(Sys.time(), t, units='mins'), 2), 'minutes.', sep=' '))
+  out
 }
 
 
@@ -431,8 +433,8 @@ fit_gravity <- function(
 ##' @param parallel logical indicating whether or not to run MCMC chains in parallel or sequentially (default = \code{FALSE})
 ##' @param format_locations logical indicating which format to return results:
 ##' \describe{
-##'   \item{\code{FALSE}}{returns only summary of estimated parameters (default)}
-##'   \item{\code{TRUE}}{returns probability of travel with input data, including missing locations}
+##'   \item{\code{FALSE}}{returns raw model output}
+##'   \item{\code{TRUE}}{returns summarized probability of travel with input data, including missing locations}
 ##' }
 ##'
 ##' @return dataframe giving input data along with estimates of travel probability for each location
@@ -442,6 +444,7 @@ fit_gravity <- function(
 ##' @example R/examples/fit_prob_travel.R
 ##'
 ##' @family model
+##' @family travel probability
 ##'
 ##' @export
 ##'
@@ -449,10 +452,10 @@ fit_gravity <- function(
 fit_prob_travel <- function(
   travel,
   total,
-  n_chain=4,
-  n_burn=2000,
+  n_chain=2,
+  n_burn=1000,
   n_samp=1000,
-  n_thin=2,
+  n_thin=1,
   DIC=FALSE,
   parallel=FALSE,
   format_locations=FALSE
@@ -473,54 +476,50 @@ fit_prob_travel <- function(
 
   jags_data <- list(
     travel=travel[sel],
-    total=total[sel],
-    travel_pop=sum(travel[sel]),
-    total_pop=sum(total[sel])
+    total=total[sel]
   )
 
   jags_model <- "
   model {
 
-    # Population-level probability of travel
-    travel_pop ~ dbin(tau_pop, total_pop)
-
     # Origin-level probability of travel
-    for (j in 1:length(travel)) {
+    for (i in 1:length(travel)) {
 
-      travel[j] ~ dbin(tau[j], total[j])
+      travel[i] ~ dbin(tau[i], total[i])
     }
 
-    # Population-level hyper-prior
+    # Population-level priors
     tau_pop ~ dbeta(alpha, beta)
-    alpha ~ dgamma(1, 0.1)
-    beta ~ dgamma(1, 0.1)
+    alpha ~ dgamma(1, 0.01)
+    beta ~ dgamma(1, 0.01)
 
     # Origin-level priors
-    for (k in 1:length(travel)) {
-
-      tau[k] ~ dbeta(alpha, beta)
+    for (i in 1:length(travel)) {
+      tau[i] ~ dbeta(alpha, beta)
     }
   }"
 
   params <- c('tau_pop', 'tau')
 
-  mod <- summarize_mobility(
-    fit_jags(jags_data=jags_data,
-             jags_model=jags_model,
-             params=params,
-             n_chain=n_chain,
-             n_burn=n_burn,
-             n_samp=n_samp,
-             n_thin=n_thin,
-             DIC=DIC,
-             parallel=parallel)
-  )
+  suppressMessages(
+      mod <- fit_jags(jags_data=jags_data,
+               jags_model=jags_model,
+               params=params,
+               n_chain=n_chain,
+               n_burn=n_burn,
+               n_samp=n_samp,
+               n_thin=n_thin,
+               DIC=DIC,
+               parallel=parallel)
+    )
 
   if (!format_locations) {
 
     return(mod)
 
   } else if (format_locations) {
+
+    mod <- summarize_mobility(mod)
 
     options(row.names=NULL, stringsAsFactors=FALSE)
     ignore <- 'tau_pop'

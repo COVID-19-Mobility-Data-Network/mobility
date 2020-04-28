@@ -32,11 +32,18 @@ mod <- fit_gravity(M, D, N, DIC=T)
 summarize_mobility(mod)
 
 # Probability of travel
+n_orig <- 6
+orig_id <- LETTERS[1:n_orig]
 
+N <- rpois(n_orig, 100)    # population size of each origin
+tau <- rbeta(n_orig, 2, 2)   # probability of leaving origin
 
+Y <- setNames(rbinom(n_orig, N, tau), orig_id)
+N <- setNames(N, orig_id)
 
-
-
+prob_trav <- fit_prob_travel(travel=Y,
+                             total=N,
+                             format_locations=FALSE)
 
 # Other models
 N <- 100
@@ -74,6 +81,14 @@ mod <- fit_jags(jags_data=jags_data,
 
 summarize_mobility(mod)
 }
+\seealso{
+Other model: 
+\code{\link{check_gravity}()},
+\code{\link{fit_gravity}()},
+\code{\link{fit_jags}()},
+\code{\link{fit_prob_travel}()}
+}
 \author{
 John Giles
 }
+\concept{model}
