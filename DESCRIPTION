@@ -1,16 +1,16 @@
 Package: mobility
 Type: Package
 Title: Tools for analyzing human mobility data
-Version: 0.0.5
+Version: 0.0.6
 Date: 2020-04-19
 Author: John Giles <giles@jhu.edu> and Amy Wesolowski <awesolowski@jhu.edu>
 Maintainer: John Giles <giles@jhu.edu>
 Description: Functions for parsing travel data, fitting models using Bayesian inference, and simulating mobility patterns.
 License: GPL (>=2)
-RoxygenNote: 7.0.1
+RoxygenNote: 7.1.0
 Encoding: UTF-8
 LazyData: true
-Imports: lattice, plot3D, gtools, sp, rgdal, rgeos, stringr, truncnorm, abind, MCMCvis, Metrics, reshape2, rjags, coda, Matrix, dplyr
+Imports: lattice, gtools, sp, rgdal, rgeos, stringr, truncnorm, abind, MCMCvis, Metrics, reshape2, rjags, coda, Matrix, dplyr
 Depends: doParallel, foreach, R (>= 2.10)
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr

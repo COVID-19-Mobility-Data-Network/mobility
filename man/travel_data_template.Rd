@@ -4,7 +4,8 @@
 \name{travel_data_template}
 \alias{travel_data_template}
 \title{Generalized template for travel data}
-\format{a data frame with empty columns and generalized column names
+\format{
+a data frame with empty columns and generalized column names
 \describe{
   \item{date_start}{date: beginning of the time interval for the trip count}
   \item{date_stop}{date: end of the time interval for the trip count}
@@ -34,7 +35,8 @@
   \item{dest_y}{numeric: latitude of destination location centroid in decimal degrees (centroid of smallest admin unit)}
   \item{dest_pop}{numeric: population size of lowest administrative unit for destination location}
   \item{trips}{numeric: total number of observed trips made from origin to destination during time span}
-  }}
+  }
+}
 \usage{
 travel_data_template
 }

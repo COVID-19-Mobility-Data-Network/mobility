@@ -4,7 +4,9 @@
 \name{gravity_priors}
 \alias{gravity_priors}
 \title{Example priors for gravity model}
-\format{dataframe}
+\format{
+dataframe
+}
 \usage{
 gravity_priors
 }

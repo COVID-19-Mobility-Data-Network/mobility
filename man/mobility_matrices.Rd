@@ -4,12 +4,14 @@
 \name{mobility_matrices}
 \alias{mobility_matrices}
 \title{Example data matrices required by gravity functions}
-\format{a list of 3
+\format{
+a list of 3
 \describe{
   \item{M}{numeric matrix containing simulated trip counts}
   \item{D}{numeric matrix containing distances amopng locations in decimal degrees}
   \item{N}{numeric vector containing population sizes of each location}
-  }}
+  }
+}
 \usage{
 mobility_matrices
 }

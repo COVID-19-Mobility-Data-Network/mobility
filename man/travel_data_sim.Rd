@@ -4,7 +4,9 @@
 \name{travel_data_sim}
 \alias{travel_data_sim}
 \title{Simulated travel data}
-\format{a \code{\link{travel_data_template}} data frame}
+\format{
+a \code{\link{travel_data_template}} data frame
+}
 \usage{
 travel_data_sim
 }
