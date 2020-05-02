@@ -1,3 +1,14 @@
+utils::globalVariables(
+  c("date_start" ,"date_stop"  ,"date_span"  ,"indiv_id"   ,"indiv_age" ,
+    "indiv_sex"  ,"indiv_type" ,"orig_adm0"  ,"orig_adm1"  ,"orig_adm2" ,
+    "orig_adm3"  ,"orig_adm4"  ,"orig_adm5"  ,"orig_type"  ,"orig_x"    ,
+    "orig_y"     ,"orig_pop"   ,"dest_adm0"  ,"dest_adm1"  ,"dest_adm2" ,
+    "dest_adm3"  ,"dest_adm4"  ,"dest_adm5"  ,"dest_type"  ,"dest_x"    ,
+    "dest_y"     ,"dest_pop"   ,"trips", "orig_id", "dest_id")
+)
+
+utils::globalVariables(c("pop", "x", "y", "id", "i", "travel", "n_distinct"))
+
 ##' Get mobility matrix from longform data
 ##'
 ##' Takes X and Y coordinates of two locations and returns cross distance for all entries.
@@ -190,6 +201,8 @@ get_unique_ids <- function(data,
 ##'
 ##' @family utility
 ##'
+##' @importFrom magrittr %>%
+##'
 ##' @export
 ##'
 
@@ -197,8 +210,6 @@ get_unique_coords <- function(data,
                               orig=TRUE,
                               dest=TRUE
 ) {
-
-  require(dplyr, quietly=TRUE)
 
   if (!all(c('orig_id', 'dest_id') %in% colnames(data))) {
 
@@ -265,6 +276,8 @@ get_unique_coords <- function(data,
 ##'
 ##' @family utility
 ##'
+##' @importFrom magrittr %>%
+##'
 ##' @export
 ##'
 
@@ -272,8 +285,6 @@ get_pop_vec <- function(data,
                         orig=TRUE,
                         dest=TRUE
 ) {
-
-  require(dplyr, quietly=TRUE)
 
   if (!all(c('orig_id', 'dest_id') %in% colnames(data))) {
 
@@ -487,8 +498,8 @@ summarize_mobility <- function(mod, ac_lags=c(2,5,10)) {
 ##' This function takes a fitted gravity model and calculates goodness of fit metrics for observed routes. If the
 ##' Deviance Information Criterin (DIC) was calculated in the supplied model object, it is included in output.
 ##' When \code{plot_check = TRUE}, two plots are shown containing the posterior distribution of trip counts compared to observed data
-##' and a Normal \href{https://en.wikipedia.org/wiki/Q%E2%80%93Q_plot}{Q-Q plot} showing the quantiles of model residuals against those expected from a Normal distribution.
-##' Goodness of fit metrics include:
+##' and a Normal Q-Q plot showing the quantiles of model residuals against those
+##' expected from a Normal distribution. Goodness of fit metrics include:
 ##' \describe{
 ##'   \item{DIC}{\href{https://en.wikipedia.org/wiki/Deviance_information_criterion}{Deviance Information Criterion}}
 ##'   \item{RMSE}{\href{https://en.wikipedia.org/wiki/Root-mean-square_deviation}{Root Mean Squared Error}}
@@ -530,7 +541,7 @@ check_gravity <- function(M,
                        omega_1=mod['omega_1', 'Mean'],
                        omega_2=mod['omega_2', 'Mean'],
                        gamma=mod['gamma', 'Mean'],
-                       count=TRUE)
+                       counts=TRUE)
 
   err_rsq <- err_perc <- err_rmse <- rep(NA, nrow(M))
   for(i in 1:nrow(M)) {
@@ -585,7 +596,6 @@ check_gravity <- function(M,
 ##' This function uses the gravity model formula to simulate a connectivity matrix based on the supplied model parameters. The
 ##' gravity model formula uses a Gamma distribution as the dispersal kernel in the denominator. A null model (where all model parameters = 1) can be
 ##' simulated by supplying only population sizes (\code{N}) and pairwise distances (\code{D}).
-##' \deqn{\theta * ( N_i^\omega_1 N_j^\omega_2 / f(d_ij) )}
 ##'
 ##' @param N vector of population sizes
 ##' @param D matrix giving distances among the origins and destinations
@@ -739,6 +749,8 @@ get_gamma_params <- function(mu, sigma) {
 ##' @family data synthesis
 ##' @family travel probability
 ##'
+##' @importFrom magrittr %>%
+##'
 ##' @export
 ##'
 
@@ -747,9 +759,9 @@ get_stay_data <- function(data,
                           agg_adm=NULL
 ) {
 
-  suppressMessages(
-    require(dplyr, quietly=TRUE)
-  )
+  ##suppressMessages(
+  #  require(dplyr, quietly=TRUE)
+  #)
 
   if (all(is.null(data_pred), is.null(agg_adm))) agg_adm <- get_admin_level(data)
   if (!is.null(data_pred) & is.null(agg_adm)) agg_adm <- get_admin_level(data_pred)
@@ -789,16 +801,16 @@ get_stay_data <- function(data,
     message('Using total trip count method')
     out <- merge(
       data_stay %>%
-        group_by(orig_id) %>%
-        mutate(stay=sum(trips, na.rm=T)) %>%
-        distinct(orig_id, .keep_all=T) %>%
-        select(-trips) %>%
+        dplyr::group_by(orig_id) %>%
+        dplyr::mutate(stay=sum(trips, na.rm=T)) %>%
+        dplyr::distinct(orig_id, .keep_all=T) %>%
+        dplyr::select(-trips) %>%
         data.frame(),
       data_trip %>%
-        group_by(orig_id) %>%
-        mutate(travel=sum(trips, na.rm=T)) %>%
-        distinct(orig_id, .keep_all=T) %>%
-        select(orig_id, travel) %>%
+        dplyr::group_by(orig_id) %>%
+        dplyr::mutate(travel=sum(trips, na.rm=T)) %>%
+        dplyr::distinct(orig_id, .keep_all=T) %>%
+        dplyr::select(orig_id, travel) %>%
         data.frame(),
       by='orig_id',
       all.y=T
@@ -855,7 +867,7 @@ get_stay_data <- function(data,
 ##'
 ##' @author John Giles
 ##'
-##' @examples get_admin_level(travel_data_sim)
+##' @example R/examples/get_admin_level.R
 ##'
 ##' @family utility
 ##'
@@ -925,3 +937,8 @@ sim_prob_travel <- function(mu,
 
   out
 }
+
+##' Load these
+##'
+##' @import graphics
+##' @import stats

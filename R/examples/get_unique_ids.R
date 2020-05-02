@@ -7,4 +7,4 @@ get_unique_ids(travel_data_sim, adm_start=1)
 get_unique_ids(travel_data_sim, name_class='numeric')
 
 # Numeric for only the origin locations
-get_unique_ids(travel_data_sim, dest=F, name_class='numeric')
+get_unique_ids(travel_data_sim, dest=FALSE, name_class='numeric')

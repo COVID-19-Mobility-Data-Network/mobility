@@ -10,7 +10,32 @@ License: GPL (>=2)
 RoxygenNote: 7.1.0
 Encoding: UTF-8
 LazyData: true
-Imports: lattice, gtools, sp, rgdal, rgeos, stringr, truncnorm, abind, MCMCvis, Metrics, reshape2, rjags, coda, Matrix, dplyr
-Depends: doParallel, foreach, R (>= 2.10)
-Suggests: knitr, rmarkdown
+Imports: 
+  doParallel, 
+  foreach,
+  spatstat,
+  stringr,
+  abind, 
+  MCMCvis, 
+  Metrics, 
+  reshape2, 
+  rjags, 
+  coda, 
+  Matrix, 
+  dplyr,
+  magrittr,
+  ggplot2,
+  ggstance, 
+  viridis
+Depends: 
+  R (>= 2.10),
+  stats, 
+  graphics,
+  grDevices,
+  utils,
+  methods
+Suggests: 
+  knitr, 
+  rmarkdown,
+  testthat
 VignetteBuilder: knitr

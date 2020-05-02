@@ -106,7 +106,7 @@ fit_jags <- function(
       cl <- parallel::makeCluster(n_chain)
       doParallel::registerDoParallel(cl)
 
-      out <- foreach(i=1:n_chain, .combine='combine_rjags', .packages=c('rjags', 'abind')) %dopar% {
+      out <- foreach::foreach(i=1:n_chain, .combine='combine_rjags', .packages=c('rjags', 'abind')) %dopar% {
 
         rjags::load.module('lecuyer')
 
@@ -134,7 +134,7 @@ fit_jags <- function(
       cl <- parallel::makeCluster(n_chain/2)
       doParallel::registerDoParallel(cl)
 
-      out <- foreach(i=1:(n_chain/2), .combine='combine_rjags', .packages=c('rjags', 'abind')) %dopar% {
+      out <- foreach::foreach(i=1:(n_chain/2), .combine='combine_rjags', .packages=c('rjags', 'abind')) %dopar% {
 
         rjags::load.module('lecuyer')
         rjags::load.module('dic')
@@ -187,6 +187,8 @@ fit_jags <- function(
 ##'
 ##' @return an \code{\link[coda:mcmc.list]{mcmc.list}} object
 ##'
+##' @importFrom foreach %do%
+##'
 ##' @author John Giles
 ##'
 ##' @export
@@ -196,7 +198,7 @@ rjags_to_mcmc <- function(x) {
 
   n_chain <- max(unlist(lapply(x, function(x) dim(x)[length(dim(x))])))
 
-  out <- foreach(i=1:n_chain) %do% {
+  out <- foreach::foreach(i=1:n_chain) %do% {
 
     coda::as.mcmc(
       do.call(
@@ -260,10 +262,7 @@ combine_rjags <- function(a, b) {
 ##' Fit gravity model to movement matrix
 ##'
 ##' This function fits gravity model parameters to a supplied movement matrix using Bayesian MCMC inference. The function defines the model and serves as a wrapper for the \code{\link{fit_jags}}
-##' function. Gravity model formula:
-##' \deqn{
-##'     \theta * ( N_i^\omega_1 N_j^\omega_2 / f(d_ij) )
-##' }
+##' function.
 ##'
 ##' @param M named matrix of trip counts among all \eqn{ij} location pairs
 ##' @param D named matrix of distances among all \eqn{ij} location pairs
@@ -274,6 +273,7 @@ combine_rjags <- function(a, b) {
 ##' @param n_burn number of iterations to discard before sampling of chains begins (burn in)
 ##' @param n_samp number of iterations to sample each chain
 ##' @param n_thin interval to thin samples
+##' @param prior a list object containing shape and rate parameters to be used as priors
 ##' @param DIC logical indicating whether or not to calculate the Deviance Information Criterion (DIC) (default = \code{FALSE})
 ##' @param parallel logical indicating whether or not to run MCMC chains in parallel or sequentially (default = \code{FALSE})
 ##'
@@ -399,19 +399,15 @@ fit_gravity <- function(
 
   params <- c('omega_1', 'omega_2', 'theta', 'gamma')
 
-  t <- Sys.time()
-  out <- fit_jags(jags_data=jags_data,
-                  jags_model=jags_model,
-                  params=params,
-                  n_chain=n_chain,
-                  n_burn=n_burn,
-                  n_samp=n_samp,
-                  n_thin=n_thin,
-                  DIC=DIC,
-                  parallel=parallel)
-
-  message(paste('Complete. Elapsed time:', round(difftime(Sys.time(), t, units='mins'), 2), 'minutes.', sep=' '))
-  out
+  fit_jags(jags_data=jags_data,
+           jags_model=jags_model,
+           params=params,
+           n_chain=n_chain,
+           n_burn=n_burn,
+           n_samp=n_samp,
+           n_thin=n_thin,
+           DIC=DIC,
+           parallel=parallel)
 }
 
 

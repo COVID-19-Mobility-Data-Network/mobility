@@ -38,6 +38,8 @@ fit_gravity(
 
 \item{n_thin}{interval to thin samples}
 
+\item{prior}{a list object containing shape and rate parameters to be used as priors}
+
 \item{DIC}{logical indicating whether or not to calculate the Deviance Information Criterion (DIC) (default = \code{FALSE})}
 
 \item{parallel}{logical indicating whether or not to run MCMC chains in parallel or sequentially (default = \code{FALSE})}
@@ -47,10 +49,7 @@ a runjags model object containing fitted gravity model paramters
 }
 \description{
 This function fits gravity model parameters to a supplied movement matrix using Bayesian MCMC inference. The function defines the model and serves as a wrapper for the \code{\link{fit_jags}}
-function. Gravity model formula:
-\deqn{
-    \theta * ( N_i^\omega_1 N_j^\omega_2 / f(d_ij) )
-}
+function.
 }
 \examples{
 M <- mobility_matrices$M
@@ -58,18 +57,6 @@ D <- mobility_matrices$D
 N <- mobility_matrices$N
 
 mod <- fit_gravity(M, D, N)
-summarize_mobility(mod)
-
-mod <- fit_gravity(M, D, N, DIC=T)
-summarize_mobility(mod)
-
-mod <- fit_gravity(M, D, N,
-                   n_burn=1000,
-                   n_chain=2000,
-                   n_thin=10,
-                   DIC=T,
-                   parallel=T)
-summarize_mobility(mod)
 }
 \seealso{
 Other model: 

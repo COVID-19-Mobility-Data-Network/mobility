@@ -6,7 +6,7 @@ N <- mobility_matrices$N
 mod <- fit_gravity(M, D, N)
 summarize_mobility(mod)
 
-mod <- fit_gravity(M, D, N, DIC=T)
+mod <- fit_gravity(M, D, N, DIC=TRUE)
 summarize_mobility(mod)
 
 # Probability of travel
@@ -55,6 +55,6 @@ summarize_mobility(mod)
 mod <- fit_jags(jags_data=jags_data,
                 jags_model=jags_model,
                 params=params,
-                DIC=T)
+                DIC=TRUE)
 
 summarize_mobility(mod)

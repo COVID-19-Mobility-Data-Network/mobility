@@ -21,7 +21,17 @@ check_gravity(M, D, N, mod, plot_check = TRUE)
 a list of goodness of fit measures
 }
 \description{
-
+This function takes a fitted gravity model and calculates goodness of fit metrics for observed routes. If the
+Deviance Information Criterin (DIC) was calculated in the supplied model object, it is included in output.
+When \code{plot_check = TRUE}, two plots are shown containing the posterior distribution of trip counts compared to observed data
+and a Normal Q-Q plot showing the quantiles of model residuals against those
+expected from a Normal distribution. Goodness of fit metrics include:
+\describe{
+  \item{DIC}{\href{https://en.wikipedia.org/wiki/Deviance_information_criterion}{Deviance Information Criterion}}
+  \item{RMSE}{\href{https://en.wikipedia.org/wiki/Root-mean-square_deviation}{Root Mean Squared Error}}
+  \item{MAPE}{\href{https://en.wikipedia.org/wiki/Mean_absolute_percentage_error}{Mean Absolute Percent Error}}
+  \item{R2}{\href{https://en.wikipedia.org/wiki/Coefficient_of_determination}{R-squared}}
+}
 }
 \examples{
 M <- mobility_matrices$M

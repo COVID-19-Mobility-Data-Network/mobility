@@ -2,5 +2,7 @@
 ^\.Rproj\.user$
 ^local$
 ^data-raw$
+^images$
+^Icon\r$
 ^doc$
 ^Meta$

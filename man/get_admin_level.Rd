@@ -18,7 +18,6 @@ returns the lowest admin unit.
 }
 \examples{
 get_admin_level(travel_data_sim)
-
 }
 \seealso{
 Other utility: 

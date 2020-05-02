@@ -60,7 +60,6 @@ ggplot(data=melt(M)) +
 ### Fit gravity model to data
 Gravity model parameters can be estimated using the `fit_gravity` function. This function uses the distance among locations ($D$) and population sizes ($N$) as covariates in the gravity equation, which is fitted to the movement matrix ($M$) with a Poisson likelihood link function:
 $$
-\begin{equation} \label{eq:gravity}
 \begin{aligned}
         m_{ij} &\sim \text{Poisson}\big(\pi_{ij}N_{i}\big)\\
         \pi_{ij} &= c_{ij}/\sum_{\forall j}c_{ij} \\
@@ -71,18 +70,11 @@ $$
         d_{ij}
         } \Bigg)
 \end{aligned}   
-\end{equation}
 $$
 Gravity model parameters are fit through normalized connectivity values ($\pi_{ij}$) that scale the Poission likelihood so that it is proportional to the observed trip counts ($m_{ij}$). The exponential parameters $\omega_1$ and $\omega_2$ are weights that modify the contribution of origin and destination population sizes, and $\theta$ is a proportionality constant. The denominator of the gravity model, $d_{ij}^\gamma$, serves as the dispersal kernel function. The fitting function `fit_gravity` estimates the posterior distribution of model parameters using Bayesian MCMC inference.
 
 ```{r fit}
-mod <- fit_gravity(M, D, N, 
-                   n_chain=4,
-                   n_burn=1000,
-                   n_samp=5000,
-                   n_thin=5,
-                   DIC=T,
-                   parallel=T)
+mod <- fit_gravity(M, D, N, DIC=TRUE)
 ```
 
 The above code fits the gravity model using 4 sampling chains, discards the first 1000 samples as 'burin in', and then takes 5000 samples thinning by 5 to give 1000 total samples per chain. Additional arguments tell the function to calculate the Deviance Information Criterion (DIC) and to execute the model computation on 4 parallel cores. Running this model on a large number of locations may take several minutes.

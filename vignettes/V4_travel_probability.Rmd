@@ -17,6 +17,7 @@ library(ggplot2)
 library(reshape2)
 library(viridis)
 library(ggstance)
+library(foreach)
 
 knitr::opts_chunk$set(
   collapse = TRUE,
