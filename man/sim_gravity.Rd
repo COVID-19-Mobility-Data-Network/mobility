@@ -5,19 +5,21 @@
 \title{Simulate connectivity values using gravity model}
 \usage{
 sim_gravity(
-  N,
   D,
+  N,
   theta = 1,
   omega_1 = 1,
   omega_2 = 1,
   gamma = 1,
+  n = 1,
+  mod = NULL,
   counts = FALSE
 )
 }
 \arguments{
-\item{N}{vector of population sizes}
-
 \item{D}{matrix giving distances among the origins and destinations}
+
+\item{N}{vector of population sizes}
 
 \item{theta}{scalar giving the proportionality constant of gravity formula (default = 1)}
 
@@ -27,10 +29,14 @@ sim_gravity(
 
 \item{gamma}{scalar giving the dispersal kernel paramater (default = 1)}
 
+\item{n}{number of simulations (requires argument \code{mod} to be supplied with a gravity model object)}
+
+\item{mod}{a gravity model object produced by the \code{\link{fit_gravity}} or \code{\link{summarize_mobility}} functions}
+
 \item{counts}{logical indicating whether or not to return a count variable by scaling the connectivity matrix by origin population size (\eqn{N_i}) (default = FALSE)}
 }
 \value{
-a matrix with values between 0 and 1 (if \code{counts = FALSE}) or positive integers (if \code{counts = TRUE})
+a matrix with values between 0 and 1 (if \code{counts = FALSE}) or positive integers (if \code{counts = TRUE}). If \code{n > 1} then returns and array with 3 dimensions
 }
 \description{
 This function uses the gravity model formula to simulate a connectivity matrix based on the supplied model parameters. The
@@ -51,17 +57,17 @@ N <- rpois(n, 1000)
 names(N) <- ids
 
 # Simulate null model connectivity matrix
-pi_hat <- sim_gravity(N=N, D=D)
+pi_hat <- sim_gravity(D=D, N=N)
 
 # Simulate connectivity matrix given gravity model parameters
-pi_hat <- sim_gravity(N=N,
-                      D=D,
+pi_hat <- sim_gravity(D=D,
+                      N=N,
                       theta=14,
                       omega_1=13,
                       omega_2=0.7,
                       gamma=1.5)
 
-# Simulate trip counts based on fitted model parameters
+# Simulate many realizations of trip counts based on fitted model parameters
 M <- mobility_matrices$M
 D <- mobility_matrices$D
 N <- mobility_matrices$N
@@ -70,17 +76,15 @@ mod <- summarize_mobility(
   fit_gravity(M, D, N)
 )
 
-M_hat <- sim_gravity(N=N,
-                     D=D,
-                     theta=mod['theta', 'Mean'],
-                     omega_1=mod['omega_1', 'Mean'],
-                     omega_2=mod['omega_2', 'Mean'],
-                     gamma=mod['gamma', 'Mean'],
+M_hat <- sim_gravity(D=D,
+                     N=N,
+                     n=5,
+                     mod=mod,
                      counts=TRUE)
 }
 \seealso{
 Other simulation: 
-\code{\link{get_gamma_params}()},
+\code{\link{sim_param}()},
 \code{\link{sim_prob_travel}()}
 
 Other gravity: 

@@ -1,7 +1,7 @@
 Package: mobility
 Type: Package
 Title: Tools for analyzing human mobility data
-Version: 0.0.6
+Version: 0.0.7
 Date: 2020-04-19
 Author: John Giles <giles@jhu.edu> and Amy Wesolowski <awesolowski@jhu.edu>
 Maintainer: John Giles <giles@jhu.edu>
@@ -15,7 +15,8 @@ Imports:
   foreach,
   spatstat,
   stringr,
-  abind, 
+  abind,
+  truncnorm,
   MCMCvis, 
   Metrics, 
   reshape2, 
@@ -36,6 +37,5 @@ Depends:
   methods
 Suggests: 
   knitr, 
-  rmarkdown,
-  testthat
+  rmarkdown
 VignetteBuilder: knitr

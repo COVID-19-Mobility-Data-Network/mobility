@@ -7,4 +7,5 @@
 ##' @importFrom foreach %dopar%
 ##' @importFrom foreach %do%
 ##' @importFrom magrittr %>%
+##' @importFrom truncnorm rtruncnorm
 NULL

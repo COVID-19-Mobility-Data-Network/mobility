@@ -597,15 +597,17 @@ check_gravity <- function(M,
 ##' gravity model formula uses a Gamma distribution as the dispersal kernel in the denominator. A null model (where all model parameters = 1) can be
 ##' simulated by supplying only population sizes (\code{N}) and pairwise distances (\code{D}).
 ##'
-##' @param N vector of population sizes
 ##' @param D matrix giving distances among the origins and destinations
+##' @param N vector of population sizes
 ##' @param theta scalar giving the proportionality constant of gravity formula (default = 1)
 ##' @param omega_1 scalar giving exponential scaling of origin population size (default = 1)
 ##' @param omega_2 scalar giving exponential scaling of destination population size (default = 1)
+##' @param n number of simulations (requires argument \code{mod} to be supplied with a gravity model object)
+##' @param mod a gravity model object produced by the \code{\link{fit_gravity}} or \code{\link{summarize_mobility}} functions
 ##' @param gamma scalar giving the dispersal kernel paramater (default = 1)
 ##' @param counts logical indicating whether or not to return a count variable by scaling the connectivity matrix by origin population size (\eqn{N_i}) (default = FALSE)
 ##'
-##' @return a matrix with values between 0 and 1 (if \code{counts = FALSE}) or positive integers (if \code{counts = TRUE})
+##' @return a matrix with values between 0 and 1 (if \code{counts = FALSE}) or positive integers (if \code{counts = TRUE}). If \code{n > 1} then returns and array with 3 dimensions
 ##'
 ##' @author John Giles
 ##'
@@ -618,12 +620,74 @@ check_gravity <- function(M,
 ##'
 
 sim_gravity <- function(
-  N,
   D,
+  N,
   theta=1,
   omega_1=1,
   omega_2=1,
   gamma=1,
+  n=1,
+  mod=NULL,
+  counts=FALSE
+) {
+
+  if (!is.null(mod)) {
+
+    if(coda::is.mcmc.list(mod)) mod <- summarize_mobility(mod)
+
+    params <- apply(mod, 1, function(x){
+
+      sim_param(n=n,
+                mean=x['Mean'],
+                sd=x['SD'],
+                CI_low=x['HPD2.5'],
+                CI_high=x['HPD97.5'])
+    })
+
+
+    out <- foreach::foreach(i=1:nrow(params),
+                            .combine=function(a, b) abind::abind(a, b, along=3)) %do% {
+
+                              sim_gravity_pt_est(D=D,
+                                                 N=N,
+                                                 theta=params[i,'theta'],
+                                                 omega_1=params[i,'omega_1'],
+                                                 omega_2=params[i, 'omega_2'],
+                                                 gamma=params[i, 'gamma'],
+                                                 counts=counts)
+
+                            }
+    dimnames(out)
+    return()
+
+
+
+  } else if (is.null(mod)) {
+
+    if (n > 1) stop('Supply gravity model object for multiple simulations')
+
+    return(
+
+      sim_gravity_pt_est(D=D,
+                         N=N,
+                         theta=theta,
+                         omega_1=omega_1,
+                         omega_2=omega_2,
+                         gamma=gamma,
+                         counts=counts)
+    )
+  }
+}
+
+# Simulate the point estimate of gravity model values based only on mean parameter values
+
+sim_gravity_pt_est <- function(
+  D,
+  N,
+  theta,
+  omega_1,
+  omega_2,
+  gamma,
   counts=FALSE
 ) {
 
@@ -657,6 +721,48 @@ sim_gravity <- function(
 
   return(x)
 }
+
+
+##' Simulate parameter values
+##'
+##' This function takes the summary statistics of the estimated posterior distribution of a parameter
+##' and simulates random values from a normal distribution with its mean and standard deviation. If CI_low and
+##' CI_high are supplied, simulated values are truncated by the confidence bounds.
+##'
+##' @param n number of simulations
+##' @param mean  mean of parameter posterior distribution
+##' @param sd standard of parameter posterior distribution
+##' @param CI_low lower confidence bound of estimated posterior (default = NULL)
+##' @param CI_high upper confidence bound of estimated posterior (default = NULL)
+##'
+##' @return a vector of length n
+##'
+##' @author John Giles
+##'
+##' @example R/examples/sim_param.R
+##'
+##' @family simulation
+##'
+##' @export
+##'
+
+sim_param <- function(n,
+                      mean,
+                      sd,
+                      CI_low=NULL,
+                      CI_high=NULL
+) {
+
+  if (!is.null(c(CI_low, CI_high))) {
+
+    return(truncnorm::rtruncnorm(n, a=CI_low, b=CI_high, mean=mean, sd=sd))
+
+  } else {
+
+    return(rnorm(n, mean, sd))
+  }
+}
+
 
 
 
@@ -700,8 +806,6 @@ get_beta_params <- function(
 ##' @param sigma the desired standard deviation of the Gamma distribution
 ##'
 ##' @return a named numeric vector giving the \code{shape} and \code{rate} parameters of the Gamma distribution
-##'
-##' @family simulation
 ##'
 ##' @author John Giles
 ##'
@@ -938,7 +1042,3 @@ sim_prob_travel <- function(mu,
   out
 }
 
-##' Load these
-##'
-##' @import graphics
-##' @import stats

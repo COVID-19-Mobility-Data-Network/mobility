@@ -32,10 +32,6 @@ curve(dgamma(x, prm[1], prm[2]), 0, 5, xlab='Response variable', ylab='Density')
 abline(v=mu, lty=2, col='red')
 }
 \seealso{
-Other simulation: 
-\code{\link{sim_gravity}()},
-\code{\link{sim_prob_travel}()}
-
 Other utility: 
 \code{\link{get_admin_level}()},
 \code{\link{get_beta_params}()},
@@ -46,5 +42,4 @@ Other utility:
 \author{
 John Giles
 }
-\concept{simulation}
 \concept{utility}

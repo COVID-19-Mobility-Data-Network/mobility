@@ -179,20 +179,18 @@ fit_jags <- function(
 
 
 
-##' Convert rjags object to mcmc.list
-##'
-##' This function converts an rjags model object to an \code{\link[coda:mcmc.list]{mcmc.list}} object.
-##'
-##' @param x an rjags list
-##'
-##' @return an \code{\link[coda:mcmc.list]{mcmc.list}} object
-##'
-##' @importFrom foreach %do%
-##'
-##' @author John Giles
-##'
-##' @export
-##'
+# Convert rjags object to mcmc.list
+#
+# This function converts an rjags model object to an \code{\link[coda:mcmc.list]{mcmc.list}} object.
+#
+# param x an rjags list
+#
+# return an \code{\link[coda:mcmc.list]{mcmc.list}} object
+#
+# author John Giles
+#
+# export
+#
 
 rjags_to_mcmc <- function(x) {
 
@@ -229,19 +227,19 @@ rjags_to_mcmc <- function(x) {
 }
 
 
-##' Combine two rjags objects
-##'
-##' This function combines two rjags model objects.
-##'
-##' @param a an rjags list
-##' @param b an rjags list
-##'
-##' @return an rjags list containing model ouput from \code{a} and \code{b}
-##'
-##' @author John Giles
-##'
-##' @export
-##'
+# Combine two rjags objects
+#
+# This function combines two rjags model objects.
+#
+# param a an rjags list
+# param b an rjags list
+#
+# return an rjags list containing model ouput from \code{a} and \code{b}
+#
+# author John Giles
+#
+# export
+#
 
 combine_rjags <- function(a, b) {
 
