@@ -1003,9 +1003,10 @@ get_admin_level <- function(data) {
 ##' for each origin \eqn{i}, and then derives the shape and rate parameters for the Beta distribution. Simulated values are random
 ##' draws from this Beta distribution.
 ##'
-##' @param mu scalar or vector giving mean probability of leaving origin
-##' @param sigma scalar or vector giving standard deviation of the probability of leaving origin
-##' @param id optional scalar or vector giving name(s) of origin
+##' @param mu scalar or vector giving mean probability of leaving origin (defualt = 0.5)
+##' @param sigma scalar or vector giving standard deviation of the probability of leaving origin (default = 0.1)
+##' @param n number of simulations (default = 1)
+##' @param id optional scalar or vector giving name(s) of origin (default = \code{NULL})
 ##'
 ##' @return a numeric scalar or vector with values between 0 and 1
 ##'
@@ -1019,26 +1020,26 @@ get_admin_level <- function(data) {
 ##' @export
 ##'
 
-sim_prob_travel <- function(mu,
-                            sigma,
+sim_prob_travel <- function(mu=0.5,
+                            sigma=0.1,
+                            n=1,
                             id=NULL
 ){
 
   if (any(c(mu > 1, mu < 0, sigma > 1, sigma < 0))) stop('mu and sigma must be between 0 and 1')
   if (!(length(mu) == length(sigma))) stop('mu and sigma must have same length')
 
-  bp <- get_beta_params(mu, sigma^2)
+  bp <- do.call(rbind, get_beta_params(mu, sigma^2))
+  if (!is.null(id)) colnames(bp) <- id
 
-  out <- rep(NA, length(mu))
+  out <- apply(bp, 2, function(x) {
+    suppressWarnings(rbeta(n, x['shape1'], x['shape2']))
+  })
 
-  for (i in seq_along(mu)) {
-    suppressWarnings(
-      out[i] <- rbeta(1, bp$shape1[i], bp$shape2[i])
-    )
+  if (n == 1) {
+    return(out)
+  } else {
+    return(t(out))
   }
-
-  if (!is.null(id)) names(out) <- id
-
-  out
 }
 

@@ -4,14 +4,16 @@
 \alias{sim_prob_travel}
 \title{Simulate probability of leaving origin}
 \usage{
-sim_prob_travel(mu, sigma, id = NULL)
+sim_prob_travel(mu = 0.5, sigma = 0.1, n = 1, id = NULL)
 }
 \arguments{
-\item{mu}{scalar or vector giving mean probability of leaving origin}
+\item{mu}{scalar or vector giving mean probability of leaving origin (defualt = 0.5)}
 
-\item{sigma}{scalar or vector giving standard deviation of the probability of leaving origin}
+\item{sigma}{scalar or vector giving standard deviation of the probability of leaving origin (default = 0.1)}
 
-\item{id}{optional scalar or vector giving name(s) of origin}
+\item{n}{number of simulations (default = 1)}
+
+\item{id}{optional scalar or vector giving name(s) of origin (default = \code{NULL})}
 }
 \value{
 a numeric scalar or vector with values between 0 and 1
@@ -25,11 +27,9 @@ draws from this Beta distribution.
 \examples{
 sim_prob_travel(0.6, 0.04)
 
-
 sim_prob_travel(mu=c(0.84, 0.64),
                 sigma=c(0.038, 0.045),
                 id=c('A', 'B'))
-
 
 # Simulate with estimated parameters
 n_orig <- 6
@@ -52,7 +52,8 @@ prob_trav <- fit_prob_travel(travel=V_travel,
 
 sim_prob_travel(mu=prob_trav$Mean,
                 sigma=prob_trav$SD,
-                id=prob_trav$orig_id)
+                id=prob_trav$orig_id,
+                n=5)
 }
 \seealso{
 Other simulation: 

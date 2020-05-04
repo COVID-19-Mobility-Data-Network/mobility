@@ -103,8 +103,13 @@ fit_jags <- function(
 
     if (DIC == FALSE) {
 
-      cl <- parallel::makeCluster(n_chain)
+      cl <- parallel::makeCluster(n_chain,
+                                  setup_strategy='sequential',
+                                  setup_timeout=0.5)
+
       doParallel::registerDoParallel(cl)
+
+      if (getDoParRegistered()) message(paste("Initiated cluster", getDoParName(), "with", getDoParWorkers(), "workers.", sep=' '))
 
       out <- foreach::foreach(i=1:n_chain, .combine='combine_rjags', .packages=c('rjags', 'abind')) %dopar% {
 
@@ -131,8 +136,13 @@ fit_jags <- function(
 
       if (n_chain < 2) stop('Calculation of DIC requires at least 2 sampling chains')
 
-      cl <- parallel::makeCluster(n_chain/2)
+      cl <- parallel::makeCluster(n_chain/2,
+                                  setup_strategy='sequential',
+                                  setup_timeout=0.5)
+
       doParallel::registerDoParallel(cl)
+
+      if (getDoParRegistered()) message(paste("Initiated cluster", getDoParName(), "with", getDoParWorkers(), "workers.", sep=' '))
 
       out <- foreach::foreach(i=1:(n_chain/2), .combine='combine_rjags', .packages=c('rjags', 'abind')) %dopar% {
 

@@ -1,10 +1,8 @@
 sim_prob_travel(0.6, 0.04)
 
-
 sim_prob_travel(mu=c(0.84, 0.64),
                 sigma=c(0.038, 0.045),
                 id=c('A', 'B'))
-
 
 # Simulate with estimated parameters
 n_orig <- 6
@@ -27,4 +25,5 @@ prob_trav <- fit_prob_travel(travel=V_travel,
 
 sim_prob_travel(mu=prob_trav$Mean,
                 sigma=prob_trav$SD,
-                id=prob_trav$orig_id)
+                id=prob_trav$orig_id,
+                n=5)

@@ -1,7 +1,7 @@
 Package: mobility
 Type: Package
 Title: Tools for analyzing human mobility data
-Version: 0.0.7
+Version: 0.0.8
 Date: 2020-04-19
 Author: John Giles <giles@jhu.edu> and Amy Wesolowski <awesolowski@jhu.edu>
 Maintainer: John Giles <giles@jhu.edu>
@@ -11,8 +11,6 @@ RoxygenNote: 7.1.0
 Encoding: UTF-8
 LazyData: true
 Imports: 
-  doParallel, 
-  foreach,
   spatstat,
   stringr,
   abind,
@@ -34,7 +32,11 @@ Depends:
   graphics,
   grDevices,
   utils,
-  methods
+  methods,
+  parallel, 
+  doParallel, 
+  foreach, 
+  rjags
 Suggests: 
   knitr, 
   rmarkdown

@@ -3,9 +3,9 @@
 ##' @import grDevices
 ##' @import utils
 ##' @import methods
-##' @importFrom foreach foreach
-##' @importFrom foreach %dopar%
-##' @importFrom foreach %do%
+## @importFrom foreach foreach
+## @importFrom foreach %dopar%
+## @importFrom foreach %do%
 ##' @importFrom magrittr %>%
 ##' @importFrom truncnorm rtruncnorm
 NULL
