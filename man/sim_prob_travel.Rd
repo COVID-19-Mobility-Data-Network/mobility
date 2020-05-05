@@ -58,6 +58,7 @@ sim_prob_travel(mu=prob_trav$Mean,
 \seealso{
 Other simulation: 
 \code{\link{sim_gravity}()},
+\code{\link{sim_mobility}()},
 \code{\link{sim_param}()}
 
 Other travel probability: 

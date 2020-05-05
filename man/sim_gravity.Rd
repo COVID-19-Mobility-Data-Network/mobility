@@ -84,6 +84,7 @@ M_hat <- sim_gravity(D=D,
 }
 \seealso{
 Other simulation: 
+\code{\link{sim_mobility}()},
 \code{\link{sim_param}()},
 \code{\link{sim_prob_travel}()}
 

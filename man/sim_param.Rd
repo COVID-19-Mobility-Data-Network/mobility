@@ -44,6 +44,7 @@ sim_param(n=10,
 \seealso{
 Other simulation: 
 \code{\link{sim_gravity}()},
+\code{\link{sim_mobility}()},
 \code{\link{sim_prob_travel}()}
 }
 \author{

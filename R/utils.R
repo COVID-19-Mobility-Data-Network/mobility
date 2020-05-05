@@ -7,7 +7,7 @@ utils::globalVariables(
     "dest_y"     ,"dest_pop"   ,"trips", "orig_id", "dest_id")
 )
 
-utils::globalVariables(c("pop", "x", "y", "id", "i", "travel", "n_distinct"))
+utils::globalVariables(c("pop", "x", "y", "id", "i", "j", "k", "travel", "n_distinct"))
 
 ##' Get mobility matrix from longform data
 ##'
@@ -602,9 +602,9 @@ check_gravity <- function(M,
 ##' @param theta scalar giving the proportionality constant of gravity formula (default = 1)
 ##' @param omega_1 scalar giving exponential scaling of origin population size (default = 1)
 ##' @param omega_2 scalar giving exponential scaling of destination population size (default = 1)
+##' @param gamma scalar giving the dispersal kernel paramater (default = 1)
 ##' @param n number of simulations (requires argument \code{mod} to be supplied with a gravity model object)
 ##' @param mod a gravity model object produced by the \code{\link{fit_gravity}} or \code{\link{summarize_mobility}} functions
-##' @param gamma scalar giving the dispersal kernel paramater (default = 1)
 ##' @param counts logical indicating whether or not to return a count variable by scaling the connectivity matrix by origin population size (\eqn{N_i}) (default = FALSE)
 ##'
 ##' @return a matrix with values between 0 and 1 (if \code{counts = FALSE}) or positive integers (if \code{counts = TRUE}). If \code{n > 1} then returns and array with 3 dimensions
@@ -644,6 +644,7 @@ sim_gravity <- function(
                 CI_high=x['HPD97.5'])
     })
 
+    if (!is.matrix(params)) params <- t(as.matrix(params))
 
     out <- foreach::foreach(i=1:nrow(params),
                             .combine=function(a, b) abind::abind(a, b, along=3)) %do% {
@@ -657,17 +658,14 @@ sim_gravity <- function(
                                                  counts=counts)
 
                             }
-    dimnames(out)
-    return()
 
-
+    return(out)
 
   } else if (is.null(mod)) {
 
     if (n > 1) stop('Supply gravity model object for multiple simulations')
 
     return(
-
       sim_gravity_pt_est(D=D,
                          N=N,
                          theta=theta,
@@ -1041,5 +1039,129 @@ sim_prob_travel <- function(mu=0.5,
   } else {
     return(t(out))
   }
+}
+
+
+
+
+
+
+##' Simulate a full mobility model
+##'
+##' This function simulates a mobility matrix based on the supplied model parameters. The full mobility model
+##' estimates both quantity of travel within a location (along the matrix diagonal) as well as the quantity
+##' among all origins and destinations (off-diagonals). For multiple stochastic simulations, the \code{mod}
+##' argument must be supplied with a mobility model object produced by the \code{\link{fit_mobility}} function.
+##' If mean values are supplied to the named parameter arguments (\code{theta}, \code{omega_1}, \code{omega_2}, \code{gamma}, \code{tau}),
+##' a single point estimate of the mobility matrix will be returned. A null model (where all model parameters = 1) can be simulated by
+##' supplying only population sizes (\code{N}) and pairwise distances (\code{D}).
+##'
+##' @param D matrix giving distances among the origins and destinations
+##' @param N vector of population sizes
+##' @param theta scalar giving the proportionality constant of gravity formula (default = 1)
+##' @param omega_1 scalar giving exponential scaling of origin population size (default = 1)
+##' @param omega_2 scalar giving exponential scaling of destination population size (default = 1)
+##' @param gamma scalar giving the dispersal kernel paramater (default = 1)
+##' @param tau scalar or vector giving the probability of travel outside origin
+##' @param n number of simulations (requires argument \code{mod} to be supplied with a gravity model object)
+##' @param mod a mobility model object produced by the \code{\link{fit_mobility}} or \code{\link{summarize_mobility}} functions
+##' @param counts logical indicating whether or not to return a count variable by scaling the mobility matrix by origin population size (\eqn{N_i}) (default = FALSE)
+##'
+##' @return a matrix with values between 0 and 1 (if \code{counts = FALSE}) or positive integers (if \code{counts = TRUE}). If \code{n > 1} then returns and array with 3 dimensions
+##'
+##' @author John Giles
+##'
+##' @example R/examples/sim_mobility.R
+##'
+##' @family simulation
+##'
+##' @export
+##'
+
+sim_mobility <- function(
+  D,
+  N,
+  theta = 1,
+  omega_1 = 1,
+  omega_2 = 1,
+  gamma = 1,
+  tau=0.5,
+  n = 1,
+  mod = NULL,
+  counts = FALSE
+){
+
+  if (!(dim(D)[1] == length(N))) stop('Dimensions of D and N mismatch')
+
+  if (!is.null(mod)) {
+
+    if(coda::is.mcmc.list(mod)) mod <- summarize_mobility(mod)
+
+    mod_gravity <- mod[which(rownames(mod) %in% c("gamma", "omega_1", "omega_2", "theta")),]
+    mod_travel <- mod[grep('tau', rownames(mod)),]
+
+    pi <- sim_gravity(D=D,
+                      N=N,
+                      mod=mod_gravity,
+                      n=n)
+
+    tau <- sim_prob_travel(mu=mod_travel$Mean,
+                           sigma=mod_travel$SD,
+                           id=names(N),
+                           n=n)
+
+    return(
+      foreach::foreach(k=1:n, .combine=function(a, b) abind::abind(a, b, along=3)) %do% {
+
+        calc_abs_probs(pi[,,k], tau[,k], N, counts=counts)
+      }
+    )
+
+  } else if (is.null(mod)) {
+
+    if (n > 1) warning('Can only return one simulation from point estimates of parameters')
+    if ( length(tau) > 1 & length(tau) != length(N) ) stop('tau must be scalar or have dimensions to mathc D and N')
+    if (!(dim(D)[1] == length(tau))) tau <- rep(tau, dim(D)[1])
+
+    pi <- sim_gravity(D=D,
+                      N=N,
+                      theta=theta,
+                      omega_1=omega_1,
+                      omega_2=omega_2,
+                      gamma=gamma,
+                      n=1)
+
+    return(calc_abs_probs(pi, tau, N, counts=counts))
+  }
+
+}
+
+
+# Calculate the absolute probability of travel
+
+# This function calculates the abcolute probability of a trip going from origin $i$ to destination $j$ given
+# relative probabilities in matrix pi (from gravity model) and probability of travel outside origin (tau).
+
+calc_abs_probs <- function(pi,
+                           tau,
+                           N=NULL,
+                           counts=FALSE) {
+
+  if (!(dim(pi)[1] == length(tau))) stop('Dimensions of pi and tau mismatch')
+
+  out <- pi
+  for(i in 1:nrow(out)) {
+    for(j in 1:ncol(out)) {
+
+      out[i,j] <- ifelse(
+        i == j,
+        (1 - tau[i]),
+        tau[i] * pi[i,j]
+      )
+    }
+  }
+
+  if (counts) for (i in 1:nrow(out)) out[i,] <- round(N[i]*out[i,])
+  out
 }
 
