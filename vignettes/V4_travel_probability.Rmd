@@ -66,26 +66,15 @@ $$
 
 This structure allows origin locations to have probabilities $\tau_i$ which are driven by data in each location and all unobserved locations regress to the population mean $\tau_\text{pop}$.
 ```{r fit1}
-prob_trav <- fit_prob_travel(travel=Y,
-                             total=N,
-                             DIC=TRUE,
-                             format_locations=FALSE)
-
-summarize_mobility(prob_trav)
-```
-
-To return estimates of travel probability for each location, the `format_locations` argument will summarize model parameters and return a data frame.
-```{r fit2}
-prob_trav <- fit_prob_travel(travel=Y,
-                             total=N,
-                             format_locations=TRUE)
-head(prob_trav)
+prob_trav <- summarize_mobility(
+  fit_prob_travel(travel=Y,
+                  total=N)
+)
 ```
 ```{r, echo=FALSE, fig.width=5, fig.height=7}
 ggplot(data=prob_trav) +
-  geom_vline(aes(xintercept=Mean[ which(is.na(travel))[1] ]), color='red', linetype=2) +
-  geom_point(aes(x=Mean, y=orig_id), size=2) +
-  ggstance::geom_linerangeh(aes(y=orig_id, xmin=HPD2.5, xmax=HPD97.5)) +
+  geom_point(aes(x=Mean, y=rownames(prob_trav)), size=2) +
+  ggstance::geom_linerangeh(aes(y=rownames(prob_trav), xmin=HPD2.5, xmax=HPD97.5)) +
   xlim(0,1) +
   xlab('Probability of travel outside origin') + ylab('Origin') +
   theme_bw() + theme(axis.text.x=element_text(size=9),
@@ -101,17 +90,10 @@ There can be relatively large confidence intervals around the travel probability
 The `sim_prob_travel` function can be used to simulate values of travel probability for each location. Each time the function is called, it returns one random realization for each location.
 
 ```{r}
-# Simulate one realization of travel probability for each location
+# Simulate n realizations of travel probability for each location
 sim_prob_travel(mu=prob_trav$Mean,
                 sigma=prob_trav$SD,
-                id=prob_trav$orig_id)
-
-# Simulate n realizations of travel probability for each location
-n <- 5
-foreach(i=1:n, .combine=cbind) %do% {
-  sim_prob_travel(mu=prob_trav$Mean,
-                  sigma=prob_trav$SD,
-                  id=prob_trav$orig_id)
-}
+                id=names(Y),
+                n=5)
 ```
 

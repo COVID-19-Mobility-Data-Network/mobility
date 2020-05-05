@@ -12,8 +12,7 @@ fit_prob_travel(
   n_samp = 1000,
   n_thin = 1,
   DIC = FALSE,
-  parallel = FALSE,
-  format_locations = FALSE
+  parallel = FALSE
 )
 }
 \arguments{
@@ -32,15 +31,9 @@ fit_prob_travel(
 \item{DIC}{logical indicating whether or not to calculate the Deviance Information Criterion (DIC)}
 
 \item{parallel}{logical indicating whether or not to run MCMC chains in parallel or sequentially (default = \code{FALSE})}
-
-\item{format_locations}{logical indicating which format to return results:
-\describe{
-  \item{\code{FALSE}}{returns raw model output}
-  \item{\code{TRUE}}{returns summarized probability of travel with input data, including missing locations}
-}}
 }
 \value{
-dataframe giving input data along with estimates of travel probability for each location
+an \code{\link[coda:mcmc.list]{mcmc.list}} object
 }
 \description{
 This function fits a hierarchical beta-binomial model that estimates the probability an individual travels outside their home location
@@ -56,23 +49,16 @@ orig_id <- LETTERS[1:n_orig]
 N <- rpois(n_orig, 100)    # population size of each origin
 p <- rbeta(n_orig, 1, 2)   # probability of leaving origin
 
-V_travel <- setNames(rbinom(n_orig, N, p), orig_id)
-V_tot <- setNames(N, orig_id)
+travel <- setNames(rbinom(n_orig, N, p), orig_id)
+total <- setNames(N, orig_id)
 
 miss <- sample(1:n_orig, n_missing) # missing observations
-V_travel[miss] <- V_tot[miss] <- NA
-
-# Estimate probability of travel for observed locations and population mean
-prob_trav <- fit_prob_travel(travel=V_travel,
-                             total=V_tot,
-                             DIC=TRUE)
-prob_trav
+travel[miss] <- total[miss] <- NA
 
 # Estimate probability of travel for each locations (missing locations regress to mean)
-prob_trav <- fit_prob_travel(travel=V_travel,
-                             total=V_tot,
-                             format_locations=TRUE)
-prob_trav
+prob_trav <- summarize_mobility(
+  fit_prob_travel(travel=travel, total=total)
+)
 
 library(ggplot2)
 ggplot(data=prob_trav) +

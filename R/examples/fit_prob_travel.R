@@ -5,23 +5,16 @@ orig_id <- LETTERS[1:n_orig]
 N <- rpois(n_orig, 100)    # population size of each origin
 p <- rbeta(n_orig, 1, 2)   # probability of leaving origin
 
-V_travel <- setNames(rbinom(n_orig, N, p), orig_id)
-V_tot <- setNames(N, orig_id)
+travel <- setNames(rbinom(n_orig, N, p), orig_id)
+total <- setNames(N, orig_id)
 
 miss <- sample(1:n_orig, n_missing) # missing observations
-V_travel[miss] <- V_tot[miss] <- NA
-
-# Estimate probability of travel for observed locations and population mean
-prob_trav <- fit_prob_travel(travel=V_travel,
-                             total=V_tot,
-                             DIC=TRUE)
-prob_trav
+travel[miss] <- total[miss] <- NA
 
 # Estimate probability of travel for each locations (missing locations regress to mean)
-prob_trav <- fit_prob_travel(travel=V_travel,
-                             total=V_tot,
-                             format_locations=TRUE)
-prob_trav
+prob_trav <- summarize_mobility(
+  fit_prob_travel(travel=travel, total=total)
+)
 
 library(ggplot2)
 ggplot(data=prob_trav) +

@@ -109,7 +109,7 @@ fit_jags <- function(
 
       doParallel::registerDoParallel(cl)
 
-      if (getDoParRegistered()) message(paste("Initiated cluster", getDoParName(), "with", getDoParWorkers(), "workers.", sep=' '))
+      if (foreach::getDoParRegistered()) message(paste("Initiated cluster", foreach::getDoParName(), "with", foreach::getDoParWorkers(), "workers", sep=' '))
 
       out <- foreach::foreach(i=1:n_chain, .combine='combine_rjags', .packages=c('rjags', 'abind')) %dopar% {
 
@@ -142,7 +142,7 @@ fit_jags <- function(
 
       doParallel::registerDoParallel(cl)
 
-      if (getDoParRegistered()) message(paste("Initiated cluster", getDoParName(), "with", getDoParWorkers(), "workers.", sep=' '))
+      if (foreach::getDoParRegistered()) message(paste("Initiated cluster", foreach::getDoParName(), "with", foreach::getDoParWorkers(), "workers", sep=' '))
 
       out <- foreach::foreach(i=1:(n_chain/2), .combine='combine_rjags', .packages=c('rjags', 'abind')) %dopar% {
 
@@ -323,11 +323,11 @@ fit_gravity <- function(
   if (!(identical(dim(M)[2], dim(D)[2], length(N_dest)))) stop('Dimensions of input data must match')
 
   if ( !(identical(dimnames(M)[[1]], dimnames(D)[[1]])) | !(identical(dimnames(M)[[1]], names(N_orig))) ) {
-    stop('Dimension names of input data do not match.')
+    stop('Dimension names of input data do not match')
   }
 
   if ( !(identical(dimnames(M)[[2]], dimnames(D)[[2]])) | !(identical(dimnames(M)[[2]], names(N_dest))) ) {
-    stop('Dimension names of input data do not match.')
+    stop('Dimension names of input data do not match')
   }
 
   message(
@@ -345,14 +345,16 @@ fit_gravity <- function(
     N_dest[] <- as.integer(N_dest)
   }
 
+  diag(M) <- 0
+
   if (is.null(prior)) {
 
     message('Using uniformative priors')
-    prior <- c(1, 0.05)
-    prior <- list(theta=prior,
-                  omega_1=prior,
-                  omega_2=prior,
-                  gamma=c(1,0.5))
+    null_prior <- c(1, 1)
+    prior <- list(theta=null_prior,
+                  omega_1=null_prior,
+                  omega_2=null_prior,
+                  gamma=null_prior)
 
   } else {
 
@@ -380,14 +382,14 @@ fit_gravity <- function(
         M[i,j] ~ dpois(pi_hat[i,j]*N_orig[i])
       }
 
-      pi_hat[i,1:length(N_dest)] <- x[i,]/sum(x[i,])
+      pi_hat[i,1:length(N_dest)] <- c[i,]/sum(c[i,])
     }
 
     # Gravity model
     for (i in 1:length(N_orig)) {
       for (j in 1:length(N_dest)) {
 
-        x[i,j] <- ifelse(
+        c[i,j] <- ifelse(
           i == j,
           1e-06,
           exp(log(theta) + (omega_1*log(N_dest[i]) + omega_2*log(N_orig[j]) - log( f_d[i,j] )))
@@ -435,13 +437,8 @@ fit_gravity <- function(
 ##' @param n_thin interval to thin samples
 ##' @param DIC logical indicating whether or not to calculate the Deviance Information Criterion (DIC)
 ##' @param parallel logical indicating whether or not to run MCMC chains in parallel or sequentially (default = \code{FALSE})
-##' @param format_locations logical indicating which format to return results:
-##' \describe{
-##'   \item{\code{FALSE}}{returns raw model output}
-##'   \item{\code{TRUE}}{returns summarized probability of travel with input data, including missing locations}
-##' }
 ##'
-##' @return dataframe giving input data along with estimates of travel probability for each location
+##' @return an \code{\link[coda:mcmc.list]{mcmc.list}} object
 ##'
 ##' @author John Giles
 ##'
@@ -461,8 +458,7 @@ fit_prob_travel <- function(
   n_samp=1000,
   n_thin=1,
   DIC=FALSE,
-  parallel=FALSE,
-  format_locations=FALSE
+  parallel=FALSE
 ) {
 
   # Check data
@@ -473,14 +469,20 @@ fit_prob_travel <- function(
   # Work around for NAs
   na.fix <- any(is.na(travel)) | any(is.na(total))
   if (na.fix) {
-    sel <- complete.cases(cbind(travel, total))
+
+    complete_obs <- complete.cases(cbind(travel, total))
+    missing_obs <- !complete_obs
+
+    message('These missing locations will inherit population mean:')
+    message(paste(names(travel)[missing_obs], collapse=' '))
+
   } else {
-    sel <- seq_along(travel)
+    complete_obs <- seq_along(travel)
   }
 
   jags_data <- list(
-    travel=travel[sel],
-    total=total[sel]
+    travel=travel[complete_obs],
+    total=total[complete_obs]
   )
 
   jags_model <- "
@@ -503,60 +505,46 @@ fit_prob_travel <- function(
     }
   }"
 
-  params <- c('tau_pop', 'tau')
+  out <- fit_jags(jags_data=jags_data,
+                  jags_model=jags_model,
+                  params=c('tau_pop', 'tau'),
+                  n_chain=n_chain,
+                  n_burn=n_burn,
+                  n_samp=n_samp,
+                  n_thin=n_thin,
+                  DIC=DIC,
+                  parallel=parallel)
 
-  suppressMessages(
-      mod <- fit_jags(jags_data=jags_data,
-               jags_model=jags_model,
-               params=params,
-               n_chain=n_chain,
-               n_burn=n_burn,
-               n_samp=n_samp,
-               n_thin=n_thin,
-               DIC=DIC,
-               parallel=parallel)
-    )
+  # Infer missing locations with population mean
+  sel <- which(coda::varnames(out) == 'tau_pop')
+  pop_mean <- out[,sel]
+  out <- out[,-sel]
 
-  if (!format_locations) {
-
-    return(mod)
-
-  } else if (format_locations) {
-
-    mod <- summarize_mobility(mod)
-
-    options(row.names=NULL, stringsAsFactors=FALSE)
-    ignore <- 'tau_pop'
-    if (DIC) ignore <- c(ignore, "DIC", "deviance", "pD")
-
-    if (na.fix) {
-
-      # Merge with missing obs
-      out <- merge(
-        data.frame(orig_id=names(travel),
-                   travel=travel,
-                   total=total),
-        data.frame(orig_id=names(travel[sel]),
-                   travel=travel[sel],
-                   total=total[sel],
-                   mod[-which(rownames(mod) %in% ignore),]),
-        all=T
-      )
-
-      # Set missing obs to population mean
-      for(i in which(is.na(out$Mean))) out[i, -(1:3)] <- mod['tau_pop',]
-      return(out)
-
-    } else {
-
-      return(
-        data.frame(orig_id=names(travel),
-                   travel=travel,
-                   total=total,
-                   mod[-which(rownames(mod) %in% ignore),])
-      )
-    }
+  if (DIC) {
+    sel <- which(coda::varnames(out) %in% c('deviance', 'pD', 'DIC'))
+    DIC_samps <- out[,sel]
+    out <- out[,-sel]
   }
-}
 
+  coda::varnames(out) <- stringr::str_c('tau', which(complete_obs), sep='_')
+  missing_names <- stringr::str_c('tau', which(missing_obs), sep='_')
+
+
+
+    for (i in 1:n_chain) {
+
+      tmp <- pop_mean[[i]]
+
+      out[[i]] <- cbind(out[[i]],
+                        matrix(rep(tmp, times=sum(missing_obs)),
+                               nrow=length(tmp),
+                               dimnames=list(NULL, missing_names)))
+
+      if (DIC) out[[i]] <- cbind(out[[i]], DIC_samps[[i]])
+      out[[i]] <- coda::as.mcmc(out[[i]][,order(colnames(out[[i]]))])
+
+    }
+
+  out
+}
 

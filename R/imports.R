@@ -3,9 +3,12 @@
 ##' @import grDevices
 ##' @import utils
 ##' @import methods
-## @importFrom foreach foreach
-## @importFrom foreach %dopar%
+##' @import parallel
+##' @import doParallel
+##' @import foreach
+##' @import rjags
 ## @importFrom foreach %do%
+## @importFrom foreach %dopar%
 ##' @importFrom magrittr %>%
 ##' @importFrom truncnorm rtruncnorm
 NULL

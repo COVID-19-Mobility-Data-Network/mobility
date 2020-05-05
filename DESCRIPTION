@@ -18,7 +18,6 @@ Imports:
   MCMCvis, 
   Metrics, 
   reshape2, 
-  rjags, 
   coda, 
   Matrix, 
   dplyr,
