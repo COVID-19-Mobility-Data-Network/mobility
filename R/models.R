@@ -515,21 +515,20 @@ fit_prob_travel <- function(
                   DIC=DIC,
                   parallel=parallel)
 
-  # Infer missing locations with population mean
   sel <- which(coda::varnames(out) == 'tau_pop')
   pop_mean <- out[,sel]
   out <- out[,-sel]
 
-  if (DIC) {
-    sel <- which(coda::varnames(out) %in% c('deviance', 'pD', 'DIC'))
-    DIC_samps <- out[,sel]
-    out <- out[,-sel]
-  }
+  if (na.fix) {
 
-  coda::varnames(out) <- stringr::str_c('tau', which(complete_obs), sep='_')
-  missing_names <- stringr::str_c('tau', which(missing_obs), sep='_')
+    if (DIC) {
+      sel <- which(coda::varnames(out) %in% c('deviance', 'pD', 'DIC'))
+      DIC_samps <- out[,sel]
+      out <- out[,-sel]
+    }
 
-
+    coda::varnames(out) <- stringr::str_c('tau', which(complete_obs), sep='_')
+    missing_names <- stringr::str_c('tau', which(missing_obs), sep='_')
 
     for (i in 1:n_chain) {
 
@@ -545,6 +544,102 @@ fit_prob_travel <- function(
 
     }
 
-  out
+    return(out)
+
+  } else {
+
+    return(out)
+  }
 }
 
+
+##' Fit full mobility model to movement matrix
+##'
+##' This function fits a full mobility model to the supplied movement matrix using Bayesian MCMC inference. The full mobility model uses
+##' the \code{\link{fit_prob_travel}} function to estimate the probability of travel outside the origin location and the \code{\link{fit_gravity}}
+##' function to estimate travel to all destination locations. Unlike \code{\link{fit_gravity}}, \code{\link{fit_mobility}} requires the diagonal of
+##' movement matrix \code{M} to be filled.
+##'
+##' @param M named matrix of trip counts among all \eqn{ij} location pairs
+##' @param D named matrix of distances among all \eqn{ij} location pairs
+##' @param N named vector of population sizes for all locations (either N or both n_orig and n_dest must be supplied)
+##' @param n_chain number of MCMC sampling chains
+##' @param n_burn number of iterations to discard before sampling of chains begins (burn in)
+##' @param n_samp number of iterations to sample each chain
+##' @param n_thin interval to thin samples
+##' @param prior a list object containing shape and rate parameters to be used as priors
+##' @param DIC logical indicating whether or not to calculate the Deviance Information Criterion (DIC) (default = \code{FALSE})
+##' @param parallel logical indicating whether or not to run MCMC chains in parallel or sequentially (default = \code{FALSE})
+##'
+##' @return a runjags model object containing fitted gravity model paramters
+##'
+##' @author John Giles
+##'
+##' @example R/examples/fit_mobility.R
+##'
+##' @family model
+##'
+##' @export
+##'
+
+fit_mobility <- function(
+  M,
+  D,
+  N,
+  n_chain=2,
+  n_burn=1000,
+  n_samp=1000,
+  n_thin=1,
+  prior=NULL,
+  DIC=FALSE,
+  parallel=FALSE
+){
+
+  if(all(is.na(diag(M)))) stop('Diagonal of M is empty')
+
+  message('Estimating probability of travel outside origin...')
+  total <- rowSums(M, na.rm=TRUE)
+  mod_trav <- fit_prob_travel(travel=total-diag(M),
+                              total=total,
+                              n_chain=n_chain,
+                              n_burn=n_burn,
+                              n_samp=n_samp,
+                              n_thin=n_thin,
+                              DIC=DIC)
+  message('Complete.')
+
+  tau_hat <- summarize_mobility(mod_trav)[,'Mean']
+
+  message('Estimating travel among destinations with gravity model...')
+  out <- fit_gravity(M=M,
+                     D=D,
+                     N=N,
+                     n_chain=n_chain,
+                     n_burn=n_burn,
+                     n_samp=n_samp,
+                     n_thin=n_thin,
+                     prior=prior,
+                     DIC=DIC,
+                     parallel=parallel)
+  message('Complete.')
+
+  if (DIC) {
+
+    sel <- coda::varnames(mod_trav) %in% c('deviance', 'pD', 'DIC')
+
+    for (i in 1:n_chain) {
+      out[[i]][,'deviance'] <- out[[i]][,'deviance'] + mod_trav[[i]][,'deviance']
+      out[[i]][,'pD'] <- out[[i]][,'pD'] + mod_trav[[i]][,'pD']
+      out[[i]][,'DIC'] <- out[[i]][,'DIC'] + mod_trav[[i]][,'DIC']
+      out[[i]] <- coda::as.mcmc(cbind(out[[i]], mod_trav[[i]][,!sel]))
+    }
+
+  } else {
+
+    for (i in 1:n_chain) {
+      out[[i]] <- coda::as.mcmc(cbind(out[[i]], mod_trav[[i]]))
+    }
+  }
+
+  out
+}

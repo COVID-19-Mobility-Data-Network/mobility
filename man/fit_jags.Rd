@@ -76,6 +76,7 @@ mod <- fit_jags(jags_data=jags_data,
 Other model: 
 \code{\link{check_gravity}()},
 \code{\link{fit_gravity}()},
+\code{\link{fit_mobility}()},
 \code{\link{fit_prob_travel}()},
 \code{\link{summarize_mobility}()}
 }

@@ -46,6 +46,7 @@ check_gravity(M=M, N=N, D=D, mod=mod)
 Other model: 
 \code{\link{fit_gravity}()},
 \code{\link{fit_jags}()},
+\code{\link{fit_mobility}()},
 \code{\link{fit_prob_travel}()},
 \code{\link{summarize_mobility}()}
 

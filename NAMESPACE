@@ -3,6 +3,7 @@
 export(check_gravity)
 export(fit_gravity)
 export(fit_jags)
+export(fit_mobility)
 export(fit_prob_travel)
 export(get_admin_level)
 export(get_beta_params)

@@ -79,6 +79,7 @@ Other model:
 \code{\link{check_gravity}()},
 \code{\link{fit_gravity}()},
 \code{\link{fit_jags}()},
+\code{\link{fit_mobility}()},
 \code{\link{summarize_mobility}()}
 
 Other travel probability: 
