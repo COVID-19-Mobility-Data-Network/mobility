@@ -350,7 +350,7 @@ fit_gravity <- function(
   if (is.null(prior)) {
 
     message('Using uniformative priors')
-    null_prior <- c(1, 1)
+    null_prior <- c(1, 0.5)
     prior <- list(theta=null_prior,
                   omega_1=null_prior,
                   omega_2=null_prior,

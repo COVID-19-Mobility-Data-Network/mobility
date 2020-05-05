@@ -93,7 +93,7 @@ mod
 
 The `check_gravity` function provides goodness of fit metrics and summary plots.
 ```{r check, fig.height=4.5, fig.width=7.25}
-check_gravity(M, D, N, mod)
+check_mobility(M, D, N, mod)
 ```
 
 Now that we have verified that our model fits the data adequately, we can simulate connectivity values among the off-diagonal locations by using the estimated parameter values from the fitted gravity model in the `sim_gravity` function.

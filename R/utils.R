@@ -493,10 +493,11 @@ summarize_mobility <- function(mod, ac_lags=c(2,5,10)) {
 
 
 
-##' Check goodness of fit of a gravity model
+##' Check goodness of fit of a mobility model
 ##'
-##' This function takes a fitted gravity model and calculates goodness of fit metrics for observed routes. If the
-##' Deviance Information Criterin (DIC) was calculated in the supplied model object, it is included in output.
+##' This function takes a fitted mobility model and calculates goodness of fit metrics. Model objects produced by the
+##' \code{\link{fit_prob_travel}}, \code{\link{fit_gravity}}, \code{\link{fit_mobility}} or \code{\link{summarize_mobility}}
+##' functions are accepted. If the Deviance Information Criterin (DIC) was calculated in the supplied model object, it is included in output.
 ##' When \code{plot_check = TRUE}, two plots are shown containing the posterior distribution of trip counts compared to observed data
 ##' and a Normal Q-Q plot showing the quantiles of model residuals against those
 ##' expected from a Normal distribution. Goodness of fit metrics include:
@@ -510,21 +511,102 @@ summarize_mobility <- function(mod, ac_lags=c(2,5,10)) {
 ##' @param M named matrix of trip counts among all \eqn{ij} location pairs
 ##' @param D named matrix of distances among all \eqn{ij} location pairs
 ##' @param N named vector of population sizes for all locations
-##' @param mod model output from either the \code{\link{fit_gravity}} or \code{\link{summarize_mobility}} functions
+##' @param mod model output from either the \code{fit_} functions or \code{\link{summarize_mobility}} function
 ##' @param plot_check logical indicating whether to plot the Posterior Predictive Check and Normal Q-Q Plot (default = \code{TRUE})
 ##'
 ##' @return a list of goodness of fit measures
 ##'
 ##' @author John Giles
 ##'
-##' @example R/examples/check_gravity.R
+##' @example R/examples/check_mobility.R
 ##'
 ##' @family model
-##' @family gravity
 ##'
 ##' @export
 ##'
 
+check_mobility <- function(M,
+                           D=NULL,
+                           N=NULL,
+                           mod,
+                           plot_check=TRUE
+) {
+
+  if (coda::is.mcmc.list(mod)) mod <- summarize_mobility(mod)
+
+  params_travel <- any(grep('tau', rownames(mod)))
+  params_gravity <- all(c("gamma", "omega_1", "omega_2", "theta") %in% rownames(mod))
+
+  if (params_travel & !params_gravity) {
+
+    return(check_prob_travel(M=M, mod=mod, plot_check=plot_check))
+
+  } else if ( !params_travel & params_gravity ) {
+
+    return(check_gravity(M=M, D=D, N=N, mod=mod, plot_check=plot_check))
+
+  } else if ( params_travel & params_gravity ) {
+
+    if (!(identical(dim(M)[1], dim(D)[1], length(N)))) stop('Dimensions of input data must match')
+
+    M_hat <- sim_mobility(N=N,
+                          D=D,
+                          theta=mod['theta', 'Mean'],
+                          omega_1=mod['omega_1', 'Mean'],
+                          omega_2=mod['omega_2', 'Mean'],
+                          gamma=mod['gamma', 'Mean'],
+                          tau=mod[grep('tau', rownames(mod)), 'Mean'],
+                          counts=TRUE)
+
+    err_rsq <- err_perc <- err_rmse <- rep(NA, nrow(M))
+    for(i in 1:nrow(M)) {
+      sel <- which(!is.na(M[i,]))
+      err_perc[i] <- Metrics::mape(M[i, sel], M_hat[i,sel])
+      err_rmse[i] <- Metrics::rmse(M[i, sel], M_hat[i,sel])
+      err_rsq[i] <- cor(M[i, sel], M_hat[i,sel])^2
+    }
+
+    if (plot_check) {
+
+      sel <- which(!is.na(M))
+      M <- M[sel]
+      M_hat <- M_hat[sel]
+
+      par(mfrow=c(1,2))
+      dens_M <- density(M)
+      dens_M_hat <- density(M_hat)
+      plot(dens_M, lwd=2, col='red',
+           xlab='Trip count',
+           main='Posterior predictive check',
+           ylim=c(0, max(c(dens_M$y, dens_M_hat$y))))
+      lines(dens_M_hat, lwd=2, lty=2)
+
+      err <- M - M_hat
+      qqnorm(err, cex=1.25)
+      qqline(err, lwd=2, col=2)
+    }
+
+    if ('DIC' %in% rownames(mod)) {
+
+      return(
+        list(DIC=mod['DIC', 'Mean'],
+             RMSE=mean(err_rmse, na.rm=TRUE),
+             MAPE=mean(err_perc, na.rm=TRUE),
+             R2=mean(err_rsq, na.rm=TRUE))
+      )
+
+    } else {
+
+      return(
+        list(RMSE=mean(err_rmse, na.rm=TRUE),
+             MAPE=mean(err_perc, na.rm=TRUE),
+             R2=mean(err_rsq, na.rm=TRUE))
+      )
+    }
+  }
+}
+
+# Model checking function specific to gravity model output
 check_gravity <- function(M,
                           D,
                           N,
@@ -564,7 +646,7 @@ check_gravity <- function(M,
          xlab='Trip count',
          main='Posterior predictive check',
          ylim=c(0, max(c(dens_M$y, dens_M_hat$y))))
-    lines(dens_M_hat, lwd=2)
+    lines(dens_M_hat, lwd=2, lty=2)
 
     err <- M - M_hat
     qqnorm(err, cex=1.25)
@@ -588,6 +670,51 @@ check_gravity <- function(M,
   }
 }
 
+# Model checking function specific to travel probability model output
+check_prob_travel <- function(M,
+                              mod,
+                              plot_check=TRUE
+) {
+
+  taus <- grep('tau', rownames(mod))
+
+  if ( !(identical(dim(M)[1], length(taus))) ) stop('Dimensions of input data must match')
+  if (coda::is.mcmc.list(mod)) mod <- summarize_mobility(mod)
+
+  tau_hat <- mod$Mean[taus]
+  tau <- 1 - (diag(M) / rowSums(M, na.rm=TRUE))
+
+  if (plot_check) {
+
+    par(mfrow=c(1,2))
+    dens_tau <- density(tau)
+    dens_tau_hat <- density(tau_hat)
+    plot(dens_tau, lwd=2, col='red',
+         xlab='Probability of travel outside origin',
+         main='Posterior predictive check',
+         xlim=c(0,1),
+         ylim=c(0, max(c(dens_tau$y, dens_tau_hat$y))))
+    lines(dens_tau_hat, lwd=2, lty=2)
+
+    err <- tau - tau_hat
+    qqnorm(err, cex=1.25)
+    qqline(err, lwd=2, col=2)
+  }
+
+  if ('DIC' %in% rownames(mod)) {
+
+    return(
+      list(DIC=mod['DIC', 'Mean'],
+           MAPE=Metrics::mape(tau, tau_hat),
+           R2=cor(tau, tau_hat)^2)
+    )
+
+  } else {
+
+    list(MAPE=Metrics::mape(tau, tau_hat),
+         R2=cor(tau, tau_hat)^2)
+  }
+}
 
 
 

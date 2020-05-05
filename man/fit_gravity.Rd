@@ -60,14 +60,13 @@ mod <- fit_gravity(M, D, N)
 }
 \seealso{
 Other model: 
-\code{\link{check_gravity}()},
+\code{\link{check_mobility}()},
 \code{\link{fit_jags}()},
 \code{\link{fit_mobility}()},
 \code{\link{fit_prob_travel}()},
 \code{\link{summarize_mobility}()}
 
 Other gravity: 
-\code{\link{check_gravity}()},
 \code{\link{sim_gravity}()}
 }
 \author{
