@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mobility</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
       </span>
     </div>
 
@@ -141,12 +141,12 @@
 <p>The fitting function <code><a href="../reference/fit_gravity.html">fit_gravity()</a></code> returns results as a <code><a href="https://rdrr.io/pkg/coda/man/mcmc.list.html">coda::mcmc.list()</a></code> object shown below. The <code><a href="https://rdrr.io/pkg/coda/man/mcmc.list.html">coda::mcmc.list()</a></code> is a common object class that holds the posterior samples for each parameter and each sampling chain.</p>
 <div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(<span class="no">mod</span>)
 <span class="co">#&gt; List of 2</span>
-<span class="co">#&gt;  $ : 'mcmc' num [1:1000, 1:7] 48188 48186 48186 48189 48191 ...</span>
+<span class="co">#&gt;  $ : 'mcmc' num [1:1000, 1:7] 48190 48190 48191 48196 48189 ...</span>
 <span class="co">#&gt;   ..- attr(*, "dimnames")=List of 2</span>
 <span class="co">#&gt;   .. ..$ : NULL</span>
 <span class="co">#&gt;   .. ..$ : chr [1:7] "deviance" "gamma" "omega_1" "omega_2" ...</span>
 <span class="co">#&gt;   ..- attr(*, "mcpar")= num [1:3] 1 1000 1</span>
-<span class="co">#&gt;  $ : 'mcmc' num [1:1000, 1:7] 48193 48190 48190 48188 48189 ...</span>
+<span class="co">#&gt;  $ : 'mcmc' num [1:1000, 1:7] 48188 48192 48189 48190 48197 ...</span>
 <span class="co">#&gt;   ..- attr(*, "dimnames")=List of 2</span>
 <span class="co">#&gt;   .. ..$ : NULL</span>
 <span class="co">#&gt;   .. ..$ : chr [1:7] "deviance" "gamma" "omega_1" "omega_2" ...</span>
@@ -160,35 +160,35 @@
 <div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">mod</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/summarize_mobility.html">summarize_mobility</a></span>(<span class="no">mod</span>)
 <span class="no">mod</span>
 <span class="co">#&gt;                  Mean         SD       HPD2.5      HPD97.5 Rhat SSeff       AC2</span>
-<span class="co">#&gt; gamma        1.411405 0.01663642 1.378114e+00     1.442382 1.04   387 0.6229798</span>
-<span class="co">#&gt; omega_1      1.949371 1.91770186 6.408537e-05     5.803280 1.07   358 0.6812159</span>
-<span class="co">#&gt; omega_2     39.614662 2.01935197 3.567232e+01    43.508128 1.03   411 0.6110927</span>
-<span class="co">#&gt; theta        1.908029 1.84907556 2.632116e-04     5.907568 1.05   463 0.6241435</span>
-<span class="co">#&gt; DIC      48211.274733 2.82265514 4.820814e+04 48217.050839 1.01   467 0.5235926</span>
-<span class="co">#&gt; deviance 48189.213721 2.82265514 4.818608e+04 48194.989827 1.01   467 0.5235926</span>
-<span class="co">#&gt; pD          11.030506         NA           NA           NA   NA    NA        NA</span>
+<span class="co">#&gt; gamma        1.409045 0.01681533 1.379160e+00     1.443296 1.00   375 0.6571827</span>
+<span class="co">#&gt; omega_1      2.158638 2.13868773 6.540239e-04     6.626575 1.05   322 0.7232471</span>
+<span class="co">#&gt; omega_2     39.917767 2.16456261 3.579880e+01    44.049666 1.00   439 0.6394862</span>
+<span class="co">#&gt; theta        2.075788 1.90342661 1.022984e-03     5.686658 1.02   402 0.6653014</span>
+<span class="co">#&gt; DIC      48215.666758 2.85266205 4.821278e+04 48221.403088 1.00   440 0.5823080</span>
+<span class="co">#&gt; deviance 48188.971952 2.85266205 4.818609e+04 48194.708282 1.00   440 0.5823080</span>
+<span class="co">#&gt; pD          13.347403         NA           NA           NA   NA    NA        NA</span>
 <span class="co">#&gt;                AC5        AC10</span>
-<span class="co">#&gt; gamma    0.1913347  0.04266632</span>
-<span class="co">#&gt; omega_1  0.2398826  0.02422372</span>
-<span class="co">#&gt; omega_2  0.1927137  0.03964348</span>
-<span class="co">#&gt; theta    0.1596711 -0.02231969</span>
-<span class="co">#&gt; DIC      0.1390470  0.04145082</span>
-<span class="co">#&gt; deviance 0.1390470  0.04145082</span>
+<span class="co">#&gt; gamma    0.2370355 0.007397315</span>
+<span class="co">#&gt; omega_1  0.2673178 0.002529164</span>
+<span class="co">#&gt; omega_2  0.1970902 0.014721021</span>
+<span class="co">#&gt; theta    0.1629770 0.058167747</span>
+<span class="co">#&gt; DIC      0.1685282 0.025503847</span>
+<span class="co">#&gt; deviance 0.1685282 0.025503847</span>
 <span class="co">#&gt; pD              NA          NA</span></pre></body></html></div>
 <p>The <code><a href="../reference/check_mobility.html">check_mobility()</a></code> function provides goodness of fit metrics and summary plots.</p>
 <div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="../reference/check_mobility.html">check_mobility</a></span>(<span class="no">M</span>, <span class="no">D</span>, <span class="no">N</span>, <span class="no">mod</span>)</pre></body></html></div>
 <p><img src="V4_gravity_model_files/figure-html/check-1.png" width="696"></p>
 <pre><code>#&gt; $DIC
-#&gt; [1] 48211.27
+#&gt; [1] 48215.67
 #&gt; 
 #&gt; $RMSE
-#&gt; [1] 2157.005
+#&gt; [1] 2156.695
 #&gt; 
 #&gt; $MAPE
-#&gt; [1] 2.593741
+#&gt; [1] 2.596167
 #&gt; 
 #&gt; $R2
-#&gt; [1] 0.5088164</code></pre>
+#&gt; [1] 0.5081411</code></pre>
 <p>Now that we have verified that our model fits the data adequately, we can simulate connectivity values among the off-diagonal locations by using the estimated parameter values from the fitted gravity model in the <code><a href="../reference/sim_gravity.html">sim_gravity()</a></code> function.</p>
 <div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">pi_hat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/sim_gravity.html">sim_gravity</a></span>(<span class="kw">N</span><span class="kw">=</span><span class="no">N</span>,
                       <span class="kw">D</span><span class="kw">=</span><span class="no">D</span>,

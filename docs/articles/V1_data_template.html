@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mobility</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
       </span>
     </div>
 
@@ -94,7 +94,7 @@
 
     
     
-<p>There are many sources of travel data that researchers wish to fit models to. So, we have designed a generalized data frame template to standardize travel data from various sources into a longform format that is compatible with the modeling and simulation tools in this package. The <code>travel_data_sim</code> object contains simulated content to illustrate the structure of the data. This example data set contains simulated values of location information and observed number of trips <em>among</em> origin and destination locations and <em>within</em> home locations.</p>
+<p>There are many sources of travel data that researchers wish to fit models to. So, we have designed a generalized data frame template to standardize travel data from various sources into a long-form format that is compatible with the modeling and simulation tools in this package. The <code><a href="../reference/travel_data_sim.html">travel_data_sim()</a></code> object contains a simulated example to illustrate the structure of the data. This example data set contains simulated values of location information and observed number of trips <em>among</em> origin and destination locations and <em>within</em> home locations. The <code><a href="../reference/travel_data_template.html">travel_data_template()</a></code> object is an empty template that can be populated from scratch.</p>
 <div id="a-simulated-example" class="section level3">
 <h3 class="hasAnchor">
 <a href="#a-simulated-example" class="anchor"></a>A simulated example</h3>
@@ -177,6 +177,50 @@ integer
 </td>
 <td style="text-align:left;">
 time span in days
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+indiv_id
+</td>
+<td style="text-align:left;">
+numeric
+</td>
+<td style="text-align:left;">
+unique individual identifier
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+indiv_age
+</td>
+<td style="text-align:left;">
+numeric
+</td>
+<td style="text-align:left;">
+age of participant
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+indiv_sex
+</td>
+<td style="text-align:left;">
+logical
+</td>
+<td style="text-align:left;">
+gender of participant
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+indiv_type
+</td>
+<td style="text-align:left;">
+character
+</td>
+<td style="text-align:left;">
+if individual participants belong to different groups
 </td>
 </tr>
 <tr>
@@ -485,17 +529,17 @@ total number of observed trips made from origin to destination during time span
 <span class="co">#&gt; 2 2020-01-01 2020-01-08    7 days       NA        NA        NA       &lt;NA&gt;</span>
 <span class="co">#&gt; 3 2020-01-01 2020-01-08    7 days       NA        NA        NA       &lt;NA&gt;</span>
 <span class="co">#&gt;   orig_adm0 orig_adm1 orig_adm2 orig_adm3 orig_adm4 orig_adm5 orig_type</span>
-<span class="co">#&gt; 1         A         B         A      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;    County</span>
-<span class="co">#&gt; 2         A         B         C      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;    County</span>
-<span class="co">#&gt; 3         A         B         D      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;    County</span>
+<span class="co">#&gt; 1         A         B         J      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;    County</span>
+<span class="co">#&gt; 2         A         B         L      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;    County</span>
+<span class="co">#&gt; 3         A         B         N      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;    County</span>
 <span class="co">#&gt;      orig_x   orig_y orig_pop dest_adm0 dest_adm1 dest_adm2 dest_adm3 dest_adm4</span>
-<span class="co">#&gt; 1 -90.67998 30.40941     1395         A         B         E      &lt;NA&gt;      &lt;NA&gt;</span>
-<span class="co">#&gt; 2 -90.02758 28.99276     9951         A         B         S      &lt;NA&gt;      &lt;NA&gt;</span>
-<span class="co">#&gt; 3 -88.28496 30.33698     2929         A         B         B      &lt;NA&gt;      &lt;NA&gt;</span>
+<span class="co">#&gt; 1 -90.60445 29.28957     2286         A         B         D      &lt;NA&gt;      &lt;NA&gt;</span>
+<span class="co">#&gt; 2 -88.29466 28.93163     9538         A         B         Q      &lt;NA&gt;      &lt;NA&gt;</span>
+<span class="co">#&gt; 3 -89.86575 31.37287     3239         A         B         U      &lt;NA&gt;      &lt;NA&gt;</span>
 <span class="co">#&gt;   dest_adm5 dest_type    dest_x   dest_y dest_pop trips</span>
-<span class="co">#&gt; 1      &lt;NA&gt;    County -88.20122 30.85820     8003   111</span>
-<span class="co">#&gt; 2      &lt;NA&gt;    County -91.65115 28.57229    11137    16</span>
-<span class="co">#&gt; 3      &lt;NA&gt;    County -93.15546 31.45545    14122    45</span></pre></body></html></div>
+<span class="co">#&gt; 1      &lt;NA&gt;    County -89.33675 30.38301    11091   198</span>
+<span class="co">#&gt; 2      &lt;NA&gt;    County -92.21016 30.72313    10373   152</span>
+<span class="co">#&gt; 3      &lt;NA&gt;    County -91.69653 29.27025     7678    62</span></pre></body></html></div>
 </div>
   </div>
 
