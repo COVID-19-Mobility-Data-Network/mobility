@@ -159,7 +159,7 @@ check_mobility(M=M,
 ```
 At first glance, our model seems to be doing a good job of capturing trends in the data. The posterior predictive check shows that if we just look at the overall distribution of trip counts in the mobility data matrix ($M$), that the model is predicting trip counts with about the same distribution. The Q-Q plot shows how the quantiles of the residuals of our model compare to the quantiles expected from a Normal distribution. We also see that the residuals are mostly Normally distributed with some deviation at the extremes.
 
-The prediction error results compare actual trip count values in the data matrix $M$ with the predicted values of the estimated mobility model ($\hat{M}$). These results indicate that our model has an average magnitude of error of about 517 trip counts (RMSE), which is on average about 60% of the observed trip count values. The R-squared value shows that our model captures approximately 85% of the variance observed in the supplied mobility data.
+The prediction error results compare actual trip count values in the data matrix $M$ with the predicted values of the estimated mobility model ($\hat{M}$). These results indicate that our model has an average magnitude of error of about 447 trip counts (RMSE), which is on average about 39% of the observed trip count values. The R-squared value shows that our model captures approximately 96% of the variance observed in the supplied mobility data.
 
 
 ## Simulating a mobility matrix from a fitted model

@@ -1,6 +1,6 @@
 ## code to prepare `mobility_matrices` dataset goes here
 
-set.seed(123)
+set.seed(1234)
 
 n <- 10
 ids <- LETTERS[1:n]
@@ -11,8 +11,8 @@ D <- get_distance_matrix(x=rnorm(n, -90, 9),
                          id=ids)*111.35
 
 # Vector of population sizes
-#N <- rpois(n, lambda=10000)
-N <- rnbinom(n, size=5, mu=10000)
+N <- rpois(n, lambda=10000)
+#N <- rnbinom(n, size=5, mu=5000)
 names(N) <- ids
 
 tau <- rbeta(n, 2, 2) # probability of travel outside origin
