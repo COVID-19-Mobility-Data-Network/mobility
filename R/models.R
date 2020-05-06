@@ -539,9 +539,12 @@ fit_prob_travel <- function(
                                nrow=length(tmp),
                                dimnames=list(NULL, missing_names)))
 
-      if (DIC) out[[i]] <- cbind(out[[i]], DIC_samps[[i]])
-      out[[i]] <- coda::as.mcmc(out[[i]][,order(colnames(out[[i]]))])
+      index <- as.numeric(stringr::str_split(colnames(out[[i]]),
+                                             pattern = '_',
+                                             simplify=TRUE)[,2])
 
+      out[[i]] <- coda::as.mcmc(out[[i]][,order(index)])
+      if (DIC) out[[i]] <- coda::as.mcmc(cbind(out[[i]], DIC_samps[[i]]))
     }
 
     return(out)

@@ -40,8 +40,15 @@ for(i in 1:nrow(M)) {
 rowSums(M)
 M <- round(M)
 
+# add noise
+for(i in 1:n) {
+  for (j in 1:n) {
+    M[i,j] <- rpois(1, lambda=M[i,j])
+  }
+}
+
 # missing observations
-#M[sample(1:(n^2), (n^2)*0.1)] <- NA
+M[sample(1:(n^2), (n^2)*0.2)] <- NA
 
 mobility_matrices <- list(M=M, D=D, N=N)
 

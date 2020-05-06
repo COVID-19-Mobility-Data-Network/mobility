@@ -422,11 +422,13 @@ get_crossdist <- function(xy1,
 
 
 
-##' Calculate summary statistics for a model
+##' Calculate summary statistics for a mobility model
 ##'
-##' This is a wrapper function for \code{\link[MCMCvis:MCMCsummary]{MCMCsummary}} that calculates summary statistics
-##' for each parameter in an mcmc.list object. If the model contains deviance and penalty calculations, then
-##' Deviance Information Criterion (DIC) is calculated and appended to the summary.
+##' This is a wrapper function of \code{\link[MCMCvis:MCMCsummary]{MCMCsummary}} that calculates summary statistics for each
+##' parameter in a \code{\link[coda:mcmc.list]{mcmc.list}} object. Summary statistics are calculated for all parameters across
+##' each chain along with convergance diagnosics like the Gelman-Rubin convergence diagnostic and (Rhat) and samples
+##' auto-correlation foreach parameter. If the model object contains deviance and penalty parameters, then Deviance Information
+##' Criterion (DIC) is calculated and appended to the summary.
 ##'
 ##' @param mod an mcmc.list object
 ##' @param ac_lags vector of lags over which to calculate autocorrelation of samples within chains (default = c(2,5,10))
@@ -579,7 +581,16 @@ check_mobility <- function(M,
            xlab='Trip count',
            main='Posterior predictive check',
            ylim=c(0, max(c(dens_M$y, dens_M_hat$y))))
-      lines(dens_M_hat, lwd=2, lty=2)
+      lines(dens_M_hat, lwd=2)
+
+      legend("topright",
+             legend=c("Model", "Data"),
+             col=c("black", "red"),
+             lty=1,
+             lwd=1.25,
+             cex=0.8,
+             seg.len=0.8,
+             bty='n')
 
       err <- M - M_hat
       qqnorm(err, cex=1.25)
@@ -646,7 +657,16 @@ check_gravity <- function(M,
          xlab='Trip count',
          main='Posterior predictive check',
          ylim=c(0, max(c(dens_M$y, dens_M_hat$y))))
-    lines(dens_M_hat, lwd=2, lty=2)
+    lines(dens_M_hat, lwd=2)
+
+    legend("topright",
+           legend=c("Model", "Data"),
+           col=c("black", "red"),
+           lty=1,
+           lwd=1.25,
+           cex=0.8,
+           seg.len=0.8,
+           bty='n')
 
     err <- M - M_hat
     qqnorm(err, cex=1.25)
@@ -686,6 +706,10 @@ check_prob_travel <- function(M,
 
   if (plot_check) {
 
+    sel <- which(!is.na(tau))
+    tau <- tau[sel]
+    tau_hat <- tau_hat[sel]
+
     par(mfrow=c(1,2))
     dens_tau <- density(tau)
     dens_tau_hat <- density(tau_hat)
@@ -694,7 +718,16 @@ check_prob_travel <- function(M,
          main='Posterior predictive check',
          xlim=c(0,1),
          ylim=c(0, max(c(dens_tau$y, dens_tau_hat$y))))
-    lines(dens_tau_hat, lwd=2, lty=2)
+    lines(dens_tau_hat, lwd=2)
+
+    legend("topright",
+           legend=c("Model", "Data"),
+           col=c("black", "red"),
+           lty=1,
+           lwd=1.25,
+           cex=0.8,
+           seg.len=0.8,
+           bty='n')
 
     err <- tau - tau_hat
     qqnorm(err, cex=1.25)
@@ -843,7 +876,6 @@ sim_gravity_pt_est <- function(
   }
 
   dimnames(x) <- list(origin=dimnames(D)[[1]], destination=dimnames(D)[[2]])
-
   return(x)
 }
 

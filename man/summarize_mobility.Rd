@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{summarize_mobility}
 \alias{summarize_mobility}
-\title{Calculate summary statistics for a model}
+\title{Calculate summary statistics for a mobility model}
 \usage{
 summarize_mobility(mod, ac_lags = c(2, 5, 10))
 }
@@ -15,9 +15,11 @@ summarize_mobility(mod, ac_lags = c(2, 5, 10))
 a dataframe with summary statistics
 }
 \description{
-This is a wrapper function for \code{\link[MCMCvis:MCMCsummary]{MCMCsummary}} that calculates summary statistics
-for each parameter in an mcmc.list object. If the model contains deviance and penalty calculations, then
-Deviance Information Criterion (DIC) is calculated and appended to the summary.
+This is a wrapper function of \code{\link[MCMCvis:MCMCsummary]{MCMCsummary}} that calculates summary statistics for each
+parameter in a \code{\link[coda:mcmc.list]{mcmc.list}} object. Summary statistics are calculated for all parameters across
+each chain along with convergance diagnosics like the Gelman-Rubin convergence diagnostic and (Rhat) and samples
+auto-correlation foreach parameter. If the model object contains deviance and penalty parameters, then Deviance Information
+Criterion (DIC) is calculated and appended to the summary.
 }
 \examples{
 # Gravity model
