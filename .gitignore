@@ -1,0 +1,11 @@
+.Rproj
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.DS_Store
+.key
+local/
+/doc
+/docs
+Meta
