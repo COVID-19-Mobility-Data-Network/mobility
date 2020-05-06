@@ -1,3 +1,7 @@
+<!-- badges: start -->
+[![Travis build status](https://travis-ci.com/COVID-19-Mobility-Data-Network/mobility.svg?branch=master)](https://travis-ci.com/COVID-19-Mobility-Data-Network/mobility)
+<!-- badges: end -->
+
 # `mobility`: an R package for modeling human mobility patterns
 
 This GitHub repository contains source code to build the `mobility` R package which provides tools for analyzing human mobility data, including functions for parsing travel data, fitting mobility models using Bayesian inference, and simulating mobility patterns. This package is currently in development and maintained by John Giles ([@gilesjohnr](https://github.com/gilesjohnr)) and Amy Wesolowski.
