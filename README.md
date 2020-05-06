@@ -24,8 +24,7 @@ To help facilitate modeling studies that wish to use mobility data and address t
 ### General work-flow
 <img src='images/workflow/workflow.001.png'>
 
-### Brief example
-#### 1. Generalized long-form mobility data format
+### 1. Generalized long-form mobility data format
 There are many sources of travel data that researchers wish to fit models to. So, we have designed a generalized data frame template to standardize travel data from various sources into a longform format that is compatible with the modeling and simulation tools in this package. This data template can be populated by starting with the `travel_data_template` object and adding rows.
 ```r
 library(mobility)
@@ -35,7 +34,7 @@ mobility_data[1:n,] <- NA
 # add data mobility data to rows
 ```
 
-#### 2. Build sparse data matrices for modeling
+### 2. Build sparse data matrices for modeling
 Utility functions take mobility data from the generalized long-form format and build data matrices that are used to fit models.
 ```r
 mobility_data <- cbind(mobility_data, get_unique_ids(mobility_data, adm_start=2))
@@ -55,7 +54,7 @@ D <- get_distance_matrix(x=xy[,1],
 N <- get_pop_vec(mobility_data)
 ```
 
-#### 3. Estimate mobility model parameters
+### 3. Estimate mobility model parameters
 ```r
 # Fit a mobility model to data matrices
 mod <- fit_mobility(M, D, N)
@@ -79,7 +78,7 @@ check_mobility(M, D, N, mod)
 ```
 <img src='images/model_check.png' width=700>
 
-#### 4. Simulate mobility model
+### 4. Simulate mobility model
 ```r
 # Simulate one stochastic realization of a mobility matrix based on fitted mobility model parameters
 sim_mobility(D, N, mod, n=1)
