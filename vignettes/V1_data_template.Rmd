@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-There are many sources of travel data that researchers wish to fit models to. So, we have designed a generalized data frame template to standardize travel data from various sources into a longform format that is compatible with the modeling and simulation tools in this package. The `travel_data_sim` object contains simulated content to illustrate the structure of the data. This example data set contains simulated values of location information and observed number of trips *among* origin and destination locations and *within* home locations.
+There are many sources of travel data that researchers wish to fit models to. So, we have designed a generalized data frame template to standardize travel data from various sources into a long-form format that is compatible with the modeling and simulation tools in this package. The `travel_data_sim()` object contains a simulated example to illustrate the structure of the data. This example data set contains simulated values of location information and observed number of trips *among* origin and destination locations and *within* home locations. The `travel_data_template()` object is an empty template that can be populated from scratch.
 
 ### A simulated example
 ```{r}
@@ -33,6 +33,10 @@ tab <- matrix(
   c('date_start', 'date', 'beginning of the time interval for the trip count',
     'date_stop', 'date', 'end of the time interval for the trip count',
     'date_span', 'integer','time span in days',
+    'indiv_id', 'numeric', 'unique individual identifier',
+  'indiv_age', 'numeric',  'age of participant',
+  'indiv_sex', 'logical', 'gender of participant',
+  'indiv_type', 'character', 'if individual participants belong to different groups',
     'orig_adm0', 'character', 'name of highest administration level of origin location (Country)',
     'orig_adm1', 'character', 'name of administration level 1 of origin location (e.g. Division, State)',
     'orig_adm2', 'character', 'name of administration level 2 of origin location (e.g. District, County)',
