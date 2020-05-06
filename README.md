@@ -22,7 +22,7 @@ Although the initial format of each data type may be different, there are genera
 To help facilitate modeling studies that wish to use mobility data and address the challenges above, we have developed a suite of tools that can be used to do some of the heavy lifting required to fit and simulate mobility models. Sections below show the general work-flow, see the package vignettes for more detailed examples.
 
 ### General work-flow
-<img src='images/workflow/workflow.001.png'>
+<img src='man/figures/workflow/workflow.001.png'>
 
 ### 1. Generalized long-form mobility data format
 There are many sources of travel data that researchers wish to fit models to. So, we have designed a generalized data frame template to standardize travel data from various sources into a longform format that is compatible with the modeling and simulation tools in this package. This data template can be populated by starting with the `travel_data_template` object and adding rows.
@@ -76,11 +76,11 @@ tau_5   0.008924998 0.001340494 6.292020e-03 0.01137737 1.00  1243  0.010289810
 # Check goodness of fit
 check_mobility(M, D, N, mod)
 ```
-<img src='images/model_check.png' width=700>
+<img src='man/figures/model_check.png' width=700>
 
 ### 4. Simulate mobility model
 ```r
-# Simulate one stochastic realization of a mobility matrix based on fitted mobility model parameters
+# Simulate one stochastic realization of mobility matrix using fitted mobility model parameters
 sim_mobility(D, N, mod, n=1)
              
       destination
