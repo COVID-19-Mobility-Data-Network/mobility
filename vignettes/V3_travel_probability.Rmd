@@ -29,7 +29,7 @@ set.seed(1234)
 ```
 
 ### Build data vectors
-The travel probability model requires two pieces of information: the number of trips for the time interval that travel outside the origin location ($Y$) and the total number of trips observed for that origin ($N$). Both vectors must be the same length but they can have missing values (`NA`) that represent an unobserved origin location. The `get_stay_data` function can be used to build trips for each location that are aggregated to a desired spatial scale (e.g. admin level 1 or admin level 2).
+The travel probability model requires two pieces of information: the number of trips for the time interval that travel outside the origin location ($Y$) and the total number of trips observed for that origin ($N$). Both vectors must be the same length but they can have missing values (`NA`) that represent an unobserved origin location. The `get_stay_data()` function can be used to build trips for each location that are aggregated to a desired spatial scale (e.g. admin level 1 or admin level 2).
 ```{r data}
 stay_data <- get_stay_data(travel_data_sim, agg_adm=2)
 Y <- setNames(stay_data$travel, stay_data$orig_id)
@@ -45,7 +45,7 @@ N
 
 
 ### Estimate probability of travel for each location
-To estimate the probability of traveling outside the origin location $i$, the `fit_prob_travel` function uses a Beta-Binomial model with hierarchical structure to infer travel probability in unobserved locations.
+To estimate the probability of traveling outside the origin location $i$, the `fit_prob_travel()` function uses a Beta-Binomial model with hierarchical structure to infer travel probability in unobserved locations.
 $$
 y_i \sim \text{Binom}(\tau_i, n_i)
 $$
@@ -87,7 +87,7 @@ ggplot(data=prob_trav) +
 ### Simulate values travel probability for each location
 There can be relatively large confidence intervals around the travel probability estimated for locations without data. Since these locations inherit the population-level mean, uncertainty will likely be higher than locations with data. If we wanted to then use this model in a simulation, we may want to include this uncertainty in the model.
 
-The `sim_prob_travel` function can be used to simulate values of travel probability for each location. Each time the function is called, it returns one random realization for each location.
+The `sim_prob_travel()` function can be used to simulate values of travel probability for each location. Each time the function is called, it returns one random realization for each location.
 
 ```{r}
 # Simulate n realizations of travel probability for each location
