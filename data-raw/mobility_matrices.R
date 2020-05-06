@@ -1,6 +1,6 @@
 ## code to prepare `mobility_matrices` dataset goes here
 
-set.seed(1234)
+set.seed(123)
 
 n <- 10
 ids <- LETTERS[1:n]
@@ -11,10 +11,11 @@ D <- get_distance_matrix(x=rnorm(n, -90, 9),
                          id=ids)*111.35
 
 # Vector of population sizes
-N <- rpois(n, lambda=5000)
+#N <- rpois(n, lambda=10000)
+N <- rnbinom(n, size=5, mu=10000)
 names(N) <- ids
 
-tau <- rbeta(n, 1, 2) # probability of travel outside origin
+tau <- rbeta(n, 2, 2) # probability of travel outside origin
 
 # Simulate connectivity matrix given gravity model parameters
 pi <- sim_gravity(N=N,
@@ -48,7 +49,7 @@ for(i in 1:n) {
 }
 
 # missing observations
-M[sample(1:(n^2), (n^2)*0.2)] <- NA
+M[sample(1:(n^2), (n^2)*0.3)] <- NA
 
 mobility_matrices <- list(M=M, D=D, N=N)
 

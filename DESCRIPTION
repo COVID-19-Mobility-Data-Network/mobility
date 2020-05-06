@@ -6,11 +6,15 @@ Date: 2020-04-19
 Author: John Giles <giles@jhu.edu> and Amy Wesolowski <awesolowski@jhu.edu>
 Maintainer: John Giles <giles@jhu.edu>
 Description: Functions for parsing travel data, fitting models using Bayesian inference, and simulating mobility patterns.
-License: GPL (>=2)
+License: GPL (>=3)
 RoxygenNote: 7.1.0
 Encoding: UTF-8
 LazyData: true
-Imports: 
+Imports:
+  parallel,
+  doParallel, 
+  foreach, 
+  rjags,
   spatstat,
   stringr,
   abind,
@@ -31,11 +35,7 @@ Depends:
   graphics,
   grDevices,
   utils,
-  methods,
-  parallel, 
-  doParallel, 
-  foreach, 
-  rjags
+  methods
 Suggests: 
   knitr, 
   rmarkdown
