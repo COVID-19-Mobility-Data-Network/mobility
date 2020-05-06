@@ -98,7 +98,7 @@ Please see package vignettes to explore each step in more detail.
 To install the install the development version, first install the `devtools` package and then install `mobility` from source via the COVID-19-Mobility-Data-Network GitHub repository:
 ```r
 install.packages('devtools')
-devtools::install_github('COVID-19-Mobility-Data-Network/mobility', build_vignettes=TRUE)
+devtools::install_github('COVID-19-Mobility-Data-Network/mobility')
 ```
 
 The model fitting functions in the package perform parameter estimation using the Bayesian MCMC (Markov Chain Monte Carlo) algorithm called JAGS (Just Another Gibbs Sampler). The JAGS 4.3.0 library must be installed [here](http://mcmc-jags.sourceforge.net/). To check your installation of JAGS, you can open your console and type `jags` which should give you the following message.
