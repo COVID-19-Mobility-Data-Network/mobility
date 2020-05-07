@@ -97,23 +97,23 @@
 <div id="build-data-vectors" class="section level3">
 <h3 class="hasAnchor">
 <a href="#build-data-vectors" class="anchor"></a>Build data vectors</h3>
-<p>The travel probability model requires two pieces of information: the number of trips for the time interval that travel outside the origin location (<span class="math inline">\(Y\)</span>) and the total number of trips observed for that origin (<span class="math inline">\(N\)</span>). Both vectors must be the same length but they can have missing values (<code>NA</code>) that represent an unobserved origin location. The <code><a href="../reference/get_stay_data.html">get_stay_data()</a></code> function can be used to build trips for each location that are aggregated to a desired spatial scale (e.g. admin level 1 or admin level 2).</p>
+<p>The travel probability model requires two pieces of information: the number of trips for the time interval that travel outside the origin location (<span class="math inline">\(y_i\)</span>) and the total number of trips observed for that origin (<span class="math inline">\(m_i\)</span>). Both vectors must be the same length but they can have missing values (<code>NA</code>) that represent an unobserved origin location. The <code><a href="../reference/get_stay_data.html">get_stay_data()</a></code> function can be used to build trips for each location that are aggregated to a desired spatial scale (e.g. admin level 1 or admin level 2).</p>
 <div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="no">stay_data</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/get_stay_data.html">get_stay_data</a></span>(<span class="no">travel_data_sim</span>, <span class="kw">agg_adm</span><span class="kw">=</span><span class="fl">2</span>)
 <span class="co">#&gt; Added missing unique location names.</span>
 <span class="co">#&gt; Using total trip count method</span>
-<span class="no">Y</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html">setNames</a></span>(<span class="no">stay_data</span>$<span class="no">travel</span>, <span class="no">stay_data</span>$<span class="no">orig_id</span>)
-<span class="no">N</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html">setNames</a></span>(<span class="no">stay_data</span>$<span class="no">total</span>, <span class="no">stay_data</span>$<span class="no">orig_id</span>)
+<span class="no">y</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html">setNames</a></span>(<span class="no">stay_data</span>$<span class="no">travel</span>, <span class="no">stay_data</span>$<span class="no">orig_id</span>)
+<span class="no">m</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html">setNames</a></span>(<span class="no">stay_data</span>$<span class="no">total</span>, <span class="no">stay_data</span>$<span class="no">orig_id</span>)
 
-<span class="no">n_orig</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="no">Y</span>)
+<span class="no">n_orig</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="no">y</span>)
 <span class="no">miss</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span>(<span class="fl">1</span>:<span class="no">n_orig</span>, <span class="no">n_orig</span>*<span class="fl">0.2</span>) <span class="co"># missing observations</span>
-<span class="no">Y</span>[<span class="no">miss</span>] <span class="kw">&lt;-</span> <span class="no">N</span>[<span class="no">miss</span>] <span class="kw">&lt;-</span> <span class="fl">NA</span>
+<span class="no">y</span>[<span class="no">miss</span>] <span class="kw">&lt;-</span> <span class="no">m</span>[<span class="no">miss</span>] <span class="kw">&lt;-</span> <span class="fl">NA</span>
 
-<span class="no">Y</span>
+<span class="no">y</span>
 <span class="co">#&gt; A_B_C A_B_D A_B_E A_B_G A_B_H A_B_I A_B_J A_B_K A_B_N A_B_O A_B_Q A_B_R A_B_S </span>
 <span class="co">#&gt;    21   176   904     5     0    NA   331   250    74    NA    36    23   346 </span>
 <span class="co">#&gt; A_B_T A_B_V A_B_Y A_B_Z </span>
 <span class="co">#&gt;     6    44    NA    26</span>
-<span class="no">N</span>
+<span class="no">m</span>
 <span class="co">#&gt; A_B_C A_B_D A_B_E A_B_G A_B_H A_B_I A_B_J A_B_K A_B_N A_B_O A_B_Q A_B_R A_B_S </span>
 <span class="co">#&gt;  1150   384  1941   531   322    NA   896  1421   577    NA  1593  1217   703 </span>
 <span class="co">#&gt; A_B_T A_B_V A_B_Y A_B_Z </span>
@@ -123,8 +123,8 @@
 <h3 class="hasAnchor">
 <a href="#estimate-probability-of-travel-for-each-location" class="anchor"></a>Estimate probability of travel for each location</h3>
 <p>To estimate the probability of traveling outside the origin location <span class="math inline">\(i\)</span>, the <code><a href="../reference/fit_prob_travel.html">fit_prob_travel()</a></code> function uses a Beta-Binomial model with hierarchical structure to infer travel probability in unobserved locations. <span class="math display">\[
-y_i \sim \text{Binom}(\tau_i, n_i)
-\]</span> The random variable <span class="math inline">\(y_i\)</span> is the observed number of trips that leave origin <span class="math inline">\(i\)</span> within the time interval. Binomial parameters <span class="math inline">\(\tau_i\)</span> and <span class="math inline">\(n_i\)</span> are the success probability and total number of observed trips in origin <span class="math inline">\(i\)</span> respectively. <span class="math display">\[
+y_i \sim \text{Binom}(\tau_i, m_i)
+\]</span> The random variable <span class="math inline">\(y_i\)</span> is the observed number of trips that leave origin <span class="math inline">\(i\)</span> within the time interval. Binomial parameters <span class="math inline">\(\tau_i\)</span> and <span class="math inline">\(m_i\)</span> are the success probability and total number of observed trips emanating from origin <span class="math inline">\(i\)</span> respectively. <span class="math display">\[
 \begin{aligned}
 \tau_i &amp;\sim \text{Beta}(\alpha, \beta) \\
 \tau_\text{pop} &amp;\sim \text{Beta}(\bar{\alpha}, \bar{\beta})
@@ -137,8 +137,7 @@ y_i \sim \text{Binom}(\tau_i, n_i)
 \]</span></p>
 <p>This structure allows origin locations to have probabilities <span class="math inline">\(\tau_i\)</span> which are driven by data in each location and all unobserved locations regress to the population mean <span class="math inline">\(\tau_\text{pop}\)</span>.</p>
 <div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">prob_trav</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/summarize_mobility.html">summarize_mobility</a></span>(
-  <span class="fu"><a href="../reference/fit_prob_travel.html">fit_prob_travel</a></span>(<span class="kw">travel</span><span class="kw">=</span><span class="no">Y</span>,
-                  <span class="kw">total</span><span class="kw">=</span><span class="no">N</span>)
+  <span class="fu"><a href="../reference/fit_prob_travel.html">fit_prob_travel</a></span>(<span class="kw">travel</span><span class="kw">=</span><span class="no">y</span>, <span class="kw">total</span><span class="kw">=</span><span class="no">m</span>)
 )
 <span class="co">#&gt; These missing locations will inherit population mean:</span>
 <span class="co">#&gt; A_B_I A_B_O A_B_Y</span>
@@ -163,7 +162,7 @@ y_i \sim \text{Binom}(\tau_i, n_i)
 <div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="co"># Simulate n realizations of travel probability for each location</span>
 <span class="fu"><a href="../reference/sim_prob_travel.html">sim_prob_travel</a></span>(<span class="kw">mu</span><span class="kw">=</span><span class="no">prob_trav</span>$<span class="no">Mean</span>,
                 <span class="kw">sigma</span><span class="kw">=</span><span class="no">prob_trav</span>$<span class="no">SD</span>,
-                <span class="kw">id</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">Y</span>),
+                <span class="kw">id</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">y</span>),
                 <span class="kw">n</span><span class="kw">=</span><span class="fl">5</span>)
 <span class="co">#&gt;              [,1]        [,2]         [,3]        [,4]        [,5]</span>
 <span class="co">#&gt; A_B_C 0.020673185 0.021071083 1.617911e-02 0.016294177 0.016221190</span>

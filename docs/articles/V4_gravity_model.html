@@ -123,7 +123,14 @@
         } \Bigg)
 \end{aligned}   
 \]</span> Gravity model parameters are fit through normalized connectivity values (<span class="math inline">\(\pi_{ij}\)</span>) that scale the Poission likelihood so that it is proportional to the observed trip counts (<span class="math inline">\(m_{ij}\)</span>). The exponential parameters <span class="math inline">\(\omega_1\)</span> and <span class="math inline">\(\omega_2\)</span> are weights that modify the contribution of origin and destination population sizes, and <span class="math inline">\(\theta\)</span> is a proportionality constant. The denominator of the gravity model, <span class="math inline">\(d_{ij}^\gamma\)</span>, serves as the dispersal kernel function. The fitting function <code><a href="../reference/fit_gravity.html">fit_gravity()</a></code> estimates the posterior distribution of model parameters using Bayesian MCMC inference.</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">mod</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/fit_gravity.html">fit_gravity</a></span>(<span class="no">M</span>, <span class="no">D</span>, <span class="no">N</span>, <span class="kw">DIC</span><span class="kw">=</span><span class="fl">TRUE</span>)
+<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">mod</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/fit_gravity.html">fit_gravity</a></span>(<span class="kw">M</span><span class="kw">=</span><span class="no">M</span>,
+                   <span class="kw">D</span><span class="kw">=</span><span class="no">D</span>,
+                   <span class="kw">N</span><span class="kw">=</span><span class="no">N</span>,
+                   <span class="kw">n_chain</span><span class="kw">=</span><span class="fl">2</span>,
+                   <span class="kw">n_burn</span><span class="kw">=</span><span class="fl">1000</span>,
+                   <span class="kw">n_samp</span><span class="kw">=</span><span class="fl">1000</span>,
+                   <span class="kw">n_thin</span><span class="kw">=</span><span class="fl">2</span>,
+                   <span class="kw">DIC</span><span class="kw">=</span><span class="fl">TRUE</span>)
 <span class="co">#&gt; ::Fitting gravity model for 10 origins and 10 destinations::</span>
 <span class="co">#&gt; Using uniformative priors</span>
 <span class="co">#&gt; Compiling model graph</span>
@@ -137,20 +144,21 @@
 <span class="co">#&gt; Initializing model</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; NOTE: Stopping adaptation</span></pre></body></html></div>
-<p>The above code fits the gravity model using 4 sampling chains, discards the first 1000 samples as ‘burin in’, and then takes 5000 samples thinning by 5 to give 1000 total samples per chain. Additional arguments tell the function to calculate the Deviance Information Criterion (DIC) and to execute the model computation on 4 parallel cores. Running this model on a large number of locations may take several minutes.</p>
+<p>The above code fits the gravity model using 4 sampling chains, discards the first 1000 samples as ‘burin in’, and then takes 1000 samples thinning by 2 to give 500 total samples per chain. The <code>DIC=TRUE</code> argument tells the function to calculate the Deviance Information Criterion (DIC).</p>
+<p>Running a gravity model on a large number of locations (e.g. <span class="math inline">\(\gt 100\)</span>) or drawing a large number of samples from posterior distributions (e.g. 10000) may take several minutes. If computation is cumbersome, then the model can run sampling chains in parallel instead of sequentially by specifying <code>parallel = TRUE</code>.</p>
 <p>The fitting function <code><a href="../reference/fit_gravity.html">fit_gravity()</a></code> returns results as a <code><a href="https://rdrr.io/pkg/coda/man/mcmc.list.html">coda::mcmc.list()</a></code> object shown below. The <code><a href="https://rdrr.io/pkg/coda/man/mcmc.list.html">coda::mcmc.list()</a></code> is a common object class that holds the posterior samples for each parameter and each sampling chain.</p>
 <div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(<span class="no">mod</span>)
 <span class="co">#&gt; List of 2</span>
-<span class="co">#&gt;  $ : 'mcmc' num [1:1000, 1:7] 48190 48190 48191 48196 48189 ...</span>
+<span class="co">#&gt;  $ : 'mcmc' num [1:500, 1:7] 48187 48189 48195 48196 48191 ...</span>
 <span class="co">#&gt;   ..- attr(*, "dimnames")=List of 2</span>
 <span class="co">#&gt;   .. ..$ : NULL</span>
 <span class="co">#&gt;   .. ..$ : chr [1:7] "deviance" "gamma" "omega_1" "omega_2" ...</span>
-<span class="co">#&gt;   ..- attr(*, "mcpar")= num [1:3] 1 1000 1</span>
-<span class="co">#&gt;  $ : 'mcmc' num [1:1000, 1:7] 48188 48192 48189 48190 48197 ...</span>
+<span class="co">#&gt;   ..- attr(*, "mcpar")= num [1:3] 1 500 1</span>
+<span class="co">#&gt;  $ : 'mcmc' num [1:500, 1:7] 48187 48187 48193 48188 48192 ...</span>
 <span class="co">#&gt;   ..- attr(*, "dimnames")=List of 2</span>
 <span class="co">#&gt;   .. ..$ : NULL</span>
 <span class="co">#&gt;   .. ..$ : chr [1:7] "deviance" "gamma" "omega_1" "omega_2" ...</span>
-<span class="co">#&gt;   ..- attr(*, "mcpar")= num [1:3] 1 1000 1</span>
+<span class="co">#&gt;   ..- attr(*, "mcpar")= num [1:3] 1 500 1</span>
 <span class="co">#&gt;  - attr(*, "class")= chr "mcmc.list"</span></pre></body></html></div>
 </div>
 <div id="model-summary-and-validation" class="section level3">
@@ -160,35 +168,35 @@
 <div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">mod</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/summarize_mobility.html">summarize_mobility</a></span>(<span class="no">mod</span>)
 <span class="no">mod</span>
 <span class="co">#&gt;                  Mean         SD       HPD2.5      HPD97.5 Rhat SSeff       AC2</span>
-<span class="co">#&gt; gamma        1.409045 0.01681533 1.379160e+00     1.443296 1.00   375 0.6571827</span>
-<span class="co">#&gt; omega_1      2.158638 2.13868773 6.540239e-04     6.626575 1.05   322 0.7232471</span>
-<span class="co">#&gt; omega_2     39.917767 2.16456261 3.579880e+01    44.049666 1.00   439 0.6394862</span>
-<span class="co">#&gt; theta        2.075788 1.90342661 1.022984e-03     5.686658 1.02   402 0.6653014</span>
-<span class="co">#&gt; DIC      48215.666758 2.85266205 4.821278e+04 48221.403088 1.00   440 0.5823080</span>
-<span class="co">#&gt; deviance 48188.971952 2.85266205 4.818609e+04 48194.708282 1.00   440 0.5823080</span>
-<span class="co">#&gt; pD          13.347403         NA           NA           NA   NA    NA        NA</span>
-<span class="co">#&gt;                AC5        AC10</span>
-<span class="co">#&gt; gamma    0.2370355 0.007397315</span>
-<span class="co">#&gt; omega_1  0.2673178 0.002529164</span>
-<span class="co">#&gt; omega_2  0.1970902 0.014721021</span>
-<span class="co">#&gt; theta    0.1629770 0.058167747</span>
-<span class="co">#&gt; DIC      0.1685282 0.025503847</span>
-<span class="co">#&gt; deviance 0.1685282 0.025503847</span>
-<span class="co">#&gt; pD              NA          NA</span></pre></body></html></div>
+<span class="co">#&gt; gamma        1.410567 0.01739689 1.377398e+00     1.444411 1.00   317 0.4648820</span>
+<span class="co">#&gt; omega_1      2.009119 1.93399100 7.198116e-04     5.995969 1.02   423 0.4133634</span>
+<span class="co">#&gt; omega_2     39.721794 2.14051061 3.563271e+01    43.789554 1.01   360 0.4690407</span>
+<span class="co">#&gt; theta        1.941174 1.93645856 2.256832e-03     6.022809 1.04   333 0.4603266</span>
+<span class="co">#&gt; DIC      48213.924512 2.93385099 4.821086e+04 48219.592226 1.01   420 0.4089345</span>
+<span class="co">#&gt; deviance 48189.147722 2.93385099 4.818608e+04 48194.815436 1.01   420 0.4089345</span>
+<span class="co">#&gt; pD          12.388395         NA           NA           NA   NA    NA        NA</span>
+<span class="co">#&gt;                  AC5        AC10</span>
+<span class="co">#&gt; gamma     0.08410272 -0.09160903</span>
+<span class="co">#&gt; omega_1  -0.01121930  0.01416459</span>
+<span class="co">#&gt; omega_2   0.07169640 -0.06573049</span>
+<span class="co">#&gt; theta     0.06826213  0.04025759</span>
+<span class="co">#&gt; DIC       0.06358962 -0.03278034</span>
+<span class="co">#&gt; deviance  0.06358962 -0.03278034</span>
+<span class="co">#&gt; pD                NA          NA</span></pre></body></html></div>
 <p>The <code><a href="../reference/check_mobility.html">check_mobility()</a></code> function provides goodness of fit metrics and summary plots.</p>
 <div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="../reference/check_mobility.html">check_mobility</a></span>(<span class="no">M</span>, <span class="no">D</span>, <span class="no">N</span>, <span class="no">mod</span>)</pre></body></html></div>
 <p><img src="V4_gravity_model_files/figure-html/check-1.png" width="696"></p>
 <pre><code>#&gt; $DIC
-#&gt; [1] 48215.67
+#&gt; [1] 48213.92
 #&gt; 
 #&gt; $RMSE
-#&gt; [1] 2156.695
+#&gt; [1] 2156.917
 #&gt; 
 #&gt; $MAPE
-#&gt; [1] 2.596167
+#&gt; [1] 2.595404
 #&gt; 
 #&gt; $R2
-#&gt; [1] 0.5081411</code></pre>
+#&gt; [1] 0.5086527</code></pre>
 <p>Now that we have verified that our model fits the data adequately, we can simulate connectivity values among the off-diagonal locations by using the estimated parameter values from the fitted gravity model in the <code><a href="../reference/sim_gravity.html">sim_gravity()</a></code> function.</p>
 <div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">pi_hat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/sim_gravity.html">sim_gravity</a></span>(<span class="kw">N</span><span class="kw">=</span><span class="no">N</span>,
                       <span class="kw">D</span><span class="kw">=</span><span class="no">D</span>,

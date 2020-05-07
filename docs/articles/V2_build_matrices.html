@@ -94,11 +94,11 @@
 
     
     
-<p>Once the travel data has been converted the to gerenalized travel data format in the <code>travel_data_template</code> and <code>travel_data_sim</code> objects, utility functions can be used to build the data matrices required for fitting and simulating models. For fitting gravity models the data must be converted into data matrices representing travel among locations (<span class="math inline">\(M\)</span>), along with distances (<span class="math inline">\(D\)</span>) and population sizes (<span class="math inline">\(N\)</span>).</p>
+<p>Once the travel data has been converted the to generalized travel data format in the <code><a href="../reference/travel_data_template.html">travel_data_template()</a></code> and <code><a href="../reference/travel_data_sim.html">travel_data_sim()</a></code> objects, utility functions can be used to build the data matrices required for fitting and simulating models. For fitting gravity models the data must be converted into data matrices representing travel among locations (<span class="math inline">\(M\)</span>), along with distances (<span class="math inline">\(D\)</span>) and population sizes (<span class="math inline">\(N\)</span>).</p>
 <div id="unique-ids" class="section level3">
 <h3 class="hasAnchor">
 <a href="#unique-ids" class="anchor"></a>Unique IDs</h3>
-<p>The first step is to add unique IDs to the travel data. If the data have all unique names at the lowest admin level then hierarchical IDs are not needed. However, if the data include repeated admin names, then higher admin levels must be included in the unique IDs.</p>
+<p>The first step is to add unique IDs to the travel data. If the data have all unique names at the lowest admin level then hierarchical IDs are not needed. However, if the data include repeated admin names, then higher admin levels must be included to make unique IDs.</p>
 <div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="no">travel_data</span> <span class="kw">&lt;-</span> <span class="no">travel_data_sim</span>
 
 <span class="co"># Add unique identifiers using Country, State, and County</span>
@@ -139,7 +139,7 @@
 <div id="build-distance-matrix" class="section level3">
 <h3 class="hasAnchor">
 <a href="#build-distance-matrix" class="anchor"></a>Build distance matrix</h3>
-<p>Gravity models require that distances be provided for all routes even is these observations are missing in the mobility matrix (<span class="math inline">\(M\)</span>). A distance matrix for all unique routes can be built by getting all unique coordinates in the travel data using the <code>get_unique_coords</code> function and then calculating the distances among all locations with <code>get_distance_matrix</code>.</p>
+<p>Gravity models require that distances be provided for all routes even if these observations are missing in the mobility matrix (<span class="math inline">\(M\)</span>). A distance matrix for all unique routes can be built by getting all unique coordinates in the travel data using the <code><a href="../reference/get_unique_coords.html">get_unique_coords()</a></code> function and then calculating the distances among all locations with <code><a href="../reference/get_distance_matrix.html">get_distance_matrix()</a></code>. Note that there is no requirement for the units of the distance matrix. However, we recommend the scale used is sensible for the spatial scale of the study area.</p>
 <div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">xy</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/get_unique_coords.html">get_unique_coords</a></span>(<span class="no">travel_data</span>)
 
 <span class="no">D</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/get_distance_matrix.html">get_distance_matrix</a></span>(<span class="kw">x</span><span class="kw">=</span><span class="no">xy</span>[,<span class="fl">1</span>],

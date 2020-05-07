@@ -95,6 +95,8 @@
     
     
 <p>There are many sources of travel data that researchers wish to fit models to. So, we have designed a generalized data frame template to standardize travel data from various sources into a long-form format that is compatible with the modeling and simulation tools in this package. The <code><a href="../reference/travel_data_sim.html">travel_data_sim()</a></code> object contains a simulated example to illustrate the structure of the data. This example data set contains simulated values of location information and observed number of trips <em>among</em> origin and destination locations and <em>within</em> home locations. The <code><a href="../reference/travel_data_template.html">travel_data_template()</a></code> object is an empty template that can be populated from scratch.</p>
+<p>Since the long-form data structure is designed to accomodate different types of data, some columns may be left blank. For example, in a travel survey the rows may represent indivdiduals compared with call data records where the rows may represent total trip counts for an origin and destination.</p>
+<p>In terms of spatial data, if your data contain coordinate locations down to administrative level 3, then level 4 and 5 can be left blank and the functions will ignore them. Likewise, if all administrative units are in the same country, then <code>admin_0</code> can be left blank.</p>
 <div id="a-simulated-example" class="section level3">
 <h3 class="hasAnchor">
 <a href="#a-simulated-example" class="anchor"></a>A simulated example</h3>
@@ -529,17 +531,17 @@ total number of observed trips made from origin to destination during time span
 <span class="co">#&gt; 2 2020-01-01 2020-01-08    7 days       NA        NA        NA       &lt;NA&gt;</span>
 <span class="co">#&gt; 3 2020-01-01 2020-01-08    7 days       NA        NA        NA       &lt;NA&gt;</span>
 <span class="co">#&gt;   orig_adm0 orig_adm1 orig_adm2 orig_adm3 orig_adm4 orig_adm5 orig_type</span>
-<span class="co">#&gt; 1         A         B         J      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;    County</span>
-<span class="co">#&gt; 2         A         B         L      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;    County</span>
-<span class="co">#&gt; 3         A         B         N      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;    County</span>
+<span class="co">#&gt; 1         A         B         C      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;    County</span>
+<span class="co">#&gt; 2         A         B         U      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;    County</span>
+<span class="co">#&gt; 3         A         B         I      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;    County</span>
 <span class="co">#&gt;      orig_x   orig_y orig_pop dest_adm0 dest_adm1 dest_adm2 dest_adm3 dest_adm4</span>
-<span class="co">#&gt; 1 -90.60445 29.28957     2286         A         B         D      &lt;NA&gt;      &lt;NA&gt;</span>
-<span class="co">#&gt; 2 -88.29466 28.93163     9538         A         B         Q      &lt;NA&gt;      &lt;NA&gt;</span>
-<span class="co">#&gt; 3 -89.86575 31.37287     3239         A         B         U      &lt;NA&gt;      &lt;NA&gt;</span>
+<span class="co">#&gt; 1 -89.72842 29.47064     3724         A         B         G      &lt;NA&gt;      &lt;NA&gt;</span>
+<span class="co">#&gt; 2 -87.49487 29.18080     5556         A         B         L      &lt;NA&gt;      &lt;NA&gt;</span>
+<span class="co">#&gt; 3 -90.82688 29.66130     5552         A         B         N      &lt;NA&gt;      &lt;NA&gt;</span>
 <span class="co">#&gt;   dest_adm5 dest_type    dest_x   dest_y dest_pop trips</span>
-<span class="co">#&gt; 1      &lt;NA&gt;    County -89.33675 30.38301    11091   198</span>
-<span class="co">#&gt; 2      &lt;NA&gt;    County -92.21016 30.72313    10373   152</span>
-<span class="co">#&gt; 3      &lt;NA&gt;    County -91.69653 29.27025     7678    62</span></pre></body></html></div>
+<span class="co">#&gt; 1      &lt;NA&gt;    County -88.74456 29.06194    15198    68</span>
+<span class="co">#&gt; 2      &lt;NA&gt;    County -91.57942 31.24788    11945    92</span>
+<span class="co">#&gt; 3      &lt;NA&gt;    County -90.43264 30.18259     7997    80</span></pre></body></html></div>
 </div>
   </div>
 
