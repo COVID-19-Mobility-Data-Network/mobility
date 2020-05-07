@@ -82,10 +82,19 @@ $$
 Gravity model parameters are fit through normalized connectivity values ($\pi_{ij}$) that scale the Poission likelihood so that it is proportional to the observed trip counts ($m_{ij}$). The exponential parameters $\omega_1$ and $\omega_2$ are weights that modify the contribution of origin and destination population sizes, and $\theta$ is a proportionality constant. The denominator of the gravity model, $d_{ij}^\gamma$, serves as the dispersal kernel function. The fitting function `fit_gravity()` estimates the posterior distribution of model parameters using Bayesian MCMC inference.
 
 ```{r fit}
-mod <- fit_gravity(M, D, N, DIC=TRUE)
+mod <- fit_gravity(M=M, 
+                   D=D, 
+                   N=N,
+                   n_chain=2,
+                   n_burn=1000,
+                   n_samp=1000,
+                   n_thin=2,
+                   DIC=TRUE)
 ```
 
-The above code fits the gravity model using 4 sampling chains, discards the first 1000 samples as 'burin in', and then takes 5000 samples thinning by 5 to give 1000 total samples per chain. Additional arguments tell the function to calculate the Deviance Information Criterion (DIC) and to execute the model computation on 4 parallel cores. Running this model on a large number of locations may take several minutes.
+The above code fits the gravity model using 4 sampling chains, discards the first 1000 samples as 'burin in', and then takes 1000 samples thinning by 2 to give 500 total samples per chain. The `DIC=TRUE` argument tells the function to calculate the Deviance Information Criterion (DIC). 
+
+Running a gravity model on a large number of locations (e.g. $\gt 100$) or drawing a large number of samples from posterior distributions (e.g. 10000) may take several minutes. If computation is cumbersome, then the model can run sampling chains in parallel instead of sequentially by specifying `parallel = TRUE`.
 
 The fitting function `fit_gravity()` returns results as a `coda::mcmc.list()` object shown below. The `coda::mcmc.list()` is a common object class that holds the posterior samples for each parameter and each sampling chain.
 ```{r chains}

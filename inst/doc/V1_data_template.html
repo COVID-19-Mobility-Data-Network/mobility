@@ -302,6 +302,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 <p>There are many sources of travel data that researchers wish to fit models to. So, we have designed a generalized data frame template to standardize travel data from various sources into a long-form format that is compatible with the modeling and simulation tools in this package. The <code>travel_data_sim()</code> object contains a simulated example to illustrate the structure of the data. This example data set contains simulated values of location information and observed number of trips <em>among</em> origin and destination locations and <em>within</em> home locations. The <code>travel_data_template()</code> object is an empty template that can be populated from scratch.</p>
+<p>Since the long-form data structure is designed to accomodate different types of data, some columns may be left blank. For example, in a travel survey the rows may represent indivdiduals compared with call data records where the rows may represent total trip counts for an origin and destination.</p>
+<p>In terms of spatial data, if your data contain coordinate locations down to administrative level 3, then level 4 and 5 can be left blank and the functions will ignore them. Likewise, if all administrative units are in the same country, then <code>admin_0</code> can be left blank.</p>
 <div id="a-simulated-example" class="section level3">
 <h3>A simulated example</h3>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">str</span>(travel_data_sim)</a>
@@ -735,17 +737,17 @@ total number of observed trips made from origin to destination during time span
 <a class="sourceLine" id="cb3-35" data-line-number="35"><span class="co">#&gt; 2 2020-01-01 2020-01-08    7 days       NA        NA        NA       &lt;NA&gt;</span></a>
 <a class="sourceLine" id="cb3-36" data-line-number="36"><span class="co">#&gt; 3 2020-01-01 2020-01-08    7 days       NA        NA        NA       &lt;NA&gt;</span></a>
 <a class="sourceLine" id="cb3-37" data-line-number="37"><span class="co">#&gt;   orig_adm0 orig_adm1 orig_adm2 orig_adm3 orig_adm4 orig_adm5 orig_type</span></a>
-<a class="sourceLine" id="cb3-38" data-line-number="38"><span class="co">#&gt; 1         A         B         P      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;    County</span></a>
-<a class="sourceLine" id="cb3-39" data-line-number="39"><span class="co">#&gt; 2         A         B         M      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;    County</span></a>
+<a class="sourceLine" id="cb3-38" data-line-number="38"><span class="co">#&gt; 1         A         B         U      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;    County</span></a>
+<a class="sourceLine" id="cb3-39" data-line-number="39"><span class="co">#&gt; 2         A         B         R      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;    County</span></a>
 <a class="sourceLine" id="cb3-40" data-line-number="40"><span class="co">#&gt; 3         A         B         U      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;    County</span></a>
 <a class="sourceLine" id="cb3-41" data-line-number="41"><span class="co">#&gt;      orig_x   orig_y orig_pop dest_adm0 dest_adm1 dest_adm2 dest_adm3 dest_adm4</span></a>
-<a class="sourceLine" id="cb3-42" data-line-number="42"><span class="co">#&gt; 1 -87.97691 31.33749     4235         A         B         Y      &lt;NA&gt;      &lt;NA&gt;</span></a>
-<a class="sourceLine" id="cb3-43" data-line-number="43"><span class="co">#&gt; 2 -90.57230 30.70273     3334         A         B         S      &lt;NA&gt;      &lt;NA&gt;</span></a>
-<a class="sourceLine" id="cb3-44" data-line-number="44"><span class="co">#&gt; 3 -89.88533 29.88827     4119         A         B         Y      &lt;NA&gt;      &lt;NA&gt;</span></a>
+<a class="sourceLine" id="cb3-42" data-line-number="42"><span class="co">#&gt; 1 -90.87435 29.27049    10434         A         B         I      &lt;NA&gt;      &lt;NA&gt;</span></a>
+<a class="sourceLine" id="cb3-43" data-line-number="43"><span class="co">#&gt; 2 -90.10880 29.47107     5345         A         B         O      &lt;NA&gt;      &lt;NA&gt;</span></a>
+<a class="sourceLine" id="cb3-44" data-line-number="44"><span class="co">#&gt; 3 -88.40867 30.19940     6781         A         B         G      &lt;NA&gt;      &lt;NA&gt;</span></a>
 <a class="sourceLine" id="cb3-45" data-line-number="45"><span class="co">#&gt;   dest_adm5 dest_type    dest_x   dest_y dest_pop trips</span></a>
-<a class="sourceLine" id="cb3-46" data-line-number="46"><span class="co">#&gt; 1      &lt;NA&gt;    County -92.01782 29.08788    11759    14</span></a>
-<a class="sourceLine" id="cb3-47" data-line-number="47"><span class="co">#&gt; 2      &lt;NA&gt;    County -89.53185 30.30827     8591   172</span></a>
-<a class="sourceLine" id="cb3-48" data-line-number="48"><span class="co">#&gt; 3      &lt;NA&gt;    County -90.53881 30.37207     8751    46</span></a></code></pre></div>
+<a class="sourceLine" id="cb3-46" data-line-number="46"><span class="co">#&gt; 1      &lt;NA&gt;    County -93.51637 29.87772     7625    11</span></a>
+<a class="sourceLine" id="cb3-47" data-line-number="47"><span class="co">#&gt; 2      &lt;NA&gt;    County -90.95431 30.17031    13502   164</span></a>
+<a class="sourceLine" id="cb3-48" data-line-number="48"><span class="co">#&gt; 3      &lt;NA&gt;    County -90.06759 30.42814    22606    26</span></a></code></pre></div>
 </div>
 
 
