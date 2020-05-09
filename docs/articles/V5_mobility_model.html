@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mobility</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
@@ -61,6 +61,9 @@
     </li>
     <li>
       <a href="../articles/V3_travel_probability.html">Fitting and simulating travel probability</a>
+    </li>
+    <li>
+      <a href="../articles/V4_gravity_compendium.html">A compendium of diffusion models</a>
     </li>
     <li>
       <a href="../articles/V4_gravity_model.html">Fitting and simulating a gravity model</a>
@@ -111,8 +114,8 @@
 <h2 class="hasAnchor">
 <a href="#estimate-probability-of-travel-outside-each-origin-location" class="anchor"></a>Estimate probability of travel outside each origin location</h2>
 <p>To estimate the probability of traveling outside the origin location <span class="math inline">\(i\)</span>, the <code><a href="../reference/fit_mobility.html">fit_mobility()</a></code> function uses a Beta-Binomial model with hierarchical structure to infer travel probability in unobserved locations. <span class="math display">\[
-y_i \sim \text{Binom}(\tau_i, \sum_{j} M_{ij})
-\]</span> The random variable <span class="math inline">\(y_i\)</span> is the observed number of trips that leave origin <span class="math inline">\(i\)</span> within the time interval (cells along the diagonal of <span class="math inline">\(M\)</span>). Binomial parameters <span class="math inline">\(\tau_i\)</span> and <span class="math inline">\(\sum_{j} M_{ij}\)</span> are the success probability and total number of observed trips originating from <span class="math inline">\(i\)</span> respectively. In the absence of a linear predictor containing covariates, the conjugate prior distribution for a Binomial likelihood is the Beta distribution (a random variable between 0 and 1). Therefore, success probabilities <span class="math inline">\(\tau_i\)</span> are assumed to be independent samples drawn from a Beta distributed prior with shape and rate parameters <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> <span class="citation">(Gelman et al. 2003)</span>. <span class="math display">\[
+M_{ii} \sim \text{Binom}(\tau_i, \sum_{j} M_{ij})
+\]</span> The random variable <span class="math inline">\(M_{ii}\)</span> is the diagonal of data matrix <span class="math inline">\(M\)</span> and provides the observed number of trips that leave origin <span class="math inline">\(i\)</span> within the time interval. Binomial parameters <span class="math inline">\(\tau_i\)</span> and <span class="math inline">\(\sum_{j} M_{ij}\)</span> are the success probability and total number of observed trips originating from <span class="math inline">\(i\)</span> respectively. In the absence of a linear predictor containing covariates, the conjugate prior distribution for a Binomial likelihood is the Beta distribution (a random variable between 0 and 1). Therefore, success probabilities <span class="math inline">\(\tau_i\)</span> are assumed to be independent samples drawn from a Beta distributed prior with shape and rate parameters <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> <span class="citation">(Gelman et al. 2003)</span>. <span class="math display">\[
 \begin{aligned}
 \tau_i &amp;\sim \text{Beta}(\alpha, \beta) \\
 \tau_\text{pop} &amp;\sim \text{Beta}(\bar{\alpha}, \bar{\beta})
@@ -137,7 +140,7 @@ y_i \sim \text{Binom}(\tau_i, \sum_{j} M_{ij})
 <span class="co">#&gt; Graph information:</span>
 <span class="co">#&gt;    Observed stochastic nodes: 6</span>
 <span class="co">#&gt;    Unobserved stochastic nodes: 9</span>
-<span class="co">#&gt;    Total graph size: 23</span>
+<span class="co">#&gt;    Total graph size: 26</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Initializing model</span>
 <span class="co">#&gt; </span>
@@ -186,7 +189,7 @@ y_i \sim \text{Binom}(\tau_i, \sum_{j} M_{ij})
 <span class="co">#&gt; Graph information:</span>
 <span class="co">#&gt;    Observed stochastic nodes: 6</span>
 <span class="co">#&gt;    Unobserved stochastic nodes: 9</span>
-<span class="co">#&gt;    Total graph size: 23</span>
+<span class="co">#&gt;    Total graph size: 26</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Initializing model</span>
 <span class="co">#&gt; </span>
@@ -208,36 +211,21 @@ y_i \sim \text{Binom}(\tau_i, \sum_{j} M_{ij})
 <span class="co">#&gt; NOTE: Stopping adaptation</span>
 <span class="co">#&gt; Complete.</span>
 <span class="no">mod</span>
-<span class="co">#&gt;                Mean          SD       HPD2.5     HPD97.5 Rhat SSeff</span>
-<span class="co">#&gt; gamma    1.41112276 0.016822675 1.378698e+00  1.44354708 1.00   460</span>
-<span class="co">#&gt; omega_1  1.91370048 1.900233749 7.810367e-05  5.75656007 1.05   393</span>
-<span class="co">#&gt; omega_2 39.62252991 2.042501675 3.543775e+01 43.37993454 1.00   415</span>
-<span class="co">#&gt; theta    1.94403191 2.099554863 2.801749e-03  5.92332358 1.05   341</span>
-<span class="co">#&gt; tau_1    0.30210625 0.004436838 2.938327e-01  0.31117131 1.00  1338</span>
-<span class="co">#&gt; tau_2    0.25631781 0.004682035 2.473608e-01  0.26514729 1.00  1154</span>
-<span class="co">#&gt; tau_3    0.20597496 0.114419249 8.080498e-03  0.42298271 1.00  2044</span>
-<span class="co">#&gt; tau_4    0.20597496 0.114419249 8.080498e-03  0.42298271 1.00  2044</span>
-<span class="co">#&gt; tau_5    0.03034258 0.001871960 2.673306e-02  0.03420956 1.00  1485</span>
-<span class="co">#&gt; tau_6    0.20597496 0.114419249 8.080498e-03  0.42298271 1.00  2044</span>
-<span class="co">#&gt; tau_7    0.22272731 0.004675060 2.141039e-01  0.23189456 1.01  1109</span>
-<span class="co">#&gt; tau_8    0.20597496 0.114419249 8.080498e-03  0.42298271 1.00  2044</span>
-<span class="co">#&gt; tau_9    0.21696188 0.004115726 2.087851e-01  0.22483265 1.00  1178</span>
-<span class="co">#&gt; tau_10   0.22764183 0.004420154 2.183794e-01  0.23562807 1.00  1224</span>
-<span class="co">#&gt;                  AC5</span>
-<span class="co">#&gt; gamma    0.186259378</span>
-<span class="co">#&gt; omega_1  0.205243583</span>
-<span class="co">#&gt; omega_2  0.186570721</span>
-<span class="co">#&gt; theta    0.288411687</span>
-<span class="co">#&gt; tau_1    0.009154513</span>
-<span class="co">#&gt; tau_2    0.035332708</span>
-<span class="co">#&gt; tau_3    0.025885225</span>
-<span class="co">#&gt; tau_4    0.025885225</span>
-<span class="co">#&gt; tau_5   -0.006863531</span>
-<span class="co">#&gt; tau_6    0.025885225</span>
-<span class="co">#&gt; tau_7    0.016459599</span>
-<span class="co">#&gt; tau_8    0.025885225</span>
-<span class="co">#&gt; tau_9    0.068543853</span>
-<span class="co">#&gt; tau_10   0.018618574</span></pre></body></html></div>
+<span class="co">#&gt;               Mean          SD       HPD2.5    HPD97.5 Rhat SSeff           AC5</span>
+<span class="co">#&gt; gamma    1.4111228 0.016822675 1.378698e+00  1.4435471 1.00   460  1.862594e-01</span>
+<span class="co">#&gt; omega_1  1.9137005 1.900233749 7.810367e-05  5.7565601 1.05   393  2.052436e-01</span>
+<span class="co">#&gt; omega_2 39.6225299 2.042501675 3.543775e+01 43.3799345 1.00   415  1.865707e-01</span>
+<span class="co">#&gt; theta    1.9440319 2.099554863 2.801749e-03  5.9233236 1.05   341  2.884117e-01</span>
+<span class="co">#&gt; tau_1    0.3018925 0.004629156 2.930032e-01  0.3107386 1.00  1233  3.266644e-02</span>
+<span class="co">#&gt; tau_2    0.2564790 0.004848708 2.469049e-01  0.2654103 1.01  1191  4.990687e-02</span>
+<span class="co">#&gt; tau_3    0.2064803 0.098840351 4.330184e-02  0.4093886 1.00  2139  9.933386e-03</span>
+<span class="co">#&gt; tau_4    0.2064803 0.098840351 4.330184e-02  0.4093886 1.00  2139  9.933386e-03</span>
+<span class="co">#&gt; tau_5    0.0304733 0.001794991 2.708876e-02  0.0341199 1.01  1294  5.617759e-02</span>
+<span class="co">#&gt; tau_6    0.2064803 0.098840351 4.330184e-02  0.4093886 1.00  2139  9.933386e-03</span>
+<span class="co">#&gt; tau_7    0.2227997 0.004809916 2.138265e-01  0.2324551 1.01  1143  1.101246e-05</span>
+<span class="co">#&gt; tau_8    0.2064803 0.098840351 4.330184e-02  0.4093886 1.00  2139  9.933386e-03</span>
+<span class="co">#&gt; tau_9    0.2168678 0.004146679 2.090303e-01  0.2253207 1.01  1136 -1.269246e-02</span>
+<span class="co">#&gt; tau_10   0.2276502 0.004391123 2.189165e-01  0.2358263 1.00  1215 -1.772777e-02</span></pre></body></html></div>
 <p>The model output printed above tells us that 4 locations named C, D, F, and H were missing data and that these locations will inherit the population mean <span class="math inline">\(\tau_{\text{pop}}\)</span>. Other summary statistics tell us that, although the model converged for all parameters (<span class="math inline">\(\hat{R} \approx 1\)</span>) we could have run more samples for this example because effective sample sizes (<span class="math inline">\(SS_{\text{eff}}\)</span>) were low (<span class="math inline">\(\lt 1000\)</span>) for several parameters. We can improve effective sample sizes of increasing any of the <code>n_chain</code>, <code>n_burn</code>, <code>n_samp</code>, or <code>n_thin</code> arguments.</p>
 </div>
 <div id="checking-the-goodness-of-fit-of-a-mobility-model" class="section level2">
@@ -250,13 +238,13 @@ y_i \sim \text{Binom}(\tau_i, \sum_{j} M_{ij})
                <span class="kw">mod</span><span class="kw">=</span><span class="no">mod</span>)</pre></body></html></div>
 <p><img src="V5_mobility_model_files/figure-html/check%20mobility-1.png" width="672"></p>
 <pre><code>#&gt; $RMSE
-#&gt; [1] 447.7645
+#&gt; [1] 447.4228
 #&gt; 
 #&gt; $MAPE
-#&gt; [1] 0.3868052
+#&gt; [1] 0.3866846
 #&gt; 
 #&gt; $R2
-#&gt; [1] 0.9678128</code></pre>
+#&gt; [1] 0.9678274</code></pre>
 <p>At first glance, our model seems to be doing a good job of capturing trends in the data. The posterior predictive check shows that if we just look at the overall distribution of trip counts in the mobility data matrix (<span class="math inline">\(M\)</span>), that the model has estimated trip counts (<span class="math inline">\(\hat{M}\)</span>) with about the same distribution. The Q-Q plot shows how the quantiles of the residuals of our model compare to the quantiles expected from a Normal distribution. We also see that the residuals are mostly Normally distributed with some deviation at the extremes.</p>
 <p>The prediction error results compare actual trip count values in the data matrix <span class="math inline">\(M\)</span> with the predicted values of the estimated mobility model (<span class="math inline">\(\hat{M}\)</span>). These results indicate that our model has an average magnitude of error of about 447 trip counts (RMSE), which is on average about 39% of the observed trip count values. The R-squared value shows that our model captures approximately 96% of the variance observed in the supplied mobility data (a rather high value since we are fitting to simulated data).</p>
 </div>
@@ -274,11 +262,11 @@ y_i \sim \text{Binom}(\tau_i, \sum_{j} M_{ij})
 <span class="no">mod_sim</span>[<span class="fl">1</span>:<span class="fl">5</span>,<span class="fl">1</span>:<span class="fl">5</span>]
 <span class="co">#&gt;       destination</span>
 <span class="co">#&gt; origin           A           B           C            D           E</span>
-<span class="co">#&gt;      A 0.697893751 0.014484522 0.009653652 0.0250835205 0.008225717</span>
-<span class="co">#&gt;      B 0.012459797 0.743682194 0.028072259 0.0052001169 0.020583012</span>
-<span class="co">#&gt;      C 0.010681600 0.036108980 0.794025040 0.0056327656 0.022187090</span>
-<span class="co">#&gt;      D 0.050713222 0.012221908 0.010292235 0.7940250399 0.007755629</span>
-<span class="co">#&gt;      E 0.001370306 0.003986079 0.003340408 0.0006390401 0.969657416</span></pre></body></html></div>
+<span class="co">#&gt;      A 0.698107487 0.014474274 0.009646822 0.0250657742 0.008219897</span>
+<span class="co">#&gt;      B 0.012467633 0.743521004 0.028089912 0.0052033871 0.020595956</span>
+<span class="co">#&gt;      C 0.010707809 0.036197578 0.793519654 0.0056465863 0.022241529</span>
+<span class="co">#&gt;      D 0.050837653 0.012251896 0.010317489 0.7935196543 0.007774658</span>
+<span class="co">#&gt;      E 0.001376209 0.004003251 0.003354798 0.0006417931 0.969526700</span></pre></body></html></div>
 <p>For applications where we want to simulate stochastic realizations of the mobility matrix based on the uncertainty in model parameters, such as in a spatial disease transmission model, we can give the <code><a href="../reference/sim_mobility.html">sim_mobility()</a></code> function the model object fitted by <code><a href="../reference/fit_mobility.html">fit_mobility()</a></code> and ask for <code>n</code> stochastic realizations. The following code will return a three-dimensional array where the third dimension contains the <code>n</code> simultions.</p>
 <div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">mod_sim</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/sim_mobility.html">sim_mobility</a></span>(<span class="no">D</span>,
                         <span class="no">N</span>,
@@ -288,29 +276,29 @@ y_i \sim \text{Binom}(\tau_i, \sum_{j} M_{ij})
 <span class="co">#&gt; , , 1</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;             A           B           C            D           E</span>
-<span class="co">#&gt; A 0.697221431 0.014582396 0.009763677 0.0252080963 0.008280861</span>
-<span class="co">#&gt; B 0.012672158 0.741222881 0.028385603 0.0053154258 0.020736473</span>
-<span class="co">#&gt; C 0.015754998 0.052708589 0.698464675 0.0083373315 0.032368348</span>
-<span class="co">#&gt; D 0.024482621 0.005940654 0.005018108 0.9001660013 0.003766822</span>
-<span class="co">#&gt; E 0.001313462 0.003784909 0.003181689 0.0006151761 0.971154721</span>
+<span class="co">#&gt; A 0.697406001 0.014573507 0.009757725 0.0251927297 0.008275813</span>
+<span class="co">#&gt; B 0.012684353 0.740973852 0.028412920 0.0053205410 0.020756429</span>
+<span class="co">#&gt; C 0.014887055 0.049804875 0.715076245 0.0078780282 0.030585177</span>
+<span class="co">#&gt; D 0.027794123 0.006744182 0.005696853 0.8866625234 0.004276320</span>
+<span class="co">#&gt; E 0.001322151 0.003809946 0.003202736 0.0006192455 0.970963908</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; , , 2</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;             A           B           C            D           E</span>
-<span class="co">#&gt; A 0.700371619 0.014225998 0.009613968 0.0247983120 0.007938341</span>
-<span class="co">#&gt; B 0.012376491 0.747409833 0.027652470 0.0051761914 0.019667518</span>
-<span class="co">#&gt; C 0.004843791 0.016014078 0.907681744 0.0025556295 0.009663495</span>
-<span class="co">#&gt; D 0.102332012 0.024551891 0.020931701 0.5826995123 0.015297341</span>
-<span class="co">#&gt; E 0.001335386 0.003802875 0.003226478 0.0006235967 0.970711199</span>
+<span class="co">#&gt; A 0.700692503 0.014210763 0.009603672 0.0247717545 0.007929839</span>
+<span class="co">#&gt; B 0.012377917 0.747380723 0.027655657 0.0051767879 0.019669784</span>
+<span class="co">#&gt; C 0.005575303 0.018432529 0.893739808 0.0029415816 0.011122879</span>
+<span class="co">#&gt; D 0.092768484 0.022257372 0.018975510 0.6216986956 0.013867715</span>
+<span class="co">#&gt; E 0.001343290 0.003825382 0.003245574 0.0006272875 0.970537851</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; , , 3</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;             A           B           C            D           E</span>
-<span class="co">#&gt; A 0.700114299 0.014534056 0.009737980 0.0250456108 0.008288017</span>
-<span class="co">#&gt; B 0.012200743 0.751969053 0.027245796 0.0051377278 0.019985871</span>
-<span class="co">#&gt; C 0.010689323 0.035627175 0.796178327 0.0056733606 0.021963305</span>
-<span class="co">#&gt; D 0.035635098 0.008707991 0.007353691 0.8543177241 0.005542155</span>
-<span class="co">#&gt; E 0.001222442 0.003511569 0.002951168 0.0005745264 0.973284917</span></pre></body></html></div>
+<span class="co">#&gt; A 0.700424081 0.014519042 0.009727920 0.0250197386 0.008279455</span>
+<span class="co">#&gt; B 0.012194317 0.752099687 0.027231446 0.0051350218 0.019975345</span>
+<span class="co">#&gt; C 0.010734054 0.035776262 0.795325408 0.0056971015 0.022055213</span>
+<span class="co">#&gt; D 0.037872504 0.009254735 0.007815404 0.8451708339 0.005890128</span>
+<span class="co">#&gt; E 0.001234823 0.003547134 0.002981057 0.0005803452 0.973014348</span></pre></body></html></div>
 </div>
 <div id="references" class="section level2">
 <h2 class="hasAnchor">

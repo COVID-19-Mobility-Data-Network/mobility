@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mobility</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
@@ -61,6 +61,9 @@
     </li>
     <li>
       <a href="../articles/V3_travel_probability.html">Fitting and simulating travel probability</a>
+    </li>
+    <li>
+      <a href="../articles/V4_gravity_compendium.html">A compendium of diffusion models</a>
     </li>
     <li>
       <a href="../articles/V4_gravity_model.html">Fitting and simulating a gravity model</a>
@@ -147,7 +150,7 @@ y_i \sim \text{Binom}(\tau_i, m_i)
 <span class="co">#&gt; Graph information:</span>
 <span class="co">#&gt;    Observed stochastic nodes: 14</span>
 <span class="co">#&gt;    Unobserved stochastic nodes: 17</span>
-<span class="co">#&gt;    Total graph size: 47</span>
+<span class="co">#&gt;    Total graph size: 50</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Initializing model</span>
 <span class="co">#&gt; </span>
@@ -164,24 +167,24 @@ y_i \sim \text{Binom}(\tau_i, m_i)
                 <span class="kw">sigma</span><span class="kw">=</span><span class="no">prob_trav</span>$<span class="no">SD</span>,
                 <span class="kw">id</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">y</span>),
                 <span class="kw">n</span><span class="kw">=</span><span class="fl">5</span>)
-<span class="co">#&gt;              [,1]        [,2]         [,3]        [,4]        [,5]</span>
-<span class="co">#&gt; A_B_C 0.020673185 0.021071083 1.617911e-02 0.016294177 0.016221190</span>
-<span class="co">#&gt; A_B_D 0.427539576 0.440511136 4.239738e-01 0.431202840 0.456739286</span>
-<span class="co">#&gt; A_B_E 0.477801708 0.464083582 4.590692e-01 0.453795557 0.454800694</span>
-<span class="co">#&gt; A_B_G 0.010820313 0.007837591 8.047659e-03 0.012803924 0.007027430</span>
-<span class="co">#&gt; A_B_H 0.000225543 0.001563390 3.454428e-05 0.007012615 0.003864843</span>
-<span class="co">#&gt; A_B_I 0.326158692 0.549425023 6.043801e-01 0.237197944 0.019969131</span>
-<span class="co">#&gt; A_B_J 0.403337083 0.353314336 4.022384e-01 0.345372156 0.380695329</span>
-<span class="co">#&gt; A_B_K 0.175825559 0.168312600 1.761458e-01 0.162450019 0.194441717</span>
-<span class="co">#&gt; A_B_N 0.152838851 0.134086641 1.288223e-01 0.121706896 0.123067365</span>
-<span class="co">#&gt; A_B_O 0.014402248 0.231241042 3.569528e-01 0.247801219 0.242421096</span>
-<span class="co">#&gt; A_B_Q 0.017358652 0.022240202 2.709014e-02 0.026266082 0.025512454</span>
-<span class="co">#&gt; A_B_R 0.017679233 0.018544271 1.456266e-02 0.019127752 0.020493162</span>
-<span class="co">#&gt; A_B_S 0.533811217 0.513743502 4.784463e-01 0.498019213 0.462542607</span>
-<span class="co">#&gt; A_B_T 0.009363484 0.009822325 7.495873e-03 0.004988071 0.006390516</span>
-<span class="co">#&gt; A_B_V 0.032679953 0.036605660 3.044358e-02 0.036613027 0.037788111</span>
-<span class="co">#&gt; A_B_Y 0.171056239 0.260638367 6.497311e-03 0.135310579 0.006991721</span>
-<span class="co">#&gt; A_B_Z 0.016281074 0.022591956 2.528166e-02 0.021650770 0.020884459</span></pre></body></html></div>
+<span class="co">#&gt;               [,1]        [,2]         [,3]        [,4]        [,5]</span>
+<span class="co">#&gt; A_B_C 0.0207861441 0.021168607 1.644272e-02 0.016554523 0.016483609</span>
+<span class="co">#&gt; A_B_D 0.4277232358 0.440310618 4.242626e-01 0.431278274 0.456055333</span>
+<span class="co">#&gt; A_B_E 0.4780164718 0.463763229 4.585539e-01 0.453075586 0.454119677</span>
+<span class="co">#&gt; A_B_G 0.0110732026 0.008118388 8.327714e-03 0.013020769 0.007309064</span>
+<span class="co">#&gt; A_B_H 0.0002789364 0.001977871 4.178062e-05 0.009017735 0.004939276</span>
+<span class="co">#&gt; A_B_I 0.0014950266 0.284679678 4.555513e-01 0.500753926 0.218019697</span>
+<span class="co">#&gt; A_B_J 0.3791371000 0.403707310 3.535542e-01 0.402605795 0.345591402</span>
+<span class="co">#&gt; A_B_K 0.1842854042 0.176099202 1.688158e-01 0.176409518 0.163126352</span>
+<span class="co">#&gt; A_B_N 0.1538263872 0.152969288 1.342903e-01 0.129044431 0.121952478</span>
+<span class="co">#&gt; A_B_O 0.3405035739 0.023283058 2.135000e-01 0.307637850 0.226038903</span>
+<span class="co">#&gt; A_B_Q 0.0224026445 0.017319330 2.238605e-02 0.027458395 0.026594195</span>
+<span class="co">#&gt; A_B_R 0.0222492355 0.017623377 1.856076e-02 0.014279253 0.019195113</span>
+<span class="co">#&gt; A_B_S 0.4949947374 0.530323105 5.117162e-01 0.479004328 0.497143086</span>
+<span class="co">#&gt; A_B_T 0.0036797668 0.009653227 1.012957e-02 0.007716039 0.005120079</span>
+<span class="co">#&gt; A_B_V 0.0357602028 0.032444003 3.637747e-02 0.030205022 0.036384860</span>
+<span class="co">#&gt; A_B_Y 0.0557642218 0.167000665 2.357091e-01 0.553176909 0.012332824</span>
+<span class="co">#&gt; A_B_Z 0.0220580198 0.026528346 1.632697e-02 0.022787276 0.025550657</span></pre></body></html></div>
 </div>
   </div>
 

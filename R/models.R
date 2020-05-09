@@ -312,23 +312,54 @@ fit_gravity <- function(
   parallel=FALSE
 ) {
 
-  # Check data
+  # Check data formats
+  msg <- 'M must be a named numeric matrix'
+  if (!(is.matrix(M) & is.numeric(M))) stop(msg)
+  if (any(unlist(lapply(dimnames(M), is.null)))) stop(msg)
+
+  msg <- 'D must be a named numeric matrix'
+  if (!(is.matrix(D) & is.numeric(D))) stop(msg)
+  if (any(unlist(lapply(dimnames(D), is.null)))) stop(msg)
+
+  if (!is.null(N) & any(!is.null(N_orig),!is.null(N_dest))) stop('Only supply N or both N_orig and N_dest')
+  if (is.null(N) & any(is.null(N_orig), is.null(N_dest))) stop('If N = NULL, both N_orig and N_dest must be supplied')
+
+  if (!is.null(N)) {
+    msg <- 'N must be a named numeric vector'
+    if (!(is.vector(N) & is.numeric(N))) stop(msg)
+    if (is.null(names(N))) stop(msg)
+  }
+
+  if (!is.null(N_orig)) {
+    msg <- 'N_orig must be a named numeric vector'
+    if (!(is.vector(N_orig) & is.numeric(N_orig))) stop(msg)
+    if (is.null(names(N_orig))) stop(msg)
+  }
+
+  if (!is.null(N_dest)) {
+    msg <- 'N_dest must be a named numeric vector'
+    if (!(is.vector(N_dest) & is.numeric(N_dest))) stop(msg)
+    if (is.null(names(N_dest))) stop(msg)
+  }
+
   if (all(!is.null(N), is.null(N_orig), is.null(N_dest))) {
     N_dest <- N_orig <- N
-  } else if (all(is.null(N), !is.null(N_orig), is.null(N_dest))) {
-    N_dest <- N_orig
+    rm(N)
   }
 
-  if (!(identical(dim(M)[1], dim(D)[1], length(N_orig)))) stop('Dimensions of input data must match')
-  if (!(identical(dim(M)[2], dim(D)[2], length(N_dest)))) stop('Dimensions of input data must match')
+  # check data dimensions
+  check_dims <- sapply(c(dim(M), dim(D), length(N_orig), length(N_dest)),
+                       function(x) identical(x, dim(M)[1]))
 
-  if ( !(identical(dimnames(M)[[1]], dimnames(D)[[1]])) | !(identical(dimnames(M)[[1]], names(N_orig))) ) {
-    stop('Dimension names of input data do not match')
-  }
+  if (any(!check_dims)) stop('Dimensions of input data do not match')
 
-  if ( !(identical(dimnames(M)[[2]], dimnames(D)[[2]])) | !(identical(dimnames(M)[[2]], names(N_dest))) ) {
-    stop('Dimension names of input data do not match')
-  }
+  # check data names
+  check_names <- unlist(lapply(
+    c(dimnames(M), dimnames(D), list(names(N_orig), names(N_dest))),
+    function(x) identical(x, dimnames(M)[[1]])
+  ))
+
+  if (any(!check_names)) stop('Dimension names of input data do not match')
 
   message(
     paste('::Fitting gravity model for',
@@ -496,12 +527,12 @@ fit_prob_travel <- function(
 
     # Population-level priors
     tau_pop ~ dbeta(alpha, beta)
-    alpha ~ dgamma(1, 0.01)
-    beta ~ dgamma(1, 0.01)
+    alpha ~ dgamma(2, 0.05)
+    beta ~ dgamma(2, 0.05)
 
     # Origin-level priors
     for (i in 1:length(travel)) {
-      tau[i] ~ dbeta(alpha, beta)
+      tau[i] ~ dbeta(alpha + 1e-05, beta + 1e-05)
     }
   }"
 

@@ -84,7 +84,7 @@ expected from a Normal distribution. Goodness of fit metrics include:
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mobility</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
@@ -114,6 +114,9 @@ expected from a Normal distribution. Goodness of fit metrics include:
     </li>
     <li>
       <a href="../articles/V3_travel_probability.html">Fitting and simulating travel probability</a>
+    </li>
+    <li>
+      <a href="../articles/V4_gravity_compendium.html">A compendium of diffusion models</a>
     </li>
     <li>
       <a href="../articles/V4_gravity_model.html">Fitting and simulating a gravity model</a>
@@ -213,7 +216,7 @@ expected from a Normal distribution. Goodness of fit metrics include:</p><dl'>
 #&gt; Graph information:
 #&gt;    Observed stochastic nodes: 6
 #&gt;    Unobserved stochastic nodes: 9
-#&gt;    Total graph size: 23
+#&gt;    Total graph size: 26
 #&gt; 
 #&gt; Initializing model
 #&gt; 
@@ -243,7 +246,7 @@ expected from a Normal distribution. Goodness of fit metrics include:</p><dl'>
 #&gt; Graph information:
 #&gt;    Observed stochastic nodes: 6
 #&gt;    Unobserved stochastic nodes: 9
-#&gt;    Total graph size: 23
+#&gt;    Total graph size: 26
 #&gt; 
 #&gt; Initializing model
 #&gt; 
@@ -264,10 +267,10 @@ expected from a Normal distribution. Goodness of fit metrics include:</p><dl'>
 #&gt; </div><div class='output co'>#&gt; <span class='message'>Complete.</span></div><div class='input'>
 <span class='fu'>check_mobility</span>(<span class='kw'>M</span><span class='kw'>=</span><span class='no'>M</span>,
                <span class='kw'>mod</span><span class='kw'>=</span><span class='no'>mod_travel</span>)</div><div class='img'><img src='check_mobility-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; $MAPE
-#&gt; [1] 0.002851707
+#&gt; [1] 0.002414787
 #&gt; 
 #&gt; $R2
-#&gt; [1] 0.9999997
+#&gt; [1] 0.9999988
 #&gt; </div><div class='input'>
 <span class='fu'>check_mobility</span>(<span class='kw'>M</span><span class='kw'>=</span><span class='no'>M</span>,
                <span class='kw'>D</span><span class='kw'>=</span><span class='no'>D</span>,
@@ -285,13 +288,13 @@ expected from a Normal distribution. Goodness of fit metrics include:</p><dl'>
                <span class='kw'>D</span><span class='kw'>=</span><span class='no'>D</span>,
                <span class='kw'>N</span><span class='kw'>=</span><span class='no'>N</span>,
                <span class='kw'>mod</span><span class='kw'>=</span><span class='no'>mod_mobility</span>)</div><div class='img'><img src='check_mobility-3.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; $RMSE
-#&gt; [1] 448.5383
+#&gt; [1] 448.9842
 #&gt; 
 #&gt; $MAPE
-#&gt; [1] 0.3866179
+#&gt; [1] 0.3855657
 #&gt; 
 #&gt; $R2
-#&gt; [1] 0.967672
+#&gt; [1] 0.9677709
 #&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

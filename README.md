@@ -95,13 +95,12 @@ origin           A          B          C           D          E
 Please see package vignettes to explore each step in more detail.
 
 ## Installation
-To install the install the development version, first install the `devtools` package and then install `mobility` from source via the COVID-19-Mobility-Data-Network GitHub repository:
-```r
-install.packages('devtools')
-devtools::install_github('COVID-19-Mobility-Data-Network/mobility')
-```
 
-The model fitting functions in the package perform parameter estimation using the Bayesian MCMC (Markov Chain Monte Carlo) algorithm called JAGS (Just Another Gibbs Sampler). The JAGS 4.3.0 library must be installed [here](http://mcmc-jags.sourceforge.net/). To check your installation of JAGS, you can open your console and type `jags` which should give you the following message.
+#### Step 1: Check that JAGS 4.3.0 is installed
+The model fitting functions in the package perform parameter estimation using the Bayesian MCMC (Markov Chain Monte Carlo) algorithm called JAGS (Just Another Gibbs Sampler), which requires the JAGS library version $\ge$ 4.3.0 to be installed. 
+
+  * If you do not have the JAGS 4.3.0 library installed, download [HERE](https://sourceforge.net/projects/mcmc-jags/files/).
+  * If you already have an installation of the JAGS library, check that the version is $\ge$ 4.3.0 by opening your console and typing `jags` which should give you the following message:
 ```console
 user@computer:~$ jags
 Welcome to JAGS 4.3.0 on Fri May  1 16:05:10 2020
@@ -111,6 +110,12 @@ Loading module: bugs: ok
 . 
 ```
 
+#### Step 2: Install `mobility` from Github
+Use the `devtools` package to install the development version of `mobility` from the COVID-19-Mobility-Data-Network GitHub repository. The source code and its dependencies should be backwards compatible with previous R versions, but we recommend R version $\ge$ 3.6.2.
+```r
+install.packages('devtools')
+devtools::install_github('COVID-19-Mobility-Data-Network/mobility')
+```
 
 
 ## Troubleshooting

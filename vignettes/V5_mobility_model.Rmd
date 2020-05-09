@@ -70,9 +70,9 @@ ggplot(data=melt(M)) +
 ## Estimate probability of travel outside each origin location
 To estimate the probability of traveling outside the origin location $i$, the `fit_mobility()` function uses a Beta-Binomial model with hierarchical structure to infer travel probability in unobserved locations.
 $$
-y_i \sim \text{Binom}(\tau_i, \sum_{j} M_{ij})
+M_{ii} \sim \text{Binom}(\tau_i, \sum_{j} M_{ij})
 $$
-The random variable $y_i$ is the observed number of trips that leave origin $i$ within the time interval (cells along the diagonal of $M$). Binomial parameters $\tau_i$ and $\sum_{j} M_{ij}$ are the success probability and total number of observed trips originating from $i$ respectively. In the absence of a linear predictor containing covariates, the conjugate prior distribution for a Binomial likelihood is the Beta distribution (a random variable between 0 and 1). Therefore, success probabilities $\tau_i$ are assumed to be independent samples drawn from a Beta distributed prior with shape and rate parameters $\alpha$ and $\beta$ [@gelman_bayesian_2003]. 
+The random variable $M_{ii}$ is the diagonal of data matrix $M$ and provides the observed number of trips that leave origin $i$ within the time interval. Binomial parameters $\tau_i$ and $\sum_{j} M_{ij}$ are the success probability and total number of observed trips originating from $i$ respectively. In the absence of a linear predictor containing covariates, the conjugate prior distribution for a Binomial likelihood is the Beta distribution (a random variable between 0 and 1). Therefore, success probabilities $\tau_i$ are assumed to be independent samples drawn from a Beta distributed prior with shape and rate parameters $\alpha$ and $\beta$ [@gelman_bayesian_2003]. 
 $$
 \begin{aligned}
 \tau_i &\sim \text{Beta}(\alpha, \beta) \\
@@ -128,6 +128,7 @@ Gravity model parameters are fit through normalized connectivity values ($\pi_{i
 
 
 ## Combining models to estimate full mobility matrix
+
 Thus far we have estimated $\tau_i$ (the probability of leaving origin $i$) and $\pi_{ij}$ (the probability of going from $i$ to $j$). The values of $\pi_{ij}$ sum to unity along each row, but the diagonal is missing, indicating that this is a relative quantity. That is to say, $\pi_{ij}$ gives the probability of going from $i$ to $j$ **given** that travel outside origin $i$ occurs. Therefore, we can use basic conditional probability rules [@blitzstein_introduction_2014] to define the travel routes in the off-diagonals.
 $$
 \Pr( \text{leave}_i, \text{travel}_{i \rightarrow j}) = \Pr( \text{travel}_{i \rightarrow j} \mid \text{leave}_i ) \Pr(\text{leave}_i ) = \pi_{ij} \tau_i. 
