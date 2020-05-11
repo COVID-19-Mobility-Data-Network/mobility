@@ -456,7 +456,7 @@ summarize_mobility <- function(mod, ac_lags=c(2,5,10)) {
     tmp <- MCMCvis::MCMCsummary(mod,
                                 HPD=TRUE,
                                 func=function(x, lags=ac_lags) {
-                                  acf(x, lag.max=lags[length(lags)], plot=FALSE)$acf[lags]
+                                  round(acf(x, lag.max=lags[length(lags)], plot=FALSE)$acf[lags], 2)
                                 },
                                 func_name=stringr::str_c('AC', ac_lags))
 
@@ -481,7 +481,7 @@ summarize_mobility <- function(mod, ac_lags=c(2,5,10)) {
     tmp <- MCMCvis::MCMCsummary(mod,
                                 HPD=TRUE,
                                 func=function(x, lags=ac_lags) {
-                                  acf(x, lag.max=lags[length(lags)], plot=FALSE)$acf[lags]
+                                  round(acf(x, lag.max=lags[length(lags)], plot=FALSE)$acf[lags], 2)
                                 },
                                 func_name=stringr::str_c('AC', ac_lags))
 
@@ -563,7 +563,7 @@ check_mobility <- function(M,
     err_rsq <- err_perc <- err_rmse <- rep(NA, nrow(M))
     for(i in 1:nrow(M)) {
       sel <- which(!is.na(M[i,]))
-      err_perc[i] <- Metrics::mape(M[i, sel], M_hat[i,sel])
+      err_perc[i] <- Metrics::mape(M[i, sel] + 1e-03, M_hat[i,sel])
       err_rmse[i] <- Metrics::rmse(M[i, sel], M_hat[i,sel])
       err_rsq[i] <- cor(M[i, sel], M_hat[i,sel])^2
     }
@@ -636,10 +636,13 @@ check_gravity <- function(M,
                        gamma=mod['gamma', 'Mean'],
                        counts=TRUE)
 
+  diag(M_hat) <- NA
+  diag(M) <- NA
+
   err_rsq <- err_perc <- err_rmse <- rep(NA, nrow(M))
   for(i in 1:nrow(M)) {
     sel <- which(!is.na(M[i,]))
-    err_perc[i] <- Metrics::mape(M[i, sel], M_hat[i,sel])
+    err_perc[i] <- Metrics::mape(M[i, sel] + 1e-03, M_hat[i,sel])
     err_rmse[i] <- Metrics::rmse(M[i, sel], M_hat[i,sel])
     err_rsq[i] <- cor(M[i, sel], M_hat[i,sel])^2
   }
@@ -738,7 +741,7 @@ check_prob_travel <- function(M,
 
     return(
       list(DIC=mod['DIC', 'Mean'],
-           MAPE=Metrics::mape(tau, tau_hat),
+           MAPE=Metrics::mape(tau + 1e-05, tau_hat),
            R2=cor(tau, tau_hat)^2)
     )
 
