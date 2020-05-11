@@ -8,21 +8,21 @@ ids <- LETTERS[1:n]
 # Distance matrix
 D <- get_distance_matrix(x=rnorm(n, -90, 9),
                          y=rnorm(n, 30, 3),
-                         id=ids)*111.35
+                         id=ids)#*111.35
 
 # Vector of population sizes
-N <- rpois(n, lambda=10000)
-#N <- rnbinom(n, size=5, mu=5000)
+#N <- rpois(n, lambda=10000)
+N <- rnbinom(n, size=2, mu=10000)
 names(N) <- ids
 
 tau <- rbeta(n, 2, 2) # probability of travel outside origin
 
 # Simulate connectivity matrix given gravity model parameters
-pi <- sim_gravity(N=N,
-                  D=D,
+pi <- sim_gravity(D=D,
+                  N=N,
                   theta=3,
-                  omega_1=2,
-                  omega_2=0.75,
+                  omega_1=0.75,
+                  omega_2=2,
                   gamma=1.5)
 
 # Get trip counts

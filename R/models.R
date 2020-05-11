@@ -361,6 +361,9 @@ fit_gravity <- function(
 
   if (any(!check_names)) stop('Dimension names of input data do not match')
 
+  vals <- c(D, N_orig, N_dest)
+  if (any(is.na(vals)) | any(is.nan(vals))) stop('D and N are covariates and cannot contain missing values')
+
   message(
     paste('::Fitting gravity model for',
           dim(M)[1],
@@ -381,7 +384,7 @@ fit_gravity <- function(
   if (is.null(prior)) {
 
     message('Using uniformative priors')
-    null_prior <- c(1, 0.5)
+    null_prior <- c(2, 2)
     prior <- list(theta=null_prior,
                   omega_1=null_prior,
                   omega_2=null_prior,

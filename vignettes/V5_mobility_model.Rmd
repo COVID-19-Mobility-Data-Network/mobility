@@ -70,9 +70,9 @@ ggplot(data=melt(M)) +
 ## Estimate probability of travel outside each origin location
 To estimate the probability of traveling outside the origin location $i$, the `fit_mobility()` function uses a Beta-Binomial model with hierarchical structure to infer travel probability in unobserved locations.
 $$
-M_{ii} \sim \text{Binom}(\tau_i, \sum_{j} M_{ij})
+y_i \sim \text{Binom}(\tau_i, \sum_{j} M_{ij})
 $$
-The random variable $M_{ii}$ is the diagonal of data matrix $M$ and provides the observed number of trips that leave origin $i$ within the time interval. Binomial parameters $\tau_i$ and $\sum_{j} M_{ij}$ are the success probability and total number of observed trips originating from $i$ respectively. In the absence of a linear predictor containing covariates, the conjugate prior distribution for a Binomial likelihood is the Beta distribution (a random variable between 0 and 1). Therefore, success probabilities $\tau_i$ are assumed to be independent samples drawn from a Beta distributed prior with shape and rate parameters $\alpha$ and $\beta$ [@gelman_bayesian_2003]. 
+The random variable $y_i$ is the observed number of trips that leave origin $i$ within the time interval. Binomial parameters $\tau_i$ and $\sum_{j} M_{ij}$ are the success probability and total number of observed trips originating from $i$ respectively. In the absence of a linear predictor containing covariates, the conjugate prior distribution for a Binomial likelihood is the Beta distribution (a random variable between 0 and 1). Therefore, success probabilities $\tau_i$ are assumed to be independent samples drawn from a Beta distributed prior with shape and rate parameters $\alpha$ and $\beta$ [@gelman_bayesian_2003]. 
 $$
 \begin{aligned}
 \tau_i &\sim \text{Beta}(\alpha, \beta) \\
@@ -92,8 +92,7 @@ This structure allows origin locations to have probabilities $\tau_i$ which are 
 ```{r fit_prob_travel}
 total <- rowSums(M, na.rm=TRUE)
 prob_trav <- summarize_mobility(
-  fit_prob_travel(travel=total-diag(M), 
-                  total=total)
+  fit_prob_travel(travel=total-diag(M), total=total)
 )
 ```
 
