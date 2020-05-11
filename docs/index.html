@@ -103,7 +103,7 @@
 <p>Although the initial format of each data type may be different, there are general challenges regarding data sparsity, spatial scale, and statistical uncertainty that make direct use of mobility data in modeling pipelines challenging:</p>
 <ul>
 <li><p><strong>Data sparsity</strong> occurs when observations for some routes of travel are missing, making it difficult to generalize observed mobility patterns for routes of travel that are unobserved. We address data sparsity by fitting mobility models to the data that are observed and then inferring travel for unobserved routes based on estimated model parameters.</p></li>
-<li><p>The <strong>spatial scale</strong> of the mobility data is often different from that needed by the epidemiological model. Functions in this package account for differences in spatial scale by aggregating travel patterns to a larger spatial scale or extrapolate them to a smaller one using distance and population size covariates.</p></li>
+<li><p>The <strong>spatial scale</strong> of the mobility data is often different from that needed by the epidemiological model. Functions in this package account for differences in spatial scale by aggregating travel patterns to a larger spatial scale or extrapolating them to a smaller one using covariates such as distance and population size.</p></li>
 <li><p><strong>Statistical uncertainty</strong> in the travel patterns found in human mobility data results from the variance in a naturally stochastic process. Depending on the method used to collect the mobility data and the subset of the population represented, measurement error and observation bias also have an impact. To facilitate integration of mobilty model uncertainty into disease models, we provide model fitting and simulation tools that allow researchers to simulate the mobility process according to the distribution of estimated model parameters.</p></li>
 </ul>
 </div>
@@ -189,13 +189,13 @@ origin           A          B          C           D          E
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<div id="step-1-check-that-jags-4-3-0-is-installed" class="section level5">
-<h5 class="hasAnchor">
-<a href="#step-1-check-that-jags-4-3-0-is-installed" class="anchor"></a>Step 1: Check that JAGS 4.3.0 is installed</h5>
-<p>The model fitting functions in the package perform parameter estimation using the Bayesian MCMC (Markov Chain Monte Carlo) algorithm called JAGS (Just Another Gibbs Sampler), which requires the JAGS library version <span class="math inline">≥</span> 4.3.0 to be installed.</p>
+<div id="step-1-check-that-jags-4-3-0-is-installed" class="section level4">
+<h4 class="hasAnchor">
+<a href="#step-1-check-that-jags-4-3-0-is-installed" class="anchor"></a>Step 1: Check that JAGS 4.3.0 is installed</h4>
+<p>The model fitting functions in the package perform parameter estimation using the Bayesian MCMC (Markov Chain Monte Carlo) algorithm called JAGS (Just Another Gibbs Sampler), which requires the JAGS library version &gt;= 4.3.0 to be installed.</p>
 <ul>
 <li>If you do not have the JAGS 4.3.0 library installed, download <a href="https://sourceforge.net/projects/mcmc-jags/files/">HERE</a>.</li>
-<li>If you already have an installation of the JAGS library, check that the version is <span class="math inline">≥</span> 4.3.0 by opening your console and typing <code>jags</code> which should give you the following message:</li>
+<li>If you already have an installation of the JAGS library, check that the version is &gt;= 4.3.0 by opening your console and typing <code>jags</code> which should give you the following message:</li>
 </ul>
 <pre class="console"><code>user@computer:~$ jags
 Welcome to JAGS 4.3.0 on Fri May  1 16:05:10 2020
@@ -204,10 +204,10 @@ Loading module: basemod: ok
 Loading module: bugs: ok
 . </code></pre>
 </div>
-<div id="step-2-install-mobility-from-github" class="section level5">
-<h5 class="hasAnchor">
-<a href="#step-2-install-mobility-from-github" class="anchor"></a>Step 2: Install <code>mobility</code> from Github</h5>
-<p>Use the <code>devtools</code> package to install the development version of <code>mobility</code> from the COVID-19-Mobility-Data-Network GitHub repository. The source code and its dependencies should be backwards compatible with previous R versions, but we recommend R version <span class="math inline">≥</span> 3.6.2.</p>
+<div id="step-2-install-mobility-from-github" class="section level4">
+<h4 class="hasAnchor">
+<a href="#step-2-install-mobility-from-github" class="anchor"></a>Step 2: Install <code>mobility</code> from Github</h4>
+<p>Use the <code>devtools</code> package to install the development version of <code>mobility</code> from the COVID-19-Mobility-Data-Network GitHub repository. The source code and its dependencies should be backwards compatible with previous R versions, but we recommend R version &gt;= 3.6.2.</p>
 <div class="sourceCode" id="cb6"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">'devtools'</span>)
 <span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span>(<span class="st">'COVID-19-Mobility-Data-Network/mobility'</span>)</pre></div>
 </div>

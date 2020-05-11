@@ -152,12 +152,12 @@
 <p>The fitting function <code><a href="../reference/fit_gravity.html">fit_gravity()</a></code> returns results as a <code><a href="https://rdrr.io/pkg/coda/man/mcmc.list.html">coda::mcmc.list()</a></code> object shown below. The <code><a href="https://rdrr.io/pkg/coda/man/mcmc.list.html">coda::mcmc.list()</a></code> is a common object class that holds the posterior samples for each parameter and each sampling chain.</p>
 <div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(<span class="no">mod</span>)
 <span class="co">#&gt; List of 2</span>
-<span class="co">#&gt;  $ : 'mcmc' num [1:500, 1:7] 48188 48190 48187 48190 48189 ...</span>
+<span class="co">#&gt;  $ : 'mcmc' num [1:500, 1:7] 48211 48220 48219 48208 48207 ...</span>
 <span class="co">#&gt;   ..- attr(*, "dimnames")=List of 2</span>
 <span class="co">#&gt;   .. ..$ : NULL</span>
 <span class="co">#&gt;   .. ..$ : chr [1:7] "deviance" "gamma" "omega_1" "omega_2" ...</span>
 <span class="co">#&gt;   ..- attr(*, "mcpar")= num [1:3] 1 500 1</span>
-<span class="co">#&gt;  $ : 'mcmc' num [1:500, 1:7] 48188 48187 48191 48201 48189 ...</span>
+<span class="co">#&gt;  $ : 'mcmc' num [1:500, 1:7] 48202 48202 48216 48224 48214 ...</span>
 <span class="co">#&gt;   ..- attr(*, "dimnames")=List of 2</span>
 <span class="co">#&gt;   .. ..$ : NULL</span>
 <span class="co">#&gt;   .. ..$ : chr [1:7] "deviance" "gamma" "omega_1" "omega_2" ...</span>
@@ -171,35 +171,35 @@
 <div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">mod</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/summarize_mobility.html">summarize_mobility</a></span>(<span class="no">mod</span>)
 <span class="no">mod</span>
 <span class="co">#&gt;                  Mean         SD       HPD2.5      HPD97.5 Rhat SSeff       AC2</span>
-<span class="co">#&gt; gamma        1.411183 0.01753859 1.381078e+00     1.450914 1.00   390 0.4377783</span>
-<span class="co">#&gt; omega_1      1.928265 1.90606950 2.647978e-03     5.908478 1.01   376 0.4590379</span>
-<span class="co">#&gt; omega_2     39.678382 2.18549449 3.497691e+01    43.724012 1.00   367 0.4218935</span>
-<span class="co">#&gt; theta        1.951463 1.80118479 1.657286e-03     5.716069 1.03   428 0.3877355</span>
-<span class="co">#&gt; DIC      48213.394486 3.10141677 4.821021e+04 48219.759420 1.00   399 0.3792240</span>
-<span class="co">#&gt; deviance 48189.274971 3.10141677 4.818609e+04 48195.639905 1.00   399 0.3792240</span>
-<span class="co">#&gt; pD          12.059757         NA           NA           NA   NA    NA        NA</span>
-<span class="co">#&gt;                 AC5        AC10</span>
-<span class="co">#&gt; gamma    0.05706167  0.06825674</span>
-<span class="co">#&gt; omega_1  0.05142446 -0.05746706</span>
-<span class="co">#&gt; omega_2  0.09531939  0.06537388</span>
-<span class="co">#&gt; theta    0.03093372 -0.09999540</span>
-<span class="co">#&gt; DIC      0.05038174  0.02142526</span>
-<span class="co">#&gt; deviance 0.05038174  0.02142526</span>
-<span class="co">#&gt; pD               NA          NA</span></pre></body></html></div>
+<span class="co">#&gt; gamma    1.447679e+00 0.01747539 1.416622e+00     1.485333 1.02   367 0.4401808</span>
+<span class="co">#&gt; omega_1  1.026378e+00 0.72652899 2.122167e-02     2.467208 1.00   469 0.2788874</span>
+<span class="co">#&gt; omega_2  3.348097e+01 2.01659385 2.963408e+01    37.619324 1.02   441 0.4457053</span>
+<span class="co">#&gt; theta    9.942432e-01 0.76010140 3.182612e-02     2.440966 1.09   604 0.3268641</span>
+<span class="co">#&gt; DIC      4.822740e+04 8.08550672 4.821337e+04 48243.326160 1.01   513 0.4324487</span>
+<span class="co">#&gt; deviance 4.820418e+04 8.08550672 4.819014e+04 48220.103043 1.01   513 0.4324487</span>
+<span class="co">#&gt; pD       1.161156e+01         NA           NA           NA   NA    NA        NA</span>
+<span class="co">#&gt;                 AC5         AC10</span>
+<span class="co">#&gt; gamma    0.08133152  0.062357677</span>
+<span class="co">#&gt; omega_1  0.03900812 -0.009709971</span>
+<span class="co">#&gt; omega_2  0.02108429  0.036412607</span>
+<span class="co">#&gt; theta    0.03977131  0.004438541</span>
+<span class="co">#&gt; DIC      0.01836441  0.055040840</span>
+<span class="co">#&gt; deviance 0.01836441  0.055040840</span>
+<span class="co">#&gt; pD               NA           NA</span></pre></body></html></div>
 <p>The <code><a href="../reference/check_mobility.html">check_mobility()</a></code> function provides goodness of fit metrics and summary plots.</p>
 <div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="../reference/check_mobility.html">check_mobility</a></span>(<span class="no">M</span>, <span class="no">D</span>, <span class="no">N</span>, <span class="no">mod</span>)</pre></body></html></div>
 <p><img src="V4_gravity_model_files/figure-html/check-1.png" width="696"></p>
 <pre><code>#&gt; $DIC
-#&gt; [1] 48213.39
+#&gt; [1] 48227.4
 #&gt; 
 #&gt; $RMSE
-#&gt; [1] 2157.013
+#&gt; [1] 2161.833
 #&gt; 
 #&gt; $MAPE
-#&gt; [1] 2.595092
+#&gt; [1] 2.572939
 #&gt; 
 #&gt; $R2
-#&gt; [1] 0.5087047</code></pre>
+#&gt; [1] 0.5227541</code></pre>
 <p>Now that we have verified that our model fits the data adequately, we can simulate connectivity values among the off-diagonal locations by using the estimated parameter values from the fitted gravity model in the <code><a href="../reference/sim_gravity.html">sim_gravity()</a></code> function.</p>
 <div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">pi_hat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/sim_gravity.html">sim_gravity</a></span>(<span class="kw">N</span><span class="kw">=</span><span class="no">N</span>,
                       <span class="kw">D</span><span class="kw">=</span><span class="no">D</span>,

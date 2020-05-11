@@ -182,11 +182,11 @@ draws from this Beta distribution.</p>
 <code><a href='get_stay_data.html'>get_stay_data</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>sim_prob_travel</span>(<span class='fl'>0.5</span>, <span class='fl'>0.04</span>)</div><div class='output co'>#&gt; [1] 0.5504243</div><div class='input'>
+    <pre class="examples"><div class='input'><span class='fu'>sim_prob_travel</span>(<span class='fl'>0.5</span>, <span class='fl'>0.04</span>)</div><div class='output co'>#&gt; [1] 0.5378499</div><div class='input'>
 <span class='fu'>sim_prob_travel</span>(<span class='kw'>mu</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.8</span>, <span class='fl'>0.6</span>),
                 <span class='kw'>sigma</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.08</span>, <span class='fl'>0.06</span>),
                 <span class='kw'>id</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>'A'</span>, <span class='st'>'B'</span>))</div><div class='output co'>#&gt;         A         B 
-#&gt; 0.7091409 0.4545589 </div><div class='input'>
+#&gt; 0.5410971 0.6071538 </div><div class='input'>
 <span class='co'># Simulate with estimated parameters</span>
 <span class='no'>n_orig</span> <span class='kw'>&lt;-</span> <span class='fl'>6</span>
 <span class='no'>n_missing</span> <span class='kw'>&lt;-</span> <span class='fl'>3</span>
@@ -204,7 +204,7 @@ draws from this Beta distribution.</p>
 <span class='co'># Estimate probability of travel for each locations (missing locations regress to mean)</span>
 <span class='no'>prob_trav</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='summarize_mobility.html'>summarize_mobility</a></span>(
   <span class='fu'><a href='fit_prob_travel.html'>fit_prob_travel</a></span>(<span class='kw'>travel</span><span class='kw'>=</span><span class='no'>travel</span>, <span class='kw'>total</span><span class='kw'>=</span><span class='no'>total</span>)
-)</div><div class='output co'>#&gt; <span class='message'>These missing locations will inherit population mean:</span></div><div class='output co'>#&gt; <span class='message'>B E F</span></div><div class='output co'>#&gt; Compiling model graph
+)</div><div class='output co'>#&gt; <span class='message'>These missing locations will inherit population mean:</span></div><div class='output co'>#&gt; <span class='message'>A B F</span></div><div class='output co'>#&gt; Compiling model graph
 #&gt;    Resolving undeclared variables
 #&gt;    Allocating nodes
 #&gt; Graph information:
@@ -221,12 +221,12 @@ draws from this Beta distribution.</p>
                 <span class='kw'>sigma</span><span class='kw'>=</span><span class='no'>prob_trav</span>$<span class='no'>SD</span>,
                 <span class='kw'>id</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>travel</span>),
                 <span class='kw'>n</span><span class='kw'>=</span><span class='fl'>5</span>)</div><div class='output co'>#&gt;        [,1]      [,2]      [,3]      [,4]      [,5]
-#&gt; A 0.3789359 0.3020435 0.3489716 0.3145247 0.3791213
-#&gt; B 0.5368941 0.2865853 0.3452727 0.2342364 0.3276055
-#&gt; C 0.2862823 0.4090240 0.2635318 0.2577534 0.3593667
-#&gt; D 0.3095204 0.3272656 0.4210084 0.3575149 0.3012700
-#&gt; E 0.3436757 0.2905205 0.2894595 0.3050170 0.4720653
-#&gt; F 0.4010410 0.3896428 0.1999480 0.4261723 0.3636310</div></pre>
+#&gt; A 0.3542443 0.6718827 0.4426144 0.2023465 0.4474605
+#&gt; B 0.2951938 0.4550604 0.4439437 0.6430328 0.3908564
+#&gt; C 0.2884857 0.3057066 0.3592183 0.2845741 0.3036692
+#&gt; D 0.1555084 0.2374283 0.2475775 0.2159101 0.2555146
+#&gt; E 0.5830917 0.6806101 0.5919640 0.5712152 0.6119025
+#&gt; F 0.4180785 0.5873098 0.6519638 0.3103818 0.4381072</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

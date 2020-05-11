@@ -142,8 +142,7 @@ Now each row of the estimated mobility matrix $\hat{M}$ sum to 1 including the d
 The parameters $\tau_i$ and $\pi_{ij}$ can be estimated together using the `fit_mobility()` function:
 ```{r fit mobility}
 mod <- summarize_mobility(
-  fit_mobility(M, D, N),
-  ac_lags=5
+  fit_mobility(M, D, N), ac_lags=5
 )
 mod
 ```
