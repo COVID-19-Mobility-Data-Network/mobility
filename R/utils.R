@@ -1359,7 +1359,6 @@ calc_abs_probs <- function(pi,
 }
 
 # Function to load a single object in a .Rdata file and assign to an object in local environment
-##' @export
 load_obj <- function(file, x=1) {
   tmp <- new.env()
   load(file=file, envir=tmp)
