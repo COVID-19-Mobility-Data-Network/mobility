@@ -152,12 +152,12 @@
 <p>The fitting function <code><a href="../reference/fit_gravity.html">fit_gravity()</a></code> returns results as a <code><a href="https://rdrr.io/pkg/coda/man/mcmc.list.html">coda::mcmc.list()</a></code> object shown below. The <code><a href="https://rdrr.io/pkg/coda/man/mcmc.list.html">coda::mcmc.list()</a></code> is a common object class that holds the posterior samples for each parameter and each sampling chain.</p>
 <div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(<span class="no">mod</span>)
 <span class="co">#&gt; List of 2</span>
-<span class="co">#&gt;  $ : 'mcmc' num [1:500, 1:7] 35318 35318 35319 35319 35320 ...</span>
+<span class="co">#&gt;  $ : 'mcmc' num [1:500, 1:7] 35326 35324 35320 35319 35317 ...</span>
 <span class="co">#&gt;   ..- attr(*, "dimnames")=List of 2</span>
 <span class="co">#&gt;   .. ..$ : NULL</span>
 <span class="co">#&gt;   .. ..$ : chr [1:7] "deviance" "gamma" "omega_1" "omega_2" ...</span>
 <span class="co">#&gt;   ..- attr(*, "mcpar")= num [1:3] 1 500 1</span>
-<span class="co">#&gt;  $ : 'mcmc' num [1:500, 1:7] 35319 35318 35320 35321 35320 ...</span>
+<span class="co">#&gt;  $ : 'mcmc' num [1:500, 1:7] 35322 35322 35317 35317 35322 ...</span>
 <span class="co">#&gt;   ..- attr(*, "dimnames")=List of 2</span>
 <span class="co">#&gt;   .. ..$ : NULL</span>
 <span class="co">#&gt;   .. ..$ : chr [1:7] "deviance" "gamma" "omega_1" "omega_2" ...</span>
@@ -170,33 +170,33 @@
 <p>To calculate summary statistics of estimated parameter values, you can supply a fitted model object to the <code><a href="../reference/summarize_mobility.html">summarize_mobility()</a></code> function. This function is a wrapper for the <code><a href="https://rdrr.io/pkg/MCMCvis/man/MCMCsummary.html">MCMCvis::MCMCsummary()</a></code> function that calculates summary statistics for each parameter across each chain along with convergance diagnosics like the Gelman-Rubin convergence diagnostic and (<span class="math inline">\(\hat{R}\)</span>) and samples auto-correlation foreach parameter.</p>
 <div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">mod</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/summarize_mobility.html">summarize_mobility</a></span>(<span class="no">mod</span>)
 <span class="no">mod</span>
-<span class="co">#&gt;                  Mean        SD       HPD2.5      HPD97.5 Rhat SSeff  AC2   AC5</span>
-<span class="co">#&gt; gamma    1.724784e+00 0.0128003 1.700008e+00 1.749340e+00 1.00   969 0.11 -0.08</span>
-<span class="co">#&gt; omega_1  1.329691e+00 0.6084836 5.012326e-01 2.578819e+00 1.01   530 0.28  0.01</span>
-<span class="co">#&gt; omega_2  3.176313e-02 0.0152630 5.765310e-03 6.130684e-02 1.00   933 0.02 -0.02</span>
-<span class="co">#&gt; theta    1.069888e+00 0.7063234 2.618276e-02 2.435989e+00 1.02   672 0.20  0.04</span>
-<span class="co">#&gt; DIC      3.532789e+04 2.3689804 3.532501e+04 3.533249e+04 1.00  1000 0.04  0.02</span>
-<span class="co">#&gt; deviance 3.531925e+04 2.3689804 3.531637e+04 3.532386e+04 1.00  1000 0.04  0.02</span>
-<span class="co">#&gt; pD       4.317937e+00        NA           NA           NA   NA    NA   NA    NA</span>
-<span class="co">#&gt;           AC10</span>
-<span class="co">#&gt; gamma     0.03</span>
-<span class="co">#&gt; omega_1  -0.03</span>
-<span class="co">#&gt; omega_2  -0.04</span>
-<span class="co">#&gt; theta    -0.03</span>
-<span class="co">#&gt; DIC      -0.05</span>
-<span class="co">#&gt; deviance -0.05</span>
-<span class="co">#&gt; pD          NA</span></pre></body></html></div>
+<span class="co">#&gt;                  Mean         SD       HPD2.5      HPD97.5 Rhat SSeff   AC2</span>
+<span class="co">#&gt; gamma    1.724799e+00 0.01264377 1.699500e+00 1.746560e+00    1  1000 -0.01</span>
+<span class="co">#&gt; omega_1  1.329241e+00 0.60288512 4.900717e-01 2.607489e+00    1   552  0.19</span>
+<span class="co">#&gt; omega_2  3.153624e-02 0.01592531 5.005639e-03 6.346163e-02    1   604  0.20</span>
+<span class="co">#&gt; theta    1.116569e+00 0.77717597 4.126342e-02 2.654545e+00    1   499  0.33</span>
+<span class="co">#&gt; DIC      3.532747e+04 2.52753695 3.532456e+04 3.533239e+04    1   693  0.19</span>
+<span class="co">#&gt; deviance 3.531925e+04 2.52753695 3.531634e+04 3.532417e+04    1   693  0.19</span>
+<span class="co">#&gt; pD       4.107827e+00         NA           NA           NA   NA    NA    NA</span>
+<span class="co">#&gt;            AC5  AC10</span>
+<span class="co">#&gt; gamma    -0.02  0.00</span>
+<span class="co">#&gt; omega_1   0.01 -0.02</span>
+<span class="co">#&gt; omega_2   0.02  0.03</span>
+<span class="co">#&gt; theta    -0.01  0.00</span>
+<span class="co">#&gt; DIC       0.01  0.03</span>
+<span class="co">#&gt; deviance  0.01  0.03</span>
+<span class="co">#&gt; pD          NA    NA</span></pre></body></html></div>
 <p>The <code><a href="../reference/check_mobility.html">check_mobility()</a></code> function provides goodness of fit metrics and summary plots.</p>
 <div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="../reference/check_mobility.html">check_mobility</a></span>(<span class="no">M</span>, <span class="no">D</span>, <span class="no">N</span>, <span class="no">mod</span>)</pre></body></html></div>
 <p><img src="V4_gravity_model_files/figure-html/check-1.png" width="696"></p>
 <pre><code>#&gt; $DIC
-#&gt; [1] 35327.89
+#&gt; [1] 35327.47
 #&gt; 
 #&gt; $RMSE
-#&gt; [1] 776.7042
+#&gt; [1] 776.742
 #&gt; 
 #&gt; $MAPE
-#&gt; [1] 4.824142
+#&gt; [1] 4.824144
 #&gt; 
 #&gt; $R2
 #&gt; [1] 0.9049097</code></pre>
