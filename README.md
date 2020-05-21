@@ -1,5 +1,6 @@
 <!-- badges: start -->
 [![Travis build status](https://travis-ci.com/COVID-19-Mobility-Data-Network/mobility.svg?branch=master)](https://travis-ci.com/COVID-19-Mobility-Data-Network/mobility)
+[![DOI](https://zenodo.org/badge/261659776.svg)](https://zenodo.org/badge/latestdoi/261659776)
 <!-- badges: end -->
 
 # `mobility`: an R package for modeling human mobility patterns
