@@ -3,6 +3,7 @@
 [![DOI](https://zenodo.org/badge/261659776.svg)](https://zenodo.org/badge/latestdoi/261659776)
 <!-- badges: end -->
 
+
 # `mobility`: an R package for modeling human mobility patterns
 
 This GitHub repository contains source code to build the `mobility` R package which provides tools for analyzing human mobility data, including functions for parsing travel data, fitting mobility models using Bayesian inference, and simulating mobility patterns. This package is currently in development and maintained by John Giles ([@gilesjohnr](https://github.com/gilesjohnr)) and Amy Wesolowski.
