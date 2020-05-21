@@ -8,6 +8,8 @@ Authors@R: c(person("John", "Giles", role=c("aut", "cre"), email="giles@jhu.edu"
 Maintainer: John Giles <giles@jhu.edu>
 Description: Functions for parsing travel data, fitting models using Bayesian inference, and simulating mobility patterns.
 License: GPL-3
+URL: https://github.com/COVID-19-Mobility-Data-Network/mobility
+BugReports: https://github.com/COVID-19-Mobility-Data-Network/mobility/issues
 RoxygenNote: 7.1.0
 Encoding: UTF-8
 LazyData: true
