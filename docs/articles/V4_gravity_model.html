@@ -159,12 +159,12 @@
 <p>The fitting function <code><a href="../reference/fit_gravity.html">fit_gravity()</a></code> returns results as a <code><a href="https://rdrr.io/pkg/coda/man/mcmc.list.html">coda::mcmc.list()</a></code> object shown below. The <code><a href="https://rdrr.io/pkg/coda/man/mcmc.list.html">coda::mcmc.list()</a></code> is a common object class that holds the posterior samples for each parameter and each sampling chain.</p>
 <div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(<span class="no">mod</span>)
 <span class="co">#&gt; List of 2</span>
-<span class="co">#&gt;  $ : 'mcmc' num [1:500, 1:7] 35321 35317 35321 35318 35320 ...</span>
+<span class="co">#&gt;  $ : 'mcmc' num [1:500, 1:7] 35316 35319 35319 35316 35319 ...</span>
 <span class="co">#&gt;   ..- attr(*, "dimnames")=List of 2</span>
 <span class="co">#&gt;   .. ..$ : NULL</span>
 <span class="co">#&gt;   .. ..$ : chr [1:7] "deviance" "gamma" "omega_1" "omega_2" ...</span>
 <span class="co">#&gt;   ..- attr(*, "mcpar")= num [1:3] 1 500 1</span>
-<span class="co">#&gt;  $ : 'mcmc' num [1:500, 1:7] 35325 35318 35317 35320 35319 ...</span>
+<span class="co">#&gt;  $ : 'mcmc' num [1:500, 1:7] 35318 35320 35316 35319 35318 ...</span>
 <span class="co">#&gt;   ..- attr(*, "dimnames")=List of 2</span>
 <span class="co">#&gt;   .. ..$ : NULL</span>
 <span class="co">#&gt;   .. ..$ : chr [1:7] "deviance" "gamma" "omega_1" "omega_2" ...</span>
@@ -177,36 +177,36 @@
 <p>To calculate summary statistics of estimated parameter values, you can supply a fitted model object to the <code><a href="../reference/summarize_mobility.html">summarize_mobility()</a></code> function. This function is a wrapper for the <code><a href="https://rdrr.io/pkg/MCMCvis/man/MCMCsummary.html">MCMCvis::MCMCsummary()</a></code> function that calculates summary statistics for each parameter across each chain along with convergance diagnosics like the Gelman-Rubin convergence diagnostic and (<span class="math inline">\(\hat{R}\)</span>) and samples auto-correlation foreach parameter.</p>
 <div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">mod</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/summarize_mobility.html">summarize_mobility</a></span>(<span class="no">mod</span>)
 <span class="no">mod</span>
-<span class="co">#&gt;                  Mean         SD       HPD2.5      HPD97.5 Rhat SSeff  AC2</span>
-<span class="co">#&gt; gamma    1.725763e+00 0.01279169 1.699108e+00 1.749084e+00 1.00   926 0.03</span>
-<span class="co">#&gt; omega_1  1.351261e+00 0.64778493 4.370922e-01 2.621254e+00 1.01   594 0.26</span>
-<span class="co">#&gt; omega_2  3.095719e-02 0.01588989 1.224450e-03 5.904217e-02 1.00   815 0.16</span>
-<span class="co">#&gt; theta    1.105248e+00 0.73246786 2.228120e-02 2.544615e+00 1.00   570 0.28</span>
-<span class="co">#&gt; DIC      3.532797e+04 2.41677248 3.532509e+04 3.533250e+04 1.00   629 0.23</span>
-<span class="co">#&gt; deviance 3.531923e+04 2.41677248 3.531635e+04 3.532376e+04 1.00   629 0.23</span>
-<span class="co">#&gt; pD       4.371102e+00         NA           NA           NA   NA    NA   NA</span>
-<span class="co">#&gt;            AC5  AC10</span>
-<span class="co">#&gt; gamma    -0.01 -0.03</span>
-<span class="co">#&gt; omega_1  -0.01 -0.04</span>
-<span class="co">#&gt; omega_2  -0.05 -0.02</span>
-<span class="co">#&gt; theta     0.04  0.07</span>
-<span class="co">#&gt; DIC      -0.03 -0.04</span>
-<span class="co">#&gt; deviance -0.03 -0.04</span>
-<span class="co">#&gt; pD          NA    NA</span></pre></body></html></div>
+<span class="co">#&gt;                  Mean         SD       HPD2.5      HPD97.5 Rhat SSeff  AC2  AC5</span>
+<span class="co">#&gt; gamma    1.724926e+00 0.01304628 1.698391e+00 1.749850e+00 1.00   921 0.07 0.01</span>
+<span class="co">#&gt; omega_1  1.450205e+00 0.77755603 4.945579e-01 3.045838e+00 1.00   368 0.42 0.11</span>
+<span class="co">#&gt; omega_2  3.157012e-02 0.01556911 3.486917e-03 5.960560e-02 1.00   923 0.07 0.01</span>
+<span class="co">#&gt; theta    1.039387e+00 0.71954153 8.013179e-02 2.506090e+00 1.04   577 0.27 0.00</span>
+<span class="co">#&gt; DIC      3.532856e+04 2.41229794 3.532560e+04 3.533320e+04 1.00   757 0.14 0.01</span>
+<span class="co">#&gt; deviance 3.531930e+04 2.41229794 3.531634e+04 3.532394e+04 1.00   757 0.14 0.01</span>
+<span class="co">#&gt; pD       4.632423e+00         NA           NA           NA   NA    NA   NA   NA</span>
+<span class="co">#&gt;           AC10</span>
+<span class="co">#&gt; gamma    -0.02</span>
+<span class="co">#&gt; omega_1   0.03</span>
+<span class="co">#&gt; omega_2   0.05</span>
+<span class="co">#&gt; theta     0.05</span>
+<span class="co">#&gt; DIC      -0.04</span>
+<span class="co">#&gt; deviance -0.04</span>
+<span class="co">#&gt; pD          NA</span></pre></body></html></div>
 <p>The <code><a href="../reference/check_mobility.html">check_mobility()</a></code> function provides goodness of fit metrics and summary plots.</p>
 <div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="../reference/check_mobility.html">check_mobility</a></span>(<span class="no">M</span>, <span class="no">D</span>, <span class="no">N</span>, <span class="no">mod</span>)</pre></body></html></div>
 <p><img src="V4_gravity_model_files/figure-html/check-1.png" width="696"></p>
 <pre><code>#&gt; $DIC
-#&gt; [1] 35327.97
+#&gt; [1] 35328.56
 #&gt; 
 #&gt; $RMSE
-#&gt; [1] 776.7673
+#&gt; [1] 776.7042
 #&gt; 
 #&gt; $MAPE
-#&gt; [1] 4.823674
+#&gt; [1] 4.824089
 #&gt; 
 #&gt; $R2
-#&gt; [1] 0.9047803</code></pre>
+#&gt; [1] 0.9049106</code></pre>
 <p>Now that we have verified that our model fits the data adequately, we can simulate connectivity values among the off-diagonal locations by using the estimated parameter values from the fitted gravity model in the <code><a href="../reference/sim_gravity.html">sim_gravity()</a></code> function.</p>
 <div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">pi_hat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/sim_gravity.html">sim_gravity</a></span>(<span class="kw">N</span><span class="kw">=</span><span class="no">N</span>,
                       <span class="kw">D</span><span class="kw">=</span><span class="no">D</span>,
