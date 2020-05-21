@@ -7,7 +7,7 @@ Authors@R: c(person("John", "Giles", role=c("aut", "cre"), email="giles@jhu.edu"
               person("Amy", "Wesolowski", role=c("aut", "ctb"), email="awesolowski@jhu.edu"))
 Maintainer: John Giles <giles@jhu.edu>
 Description: Functions for parsing travel data, fitting models using Bayesian inference, and simulating mobility patterns.
-License: GPL (>=3)
+License: file LICENSE
 RoxygenNote: 7.1.0
 Encoding: UTF-8
 LazyData: true
