@@ -210,7 +210,7 @@ expected from a Normal distribution. Goodness of fit metrics include:</p><dl'>
 <span class='no'>total</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/colSums.html'>rowSums</a></span>(<span class='no'>M</span>, <span class='kw'>na.rm</span><span class='kw'>=</span><span class='fl'>TRUE</span>)
 <span class='no'>mod_travel</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='summarize_mobility.html'>summarize_mobility</a></span>(
   <span class='fu'><a href='fit_prob_travel.html'>fit_prob_travel</a></span>(<span class='no'>total</span>-<span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='no'>M</span>), <span class='no'>total</span>)
-)</div><div class='output co'>#&gt; <span class='message'>These missing locations will inherit population mean:</span></div><div class='output co'>#&gt; <span class='message'>C D F H</span></div><div class='output co'>#&gt; Compiling model graph
+)</div><div class='output co'>#&gt; <span class='message'>These missing locations will inherit population mean:</span></div><div class='output co'>#&gt; <span class='message'>C F I J</span></div><div class='output co'>#&gt; Compiling model graph
 #&gt;    Resolving undeclared variables
 #&gt;    Allocating nodes
 #&gt; Graph information:
@@ -231,7 +231,7 @@ expected from a Normal distribution. Goodness of fit metrics include:</p><dl'>
 #&gt; Graph information:
 #&gt;    Observed stochastic nodes: 74
 #&gt;    Unobserved stochastic nodes: 30
-#&gt;    Total graph size: 1166
+#&gt;    Total graph size: 1196
 #&gt; 
 #&gt; Initializing model
 #&gt; 
@@ -240,7 +240,7 @@ expected from a Normal distribution. Goodness of fit metrics include:</p><dl'>
 #&gt; </div><div class='input'>
 <span class='no'>mod_mobility</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='summarize_mobility.html'>summarize_mobility</a></span>(
   <span class='fu'><a href='fit_mobility.html'>fit_mobility</a></span>(<span class='no'>M</span>, <span class='no'>D</span>, <span class='no'>N</span>)
-)</div><div class='output co'>#&gt; <span class='message'>Estimating probability of travel outside origin...</span></div><div class='output co'>#&gt; <span class='message'>These missing locations will inherit population mean:</span></div><div class='output co'>#&gt; <span class='message'>C D F H</span></div><div class='output co'>#&gt; Compiling model graph
+)</div><div class='output co'>#&gt; <span class='message'>Estimating probability of travel outside origin...</span></div><div class='output co'>#&gt; <span class='message'>These missing locations will inherit population mean:</span></div><div class='output co'>#&gt; <span class='message'>C F I J</span></div><div class='output co'>#&gt; Compiling model graph
 #&gt;    Resolving undeclared variables
 #&gt;    Allocating nodes
 #&gt; Graph information:
@@ -258,7 +258,7 @@ expected from a Normal distribution. Goodness of fit metrics include:</p><dl'>
 #&gt; Graph information:
 #&gt;    Observed stochastic nodes: 74
 #&gt;    Unobserved stochastic nodes: 30
-#&gt;    Total graph size: 1166
+#&gt;    Total graph size: 1196
 #&gt; 
 #&gt; Initializing model
 #&gt; 
@@ -267,34 +267,34 @@ expected from a Normal distribution. Goodness of fit metrics include:</p><dl'>
 #&gt; </div><div class='output co'>#&gt; <span class='message'>Complete.</span></div><div class='input'>
 <span class='fu'>check_mobility</span>(<span class='kw'>M</span><span class='kw'>=</span><span class='no'>M</span>,
                <span class='kw'>mod</span><span class='kw'>=</span><span class='no'>mod_travel</span>)</div><div class='img'><img src='check_mobility-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; $MAPE
-#&gt; [1] 0.002414787
+#&gt; [1] 0.001209039
 #&gt; 
 #&gt; $R2
-#&gt; [1] 0.9999988
+#&gt; [1] 0.9999999
 #&gt; </div><div class='input'>
 <span class='fu'>check_mobility</span>(<span class='kw'>M</span><span class='kw'>=</span><span class='no'>M</span>,
                <span class='kw'>D</span><span class='kw'>=</span><span class='no'>D</span>,
                <span class='kw'>N</span><span class='kw'>=</span><span class='no'>N</span>,
                <span class='kw'>mod</span><span class='kw'>=</span><span class='no'>mod_gravity</span>)</div><div class='img'><img src='check_mobility-2.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; $RMSE
-#&gt; [1] 2161.832
+#&gt; [1] 776.7367
 #&gt; 
 #&gt; $MAPE
-#&gt; [1] 2.572905
+#&gt; [1] 4.82373
 #&gt; 
 #&gt; $R2
-#&gt; [1] 0.5227513
+#&gt; [1] 0.9047785
 #&gt; </div><div class='input'>
 <span class='fu'>check_mobility</span>(<span class='kw'>M</span><span class='kw'>=</span><span class='no'>M</span>,
                <span class='kw'>D</span><span class='kw'>=</span><span class='no'>D</span>,
                <span class='kw'>N</span><span class='kw'>=</span><span class='no'>N</span>,
                <span class='kw'>mod</span><span class='kw'>=</span><span class='no'>mod_mobility</span>)</div><div class='img'><img src='check_mobility-3.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; $RMSE
-#&gt; [1] 446.0664
+#&gt; [1] 301.6076
 #&gt; 
 #&gt; $MAPE
-#&gt; [1] 0.3828183
+#&gt; [1] 1.124274
 #&gt; 
 #&gt; $R2
-#&gt; [1] 0.9750339
+#&gt; [1] 0.961084
 #&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -132,7 +132,7 @@ y_i \sim \text{Binom}(\tau_i, \sum_{j} M_{ij})
   <span class="fu"><a href="../reference/fit_prob_travel.html">fit_prob_travel</a></span>(<span class="kw">travel</span><span class="kw">=</span><span class="no">total</span>-<span class="fu"><a href="https://rdrr.io/r/base/diag.html">diag</a></span>(<span class="no">M</span>), <span class="kw">total</span><span class="kw">=</span><span class="no">total</span>)
 )
 <span class="co">#&gt; These missing locations will inherit population mean:</span>
-<span class="co">#&gt; C D F H</span>
+<span class="co">#&gt; C F I J</span>
 <span class="co">#&gt; Compiling model graph</span>
 <span class="co">#&gt;    Resolving undeclared variables</span>
 <span class="co">#&gt;    Allocating nodes</span>
@@ -176,12 +176,11 @@ y_i \sim \text{Binom}(\tau_i, \sum_{j} M_{ij})
 <a href="#fitting-a-mobility-model-to-data" class="anchor"></a>Fitting a mobility model to data</h2>
 <p>The parameters <span class="math inline">\(\tau_i\)</span> and <span class="math inline">\(\pi_{ij}\)</span> can be estimated together using the <code><a href="../reference/fit_mobility.html">fit_mobility()</a></code> function:</p>
 <div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">mod</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/summarize_mobility.html">summarize_mobility</a></span>(
-  <span class="fu"><a href="../reference/fit_mobility.html">fit_mobility</a></span>(<span class="no">M</span>, <span class="no">D</span>, <span class="no">N</span>),
-  <span class="kw">ac_lags</span><span class="kw">=</span><span class="fl">5</span>
+  <span class="fu"><a href="../reference/fit_mobility.html">fit_mobility</a></span>(<span class="no">M</span>, <span class="no">D</span>, <span class="no">N</span>), <span class="kw">ac_lags</span><span class="kw">=</span><span class="fl">5</span>
 )
 <span class="co">#&gt; Estimating probability of travel outside origin...</span>
 <span class="co">#&gt; These missing locations will inherit population mean:</span>
-<span class="co">#&gt; C D F H</span>
+<span class="co">#&gt; C F I J</span>
 <span class="co">#&gt; Compiling model graph</span>
 <span class="co">#&gt;    Resolving undeclared variables</span>
 <span class="co">#&gt;    Allocating nodes</span>
@@ -203,28 +202,28 @@ y_i \sim \text{Binom}(\tau_i, \sum_{j} M_{ij})
 <span class="co">#&gt; Graph information:</span>
 <span class="co">#&gt;    Observed stochastic nodes: 74</span>
 <span class="co">#&gt;    Unobserved stochastic nodes: 30</span>
-<span class="co">#&gt;    Total graph size: 1166</span>
+<span class="co">#&gt;    Total graph size: 1196</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Initializing model</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; NOTE: Stopping adaptation</span>
 <span class="co">#&gt; Complete.</span>
 <span class="no">mod</span>
-<span class="co">#&gt;               Mean          SD      HPD2.5    HPD97.5 Rhat SSeff           AC5</span>
-<span class="co">#&gt; gamma    1.4493784 0.017247600  1.41739734  1.4831009 1.03   382  2.392155e-01</span>
-<span class="co">#&gt; omega_1  0.9803843 0.697392867  0.04417048  2.3758834 1.00   660  1.319868e-01</span>
-<span class="co">#&gt; omega_2 33.2490657 2.100157791 29.30786197 37.4294807 1.04   402  2.070154e-01</span>
-<span class="co">#&gt; theta    1.0259820 0.728244095  0.05015086  2.4817181 1.01   601  3.950254e-02</span>
-<span class="co">#&gt; tau_1    0.3018925 0.004629156  0.29300316  0.3107386 1.00  1233  3.266644e-02</span>
-<span class="co">#&gt; tau_2    0.2564790 0.004848708  0.24690488  0.2654103 1.01  1191  4.990687e-02</span>
-<span class="co">#&gt; tau_3    0.2064803 0.098840351  0.04330184  0.4093886 1.00  2139  9.933386e-03</span>
-<span class="co">#&gt; tau_4    0.2064803 0.098840351  0.04330184  0.4093886 1.00  2139  9.933386e-03</span>
-<span class="co">#&gt; tau_5    0.0304733 0.001794991  0.02708876  0.0341199 1.01  1294  5.617759e-02</span>
-<span class="co">#&gt; tau_6    0.2064803 0.098840351  0.04330184  0.4093886 1.00  2139  9.933386e-03</span>
-<span class="co">#&gt; tau_7    0.2227997 0.004809916  0.21382648  0.2324551 1.01  1143  1.101246e-05</span>
-<span class="co">#&gt; tau_8    0.2064803 0.098840351  0.04330184  0.4093886 1.00  2139  9.933386e-03</span>
-<span class="co">#&gt; tau_9    0.2168678 0.004146679  0.20903026  0.2253207 1.01  1136 -1.269246e-02</span>
-<span class="co">#&gt; tau_10   0.2276502 0.004391123  0.21891648  0.2358263 1.00  1215 -1.772777e-02</span></pre></body></html></div>
+<span class="co">#&gt;               Mean          SD      HPD2.5    HPD97.5 Rhat SSeff   AC5</span>
+<span class="co">#&gt; gamma   1.72489487 0.012422712 1.698607800 1.74713269 1.00  1315  0.01</span>
+<span class="co">#&gt; omega_1 1.39461262 0.703556865 0.441366719 2.73865108 1.02   402  0.20</span>
+<span class="co">#&gt; omega_2 0.03084936 0.015540844 0.003483752 0.05982786 1.01  1089  0.00</span>
+<span class="co">#&gt; theta   1.08416327 0.725169954 0.036684345 2.56151086 1.00   643  0.05</span>
+<span class="co">#&gt; tau_1   0.53172858 0.005142319 0.522063084 0.54152979 1.01  1158 -0.03</span>
+<span class="co">#&gt; tau_2   0.03894951 0.002012992 0.034969108 0.04294950 1.00  1134  0.03</span>
+<span class="co">#&gt; tau_3   0.36100175 0.207675577 0.010456054 0.76128455 1.00  2125 -0.01</span>
+<span class="co">#&gt; tau_4   0.70125172 0.005319987 0.690032741 0.71116931 1.00  1435 -0.01</span>
+<span class="co">#&gt; tau_5   0.17758021 0.003770436 0.170570475 0.18539046 1.01   946  0.06</span>
+<span class="co">#&gt; tau_6   0.36100175 0.207675577 0.010456054 0.76128455 1.00  2125 -0.01</span>
+<span class="co">#&gt; tau_7   0.19128325 0.004063966 0.183517181 0.19923416 1.00  1363 -0.04</span>
+<span class="co">#&gt; tau_8   0.65618771 0.004270642 0.647925288 0.66423713 1.00  1305  0.02</span>
+<span class="co">#&gt; tau_9   0.36100175 0.207675577 0.010456054 0.76128455 1.00  2125 -0.01</span>
+<span class="co">#&gt; tau_10  0.36100175 0.207675577 0.010456054 0.76128455 1.00  2125 -0.01</span></pre></body></html></div>
 <p>The model output printed above tells us that 4 locations named C, D, F, and H were missing data and that these locations will inherit the population mean <span class="math inline">\(\tau_{\text{pop}}\)</span>. Other summary statistics tell us that, although the model converged for all parameters (<span class="math inline">\(\hat{R} \approx 1\)</span>) we could have run more samples for this example because effective sample sizes (<span class="math inline">\(SS_{\text{eff}}\)</span>) were low (<span class="math inline">\(\lt 1000\)</span>) for several parameters. We can improve effective sample sizes of increasing any of the <code>n_chain</code>, <code>n_burn</code>, <code>n_samp</code>, or <code>n_thin</code> arguments.</p>
 </div>
 <div id="checking-the-goodness-of-fit-of-a-mobility-model" class="section level2">
@@ -237,15 +236,15 @@ y_i \sim \text{Binom}(\tau_i, \sum_{j} M_{ij})
                <span class="kw">mod</span><span class="kw">=</span><span class="no">mod</span>)</pre></body></html></div>
 <p><img src="V5_mobility_model_files/figure-html/check%20mobility-1.png" width="672"></p>
 <pre><code>#&gt; $RMSE
-#&gt; [1] 444.5555
+#&gt; [1] 300.9926
 #&gt; 
 #&gt; $MAPE
-#&gt; [1] 0.3836521
+#&gt; [1] 1.116122
 #&gt; 
 #&gt; $R2
-#&gt; [1] 0.9752442</code></pre>
+#&gt; [1] 0.9613171</code></pre>
 <p>At first glance, our model seems to be doing a good job of capturing trends in the data. The posterior predictive check shows that if we just look at the overall distribution of trip counts in the mobility data matrix (<span class="math inline">\(M\)</span>), that the model has estimated trip counts (<span class="math inline">\(\hat{M}\)</span>) with about the same distribution. The Q-Q plot shows how the quantiles of the residuals of our model compare to the quantiles expected from a Normal distribution. We also see that the residuals are mostly Normally distributed with some deviation at the extremes.</p>
-<p>The prediction error results compare actual trip count values in the data matrix <span class="math inline">\(M\)</span> with the predicted values of the estimated mobility model (<span class="math inline">\(\hat{M}\)</span>). These results indicate that our model has an average magnitude of error of about 447 trip counts (RMSE), which is on average about 39% of the observed trip count values. The R-squared value shows that our model captures approximately 96% of the variance observed in the supplied mobility data (a rather high value since we are fitting to simulated data).</p>
+<p>The prediction error results compare actual trip count values in the data matrix <span class="math inline">\(M\)</span> with the predicted values of the estimated mobility model (<span class="math inline">\(\hat{M}\)</span>). These results indicate that our model has an average magnitude of error of about 300 trip counts (RMSE), which is on average about 1.1 times the observed trip count values. The R-squared value shows that our model captures approximately 96% of the variance observed in the supplied mobility data (a rather high value since we are fitting to simulated data).</p>
 </div>
 <div id="simulating-a-mobility-matrix-from-a-fitted-model" class="section level2">
 <h2 class="hasAnchor">
@@ -260,12 +259,12 @@ y_i \sim \text{Binom}(\tau_i, \sum_{j} M_{ij})
                         <span class="kw">tau</span> <span class="kw">=</span> <span class="no">mod</span>[<span class="fu"><a href="https://rdrr.io/r/base/grep.html">grep</a></span>(<span class="st">'tau'</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="no">mod</span>)),<span class="st">'Mean'</span>])
 <span class="no">mod_sim</span>[<span class="fl">1</span>:<span class="fl">5</span>,<span class="fl">1</span>:<span class="fl">5</span>]
 <span class="co">#&gt;       destination</span>
-<span class="co">#&gt; origin           A           B           C           D           E</span>
-<span class="co">#&gt;      A 0.698107487 0.014859250 0.009436139 0.025236417 0.008925549</span>
-<span class="co">#&gt;      B 0.012060955 0.743521004 0.028048761 0.004978422 0.022737085</span>
-<span class="co">#&gt;      C 0.010229563 0.037462055 0.793519654 0.005369134 0.024399040</span>
-<span class="co">#&gt;      D 0.051594099 0.012539473 0.010125439 0.793519654 0.008441754</span>
-<span class="co">#&gt;      E 0.001323913 0.004155033 0.003338370 0.000612470 0.969526700</span></pre></body></html></div>
+<span class="co">#&gt; origin           A          B           C            D           E</span>
+<span class="co">#&gt;      A 0.468271419 0.02970497 0.014131875 0.0459625585 0.022346460</span>
+<span class="co">#&gt;      B 0.001809020 0.96105049 0.005136617 0.0006712854 0.003760515</span>
+<span class="co">#&gt;      C 0.014100696 0.08415961 0.638998252 0.0069612798 0.051593342</span>
+<span class="co">#&gt;      D 0.192223638 0.04609943 0.029177691 0.2987482774 0.042750967</span>
+<span class="co">#&gt;      E 0.008548539 0.02362198 0.019780445 0.0039104480 0.822419792</span></pre></body></html></div>
 <p>For applications where we want to simulate stochastic realizations of the mobility matrix based on the uncertainty in model parameters, such as in a spatial disease transmission model, we can give the <code><a href="../reference/sim_mobility.html">sim_mobility()</a></code> function the model object fitted by <code><a href="../reference/fit_mobility.html">fit_mobility()</a></code> and ask for <code>n</code> stochastic realizations. The following code will return a three-dimensional array where the third dimension contains the <code>n</code> simultions.</p>
 <div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">mod_sim</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/sim_mobility.html">sim_mobility</a></span>(<span class="no">D</span>,
                         <span class="no">N</span>,
@@ -274,30 +273,30 @@ y_i \sim \text{Binom}(\tau_i, \sum_{j} M_{ij})
 <span class="no">mod_sim</span>[<span class="fl">1</span>:<span class="fl">5</span>,<span class="fl">1</span>:<span class="fl">5</span>,]
 <span class="co">#&gt; , , 1</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt;             A           B           C            D           E</span>
-<span class="co">#&gt; A 0.697406001 0.014962699 0.009546753 0.0253658152 0.008987166</span>
-<span class="co">#&gt; B 0.012274527 0.740973852 0.028376190 0.0050927820 0.022915937</span>
-<span class="co">#&gt; C 0.014227681 0.051551066 0.715076245 0.0074945036 0.033555598</span>
-<span class="co">#&gt; D 0.028206613 0.006903389 0.005591992 0.8866625234 0.004643746</span>
-<span class="co">#&gt; E 0.001272398 0.003954969 0.003187770 0.0005912439 0.970963908</span>
+<span class="co">#&gt;             A          B           C           D          E</span>
+<span class="co">#&gt; A 0.469050219 0.02977768 0.014199396 0.045996410 0.02243364</span>
+<span class="co">#&gt; B 0.001867315 0.95998202 0.005277002 0.000695605 0.00387164</span>
+<span class="co">#&gt; C 0.020728510 0.12284537 0.472273184 0.010261476 0.07547932</span>
+<span class="co">#&gt; D 0.193272216 0.04661026 0.029536369 0.292938548 0.04325172</span>
+<span class="co">#&gt; E 0.008440559 0.02322949 0.019453655 0.003872838 0.82548656</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; , , 2</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt;             A           B           C            D           E</span>
-<span class="co">#&gt; A 0.700692503 0.014592193 0.009399732 0.0249511277 0.008608336</span>
-<span class="co">#&gt; B 0.011984853 0.747380723 0.027633744 0.0049576073 0.021710716</span>
-<span class="co">#&gt; C 0.005332669 0.019087837 0.893739808 0.0028004018 0.012202882</span>
-<span class="co">#&gt; D 0.094206947 0.022790441 0.018637342 0.6216986956 0.015056851</span>
-<span class="co">#&gt; E 0.001293266 0.003971281 0.003231483 0.0005991147 0.970537851</span>
+<span class="co">#&gt;             A          B           C            D           E</span>
+<span class="co">#&gt; A 0.465393946 0.03002152 0.014210527 0.0463761985 0.022710365</span>
+<span class="co">#&gt; B 0.001748588 0.96263021 0.004901549 0.0006512068 0.003638045</span>
+<span class="co">#&gt; C 0.005463140 0.03235272 0.861131396 0.0027036754 0.019960619</span>
+<span class="co">#&gt; D 0.190053663 0.04581896 0.028820630 0.3057774528 0.042691173</span>
+<span class="co">#&gt; E 0.008513047 0.02341393 0.019462686 0.0039049721 0.824566769</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; , , 3</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt;             A           B           C            D           E</span>
-<span class="co">#&gt; A 0.700424081 0.014907256 0.009518011 0.0251903149 0.008992451</span>
-<span class="co">#&gt; B 0.011801064 0.752099687 0.027195875 0.0049160065 0.022055923</span>
-<span class="co">#&gt; C 0.010259141 0.037029200 0.795325408 0.0054204374 0.024198898</span>
-<span class="co">#&gt; D 0.038427440 0.009473203 0.007671449 0.8451708339 0.006396879</span>
-<span class="co">#&gt; E 0.001188529 0.003682422 0.002967308 0.0005542326 0.973014348</span></pre></body></html></div>
+<span class="co">#&gt;             A          B           C            D           E</span>
+<span class="co">#&gt; A 0.465693291 0.03003103 0.014366876 0.0463366085 0.022622975</span>
+<span class="co">#&gt; B 0.001660361 0.96449844 0.004687149 0.0006200755 0.003434006</span>
+<span class="co">#&gt; C 0.014064323 0.08299137 0.643070715 0.0069751058 0.051014374</span>
+<span class="co">#&gt; D 0.192054882 0.04648506 0.029532172 0.2958716574 0.043110307</span>
+<span class="co">#&gt; E 0.008238028 0.02261738 0.018976215 0.0037875080 0.830047399</span></pre></body></html></div>
 </div>
 <div id="references" class="section level2">
 <h2 class="hasAnchor">

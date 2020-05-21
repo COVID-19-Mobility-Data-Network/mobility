@@ -541,7 +541,9 @@ check_mobility <- function(M,
 
   if (params_travel & !params_gravity) {
 
-    return(check_prob_travel(M=M, mod=mod, plot_check=plot_check))
+    tau <- 1 - (diag(M) / rowSums(M, na.rm=TRUE))
+
+    return(check_prob_travel(tau=tau, mod=mod, plot_check=plot_check))
 
   } else if ( !params_travel & params_gravity ) {
 
@@ -694,18 +696,17 @@ check_gravity <- function(M,
 }
 
 # Model checking function specific to travel probability model output
-check_prob_travel <- function(M,
+check_prob_travel <- function(tau,
                               mod,
                               plot_check=TRUE
 ) {
 
   taus <- grep('tau', rownames(mod))
 
-  if ( !(identical(dim(M)[1], length(taus))) ) stop('Dimensions of input data must match')
+  if ( !(identical(length(tau), length(taus))) ) stop('Dimensions of input data must match')
   if (coda::is.mcmc.list(mod)) mod <- summarize_mobility(mod)
 
   tau_hat <- mod$Mean[taus]
-  tau <- 1 - (diag(M) / rowSums(M, na.rm=TRUE))
 
   if (plot_check) {
 
@@ -741,13 +742,15 @@ check_prob_travel <- function(M,
 
     return(
       list(DIC=mod['DIC', 'Mean'],
+           MAE=Metrics::mae(tau, tau_hat),
            MAPE=Metrics::mape(tau + 1e-05, tau_hat),
            R2=cor(tau, tau_hat)^2)
     )
 
   } else {
 
-    list(MAPE=Metrics::mape(tau, tau_hat),
+    list(MAE=Metrics::mae(tau, tau_hat),
+         MAPE=Metrics::mape(tau, tau_hat),
          R2=cor(tau, tau_hat)^2)
   }
 }
@@ -793,6 +796,34 @@ sim_gravity <- function(
   mod=NULL,
   counts=FALSE
 ) {
+
+  # Check data formats
+  msg <- 'D must be a named numeric matrix'
+  if (!(is.matrix(D) & is.numeric(D))) stop(msg)
+  if (any(unlist(lapply(dimnames(D), is.null)))) stop(msg)
+
+  if (!is.null(N)) {
+    msg <- 'N must be a named numeric vector'
+    if (!(is.vector(N) & is.numeric(N))) stop(msg)
+    if (is.null(names(N))) stop(msg)
+  }
+
+  # check data dimensions
+  check_dims <- sapply(c(dim(D), length(N)), function(x) identical(x, dim(D)[1]))
+
+  if (any(!check_dims)) stop('Dimensions of input data do not match')
+
+  # check data names
+  check_names <- unlist(lapply(
+    c(dimnames(D), list(names(N))),
+    function(x) identical(x, dimnames(D)[[1]])
+  ))
+
+  if (any(!check_names)) stop('Dimension names of input data do not match')
+
+  vals <- c(D, N)
+  if (any(is.na(vals)) | any(is.nan(vals))) stop('D and N are covariates and cannot contain missing values')
+
 
   if (!is.null(mod)) {
 
@@ -1327,3 +1358,10 @@ calc_abs_probs <- function(pi,
   out
 }
 
+# Function to load a single object in a .Rdata file and assign to an object in local environment
+##' @export
+load_obj <- function(file, x=1) {
+  tmp <- new.env()
+  load(file=file, envir=tmp)
+  tmp[[ls(tmp)[x]]]
+}

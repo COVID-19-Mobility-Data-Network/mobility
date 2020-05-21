@@ -186,28 +186,28 @@ Criterion (DIC) is calculated and appended to the summary.</p>
 #&gt; Graph information:
 #&gt;    Observed stochastic nodes: 74
 #&gt;    Unobserved stochastic nodes: 30
-#&gt;    Total graph size: 1166
+#&gt;    Total graph size: 1196
 #&gt; 
 #&gt; Initializing model
 #&gt; 
 #&gt; NOTE: Stopping adaptation
 #&gt; 
-#&gt; </div><div class='input'><span class='fu'>summarize_mobility</span>(<span class='no'>mod</span>)</div><div class='output co'>#&gt;                  Mean         SD       HPD2.5      HPD97.5 Rhat SSeff       AC2
-#&gt; gamma    1.447140e+00 0.01660585 1.414706e+00     1.478505 1.00   486 0.5911108
-#&gt; omega_1  9.897682e-01 0.69831069 3.738442e-02     2.361755 1.00   765 0.4477422
-#&gt; omega_2  3.349061e+01 2.04018534 2.921957e+01    37.386352 1.00   412 0.6125317
-#&gt; theta    1.015388e+00 0.69170358 3.171251e-02     2.381555 1.01   514 0.4833230
-#&gt; DIC      4.822738e+04 8.35056734 4.821247e+04 48243.657722 1.00   436 0.6045279
-#&gt; deviance 4.820410e+04 8.35056734 4.818919e+04 48220.375063 1.00   436 0.6045279
-#&gt; pD       1.164133e+01         NA           NA           NA   NA    NA        NA
-#&gt;                 AC5         AC10
-#&gt; gamma    0.17046852  0.027323366
-#&gt; omega_1  0.05299255 -0.000389273
-#&gt; omega_2  0.19615674  0.037845837
-#&gt; theta    0.09683193  0.071032226
-#&gt; DIC      0.19471763  0.044907047
-#&gt; deviance 0.19471763  0.044907047
-#&gt; pD               NA           NA</div><div class='input'>
+#&gt; </div><div class='input'><span class='fu'>summarize_mobility</span>(<span class='no'>mod</span>)</div><div class='output co'>#&gt;                  Mean         SD       HPD2.5      HPD97.5 Rhat SSeff  AC2  AC5
+#&gt; gamma    1.725217e+00 0.01279210 1.700978e+00 1.751360e+00 1.01  1399 0.20 0.00
+#&gt; omega_1  1.350809e+00 0.61885499 5.077172e-01 2.570240e+00 1.06   659 0.51 0.09
+#&gt; omega_2  3.221456e-02 0.01559769 4.293284e-03 6.206515e-02 1.00  1040 0.32 0.02
+#&gt; theta    1.005430e+00 0.67432014 6.984112e-02 2.330877e+00 1.01   707 0.44 0.07
+#&gt; DIC      3.532814e+04 2.47747644 3.532515e+04 3.533301e+04 1.00   938 0.36 0.03
+#&gt; deviance 3.531933e+04 2.47747644 3.531633e+04 3.532420e+04 1.00   938 0.36 0.03
+#&gt; pD       4.407431e+00         NA           NA           NA   NA    NA   NA   NA
+#&gt;          AC10
+#&gt; gamma    0.01
+#&gt; omega_1  0.01
+#&gt; omega_2  0.00
+#&gt; theta    0.01
+#&gt; DIC      0.02
+#&gt; deviance 0.02
+#&gt; pD         NA</div><div class='input'>
 
 <span class='co'># Probability of travel</span>
 <span class='no'>n_orig</span> <span class='kw'>&lt;-</span> <span class='fl'>10</span>
@@ -226,7 +226,7 @@ Criterion (DIC) is calculated and appended to the summary.</p>
 <span class='co'># Estimate probability of travel for each locations (missing locations regress to mean)</span>
 <span class='no'>prob_trav</span> <span class='kw'>&lt;-</span> <span class='fu'>summarize_mobility</span>(
   <span class='fu'><a href='fit_prob_travel.html'>fit_prob_travel</a></span>(<span class='kw'>travel</span><span class='kw'>=</span><span class='no'>travel</span>, <span class='kw'>total</span><span class='kw'>=</span><span class='no'>total</span>)
-)</div><div class='output co'>#&gt; <span class='message'>These missing locations will inherit population mean:</span></div><div class='output co'>#&gt; <span class='message'>A D H</span></div><div class='output co'>#&gt; Compiling model graph
+)</div><div class='output co'>#&gt; <span class='message'>These missing locations will inherit population mean:</span></div><div class='output co'>#&gt; <span class='message'>C H J</span></div><div class='output co'>#&gt; Compiling model graph
 #&gt;    Resolving undeclared variables
 #&gt;    Allocating nodes
 #&gt; Graph information:
@@ -240,16 +240,16 @@ Criterion (DIC) is calculated and appended to the summary.</p>
 #&gt; 
 #&gt; </div><div class='input'>
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggplot2</span>)
-<span class='fu'><a href='https://rdrr.io/pkg/ggplot2/man/ggplot.html'>ggplot</a></span>(<span class='kw'>data</span><span class='kw'>=</span><span class='no'>prob_trav</span>) +
-  <span class='fu'><a href='https://rdrr.io/pkg/ggplot2/man/geom_point.html'>geom_point</a></span>(<span class='fu'><a href='https://rdrr.io/pkg/ggplot2/man/aes.html'>aes</a></span>(<span class='kw'>x</span><span class='kw'>=</span><span class='no'>Mean</span>, <span class='kw'>y</span><span class='kw'>=</span><span class='no'>orig_id</span>), <span class='kw'>size</span><span class='kw'>=</span><span class='fl'>2</span>) +
-  <span class='kw pkg'>ggstance</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/ggstance/man/geom_linerangeh.html'>geom_linerangeh</a></span>(<span class='fu'><a href='https://rdrr.io/pkg/ggplot2/man/aes.html'>aes</a></span>(<span class='kw'>y</span><span class='kw'>=</span><span class='no'>orig_id</span>, <span class='kw'>xmin</span><span class='kw'>=</span><span class='no'>HPD2.5</span>, <span class='kw'>xmax</span><span class='kw'>=</span><span class='no'>HPD97.5</span>)) +
-  <span class='fu'><a href='https://rdrr.io/pkg/ggplot2/man/labs.html'>xlab</a></span>(<span class='st'>'Probability of travel outside origin'</span>) + <span class='fu'><a href='https://rdrr.io/pkg/ggplot2/man/labs.html'>ylab</a></span>(<span class='st'>'Origin'</span>) +
-  <span class='fu'><a href='https://rdrr.io/pkg/ggplot2/man/lims.html'>xlim</a></span>(<span class='fl'>0</span>,<span class='fl'>1</span>) +
-  <span class='fu'><a href='https://rdrr.io/pkg/ggplot2/man/ggtheme.html'>theme_bw</a></span>() + <span class='fu'><a href='https://rdrr.io/pkg/ggplot2/man/theme.html'>theme</a></span>(<span class='kw'>axis.text.x</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/pkg/ggplot2/man/element.html'>element_text</a></span>(<span class='kw'>size</span><span class='kw'>=</span><span class='fl'>10</span>),
-                     <span class='kw'>axis.text.y</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/pkg/ggplot2/man/element.html'>element_text</a></span>(<span class='kw'>size</span><span class='kw'>=</span><span class='fl'>10</span>),
-                     <span class='kw'>axis.title.x</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/pkg/ggplot2/man/element.html'>element_text</a></span>(<span class='kw'>size</span><span class='kw'>=</span><span class='fl'>12</span>, <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/ggplot2/man/element.html'>margin</a></span>(<span class='kw'>t</span> <span class='kw'>=</span> <span class='fl'>15</span>)),
-                     <span class='kw'>axis.title.y</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/pkg/ggplot2/man/element.html'>element_text</a></span>(<span class='kw'>size</span><span class='kw'>=</span><span class='fl'>12</span>, <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/ggplot2/man/element.html'>margin</a></span>(<span class='kw'>r</span> <span class='kw'>=</span> <span class='fl'>15</span>)),
-                     <span class='kw'>panel.border</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/ggplot2/man/element.html'>element_rect</a></span>(<span class='kw'>colour</span> <span class='kw'>=</span> <span class='st'>"black"</span>, <span class='kw'>fill</span><span class='kw'>=</span><span class='fl'>NA</span>, <span class='kw'>size</span><span class='kw'>=</span><span class='fl'>1</span>),
+<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span>(<span class='kw'>data</span><span class='kw'>=</span><span class='no'>prob_trav</span>) +
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span>(<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span>(<span class='kw'>x</span><span class='kw'>=</span><span class='no'>Mean</span>, <span class='kw'>y</span><span class='kw'>=</span><span class='no'>orig_id</span>), <span class='kw'>size</span><span class='kw'>=</span><span class='fl'>2</span>) +
+  <span class='kw pkg'>ggstance</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/ggstance/man/geom_linerangeh.html'>geom_linerangeh</a></span>(<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span>(<span class='kw'>y</span><span class='kw'>=</span><span class='no'>orig_id</span>, <span class='kw'>xmin</span><span class='kw'>=</span><span class='no'>HPD2.5</span>, <span class='kw'>xmax</span><span class='kw'>=</span><span class='no'>HPD97.5</span>)) +
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>xlab</a></span>(<span class='st'>'Probability of travel outside origin'</span>) + <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>ylab</a></span>(<span class='st'>'Origin'</span>) +
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/lims.html'>xlim</a></span>(<span class='fl'>0</span>,<span class='fl'>1</span>) +
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_bw</a></span>() + <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/theme.html'>theme</a></span>(<span class='kw'>axis.text.x</span><span class='kw'>=</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span>(<span class='kw'>size</span><span class='kw'>=</span><span class='fl'>10</span>),
+                     <span class='kw'>axis.text.y</span><span class='kw'>=</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span>(<span class='kw'>size</span><span class='kw'>=</span><span class='fl'>10</span>),
+                     <span class='kw'>axis.title.x</span><span class='kw'>=</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span>(<span class='kw'>size</span><span class='kw'>=</span><span class='fl'>12</span>, <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>margin</a></span>(<span class='kw'>t</span> <span class='kw'>=</span> <span class='fl'>15</span>)),
+                     <span class='kw'>axis.title.y</span><span class='kw'>=</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span>(<span class='kw'>size</span><span class='kw'>=</span><span class='fl'>12</span>, <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>margin</a></span>(<span class='kw'>r</span> <span class='kw'>=</span> <span class='fl'>15</span>)),
+                     <span class='kw'>panel.border</span> <span class='kw'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_rect</a></span>(<span class='kw'>colour</span> <span class='kw'>=</span> <span class='st'>"black"</span>, <span class='kw'>fill</span><span class='kw'>=</span><span class='fl'>NA</span>, <span class='kw'>size</span><span class='kw'>=</span><span class='fl'>1</span>),
                      <span class='kw'>legend.position</span><span class='kw'>=</span><span class='st'>'right'</span>)</div><div class='img'><img src='summarize_mobility-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
