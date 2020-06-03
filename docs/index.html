@@ -63,9 +63,6 @@
       <a href="articles/V3_travel_probability.html">Fitting and simulating travel probability</a>
     </li>
     <li>
-      <a href="articles/V4_gravity_compendium.html">A compendium of diffusion models</a>
-    </li>
-    <li>
       <a href="articles/V4_gravity_model.html">Fitting and simulating a gravity model</a>
     </li>
     <li>
@@ -123,9 +120,9 @@
 <a href="#general-work-flow" class="anchor"></a>General work-flow</h3>
 <p><img src="reference/figures/workflow/workflow.001.png"></p>
 </div>
-<div id="generalized-long-form-mobility-data-format" class="section level3">
+<div id="1-generalized-long-form-mobility-data-format" class="section level3">
 <h3 class="hasAnchor">
-<a href="#generalized-long-form-mobility-data-format" class="anchor"></a>1. Generalized long-form mobility data format</h3>
+<a href="#1-generalized-long-form-mobility-data-format" class="anchor"></a>1. Generalized long-form mobility data format</h3>
 <p>There are many sources of travel data that researchers wish to fit models to. So, we have designed a generalized data frame template to standardize travel data from various sources into a longform format that is compatible with the modeling and simulation tools in this package. This data template can be populated by starting with the <code>travel_data_template</code> object and adding rows.</p>
 <div class="sourceCode" id="cb1"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">mobility</span>)
 <span class="no">mobility_data</span> <span class="kw">&lt;-</span> <span class="no">travel_data_template</span>
@@ -133,9 +130,9 @@
 <span class="no">mobility_data</span>[<span class="fl">1</span>:<span class="no">n</span>,] <span class="kw">&lt;-</span> <span class="fl">NA</span>
 <span class="co"># add data mobility data to rows</span></pre></div>
 </div>
-<div id="build-sparse-data-matrices-for-modeling" class="section level3">
+<div id="2-build-sparse-data-matrices-for-modeling" class="section level3">
 <h3 class="hasAnchor">
-<a href="#build-sparse-data-matrices-for-modeling" class="anchor"></a>2. Build sparse data matrices for modeling</h3>
+<a href="#2-build-sparse-data-matrices-for-modeling" class="anchor"></a>2. Build sparse data matrices for modeling</h3>
 <p>Utility functions take mobility data from the generalized long-form format and build data matrices that are used to fit models.</p>
 <div class="sourceCode" id="cb2"><pre class="r"><span class="no">mobility_data</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="no">mobility_data</span>, <span class="fu"><a href="reference/get_unique_ids.html">get_unique_ids</a></span>(<span class="no">mobility_data</span>, <span class="kw">adm_start</span><span class="kw">=</span><span class="fl">2</span>))
 
@@ -153,9 +150,9 @@
 <span class="co"># Unique population sizes for all locations</span>
 <span class="no">N</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/get_pop_vec.html">get_pop_vec</a></span>(<span class="no">mobility_data</span>)</pre></div>
 </div>
-<div id="estimate-mobility-model-parameters" class="section level3">
+<div id="3-estimate-mobility-model-parameters" class="section level3">
 <h3 class="hasAnchor">
-<a href="#estimate-mobility-model-parameters" class="anchor"></a>3. Estimate mobility model parameters</h3>
+<a href="#3-estimate-mobility-model-parameters" class="anchor"></a>3. Estimate mobility model parameters</h3>
 <div class="sourceCode" id="cb3"><pre class="r"># Fit a mobility model to data matrices
 mod &lt;- fit_mobility(M, D, N)
 
@@ -177,9 +174,9 @@ tau_5   0.008924998 0.001340494 6.292020e-03 0.01137737 1.00  1243  0.010289810
 check_mobility(M, D, N, mod)</pre></div>
 <p><img src="reference/figures/model_check.png" width="700"></p>
 </div>
-<div id="simulate-mobility-model" class="section level3">
+<div id="4-simulate-mobility-model" class="section level3">
 <h3 class="hasAnchor">
-<a href="#simulate-mobility-model" class="anchor"></a>4. Simulate mobility model</h3>
+<a href="#4-simulate-mobility-model" class="anchor"></a>4. Simulate mobility model</h3>
 <div class="sourceCode" id="cb4"><pre class="r"># Simulate one stochastic realization of mobility matrix using fitted mobility model parameters
 sim_mobility(D, N, mod, n=1)
              
@@ -196,9 +193,9 @@ origin           A          B          C           D          E
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<div id="step-1-check-that-jags-4-3-0-is-installed" class="section level4">
+<div id="step-1-check-that-jags-430-is-installed" class="section level4">
 <h4 class="hasAnchor">
-<a href="#step-1-check-that-jags-4-3-0-is-installed" class="anchor"></a>Step 1: Check that JAGS 4.3.0 is installed</h4>
+<a href="#step-1-check-that-jags-430-is-installed" class="anchor"></a>Step 1: Check that JAGS 4.3.0 is installed</h4>
 <p>The model fitting functions in the package perform parameter estimation using the Bayesian MCMC (Markov Chain Monte Carlo) algorithm called JAGS (Just Another Gibbs Sampler), which requires the JAGS library version &gt;= 4.3.0 to be installed.</p>
 <ul>
 <li>If you do not have the JAGS 4.3.0 library installed, download <a href="https://sourceforge.net/projects/mcmc-jags/files/">HERE</a>.</li>

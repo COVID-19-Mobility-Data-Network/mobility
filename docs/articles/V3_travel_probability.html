@@ -63,9 +63,6 @@
       <a href="../articles/V3_travel_probability.html">Fitting and simulating travel probability</a>
     </li>
     <li>
-      <a href="../articles/V4_gravity_compendium.html">A compendium of diffusion models</a>
-    </li>
-    <li>
       <a href="../articles/V4_gravity_model.html">Fitting and simulating a gravity model</a>
     </li>
     <li>
@@ -91,7 +88,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="V3_travel_probability_files/header-attrs-2.1/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Fitting and simulating travel probability</h1>
@@ -162,14 +159,24 @@ y_i \sim \text{Binom}(\tau_i, m_i)
 <span class="co">#&gt; Initializing model</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; NOTE: Stopping adaptation</span></pre></body></html></div>
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu">ggplot</span>(<span class="kw">data</span><span class="kw">=</span><span class="no">prob_trav</span>) +
+  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="kw">x</span><span class="kw">=</span><span class="no">Mean</span>, <span class="kw">y</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="no">prob_trav</span>)), <span class="kw">size</span><span class="kw">=</span><span class="fl">2</span>) +
+  <span class="kw pkg">ggstance</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/ggstance/man/geom_linerangeh.html">geom_linerangeh</a></span>(<span class="fu">aes</span>(<span class="kw">y</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="no">prob_trav</span>), <span class="kw">xmin</span><span class="kw">=</span><span class="no">HPD2.5</span>, <span class="kw">xmax</span><span class="kw">=</span><span class="no">HPD97.5</span>)) +
+  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.window.html">xlim</a></span>(<span class="fl">0</span>,<span class="fl">1</span>) +
+  <span class="fu">xlab</span>(<span class="st">'Probability of travel outside origin'</span>) + <span class="fu">ylab</span>(<span class="st">'Origin'</span>) +
+  <span class="fu">theme_bw</span>() + <span class="fu">theme</span>(<span class="kw">axis.text.x</span><span class="kw">=</span><span class="fu">element_text</span>(<span class="kw">size</span><span class="kw">=</span><span class="fl">9</span>),
+                     <span class="kw">axis.text.y</span><span class="kw">=</span><span class="fu">element_text</span>(<span class="kw">size</span><span class="kw">=</span><span class="fl">9</span>),
+                     <span class="kw">axis.title.x</span><span class="kw">=</span><span class="fu">element_text</span>(<span class="kw">size</span><span class="kw">=</span><span class="fl">12</span>, <span class="kw">margin</span> <span class="kw">=</span> <span class="fu">margin</span>(<span class="kw">t</span> <span class="kw">=</span> <span class="fl">15</span>)),
+                     <span class="kw">axis.title.y</span><span class="kw">=</span><span class="fu">element_text</span>(<span class="kw">size</span><span class="kw">=</span><span class="fl">12</span>, <span class="kw">margin</span> <span class="kw">=</span> <span class="fu">margin</span>(<span class="kw">r</span> <span class="kw">=</span> <span class="fl">15</span>)),
+                     <span class="kw">legend.position</span><span class="kw">=</span><span class="st">'right'</span>)</pre></body></html></div>
 <p><img src="V3_travel_probability_files/figure-html/unnamed-chunk-1-1.png" width="480"></p>
 </div>
-<div id="simulate-values-travel-probability-for-each-location" class="section level3">
+<div id="simulate-values-of-travel-probability-for-each-location" class="section level3">
 <h3 class="hasAnchor">
-<a href="#simulate-values-travel-probability-for-each-location" class="anchor"></a>Simulate values travel probability for each location</h3>
+<a href="#simulate-values-of-travel-probability-for-each-location" class="anchor"></a>Simulate values of travel probability for each location</h3>
 <p>There can be relatively large confidence intervals around the travel probability estimated for locations without data. Since these locations inherit the population-level mean, uncertainty will likely be higher than locations with data. If we wanted to then use this model in a simulation, we may want to include this uncertainty in the model.</p>
 <p>The <code><a href="../reference/sim_prob_travel.html">sim_prob_travel()</a></code> function can be used to simulate values of travel probability for each location. Each time the function is called, it returns one random realization for each location.</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="co"># Simulate n realizations of travel probability for each location</span>
+<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="co"># Simulate n realizations of travel probability for each location</span>
 <span class="fu"><a href="../reference/sim_prob_travel.html">sim_prob_travel</a></span>(<span class="kw">mu</span><span class="kw">=</span><span class="no">prob_trav</span>$<span class="no">Mean</span>,
                 <span class="kw">sigma</span><span class="kw">=</span><span class="no">prob_trav</span>$<span class="no">SD</span>,
                 <span class="kw">id</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">y</span>),

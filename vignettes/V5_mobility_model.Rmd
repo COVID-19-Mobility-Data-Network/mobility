@@ -29,7 +29,7 @@ knitr::opts_chunk$set(
 set.seed(1234)
 ```
 
-So, what do we mean by "mobility" model? The mobility model estimated by this package is different from using just a gravity model in that it estimates values along the diagonal of the mobility matrix ($\hat{M}_{ii}$), unlike gravity model formulations which estimate off-diagonal values only ($\hat{M}_{ij}$). This is achieved by combining models that estimate: 1) the probabilty of travel outside the origin location $i$ ($\tau_i$) which helps us to fill in the diagonal of the mobility matrix, and 2) the distribution of travel from the origin location $i$ to all $j$ destinations ($\pi_{ij}$) which fills in the off-diagonal elements. 
+So, what do we mean by "mobility" model? The mobility model estimated by this package is different from using just a gravity model in that it uses a flexible departure-diffusion model framework that estimates diagonal and off-diagonal elements of the mobility matrix ($\hat{M}_{ii}$) separately and combines both models using conditional probability rules. This is achieved by combining models that estimate: 1) the probabilty of travel outside the origin location $i$ ($\tau_i$)---the departure process, and 2) the distribution of travel from the origin location $i$ to all $j$ destinations ($\pi_{ij}$)---the diffusion process. 
 
 A common problem with mobility data, regardless of the source, is missing observations. This occurs when some $i \rightarrow j$ routes in the mobility data matrix were not observed during the time interval of data collection, or in the case of travel survey data, questions about travel may be collected for only a few locations. However, the role of a mobility matrix in other models (e.g. disease transmission models) is often to supply connectivity or travel volume for all possible routes of travel among locations. Therefore, the model fitting and simulation functions in this package are designed to help estimate $\tau_i$ and $\pi_{ij}$ for missing locations and allow extrapolation to other spatial scales.
 
@@ -46,7 +46,7 @@ N <- mobility_matrices$N
 
 By design, we have added additional stochasticity around trip counts in the movement matrix ($M$) and randomly sampled 70% of observed routes to simulate missing observations, which are shown as grey cells in the plot below.
 
-```{r data_plot, fig.height=6.5, fig.width=6.5, echo=FALSE}
+```{r data_plot, fig.height=6.5, fig.width=6.5}
 ggplot(data=melt(M)) +
   geom_tile(aes(x=factor(destination),
                 y=factor(origin),
@@ -96,7 +96,7 @@ prob_trav <- summarize_mobility(
 )
 ```
 
-```{r, echo=FALSE, fig.width=5, fig.height=7}
+```{r, fig.width=5, fig.height=7}
 ggplot(data=prob_trav) +
   geom_point(aes(x=Mean, y=rownames(prob_trav)), size=2) +
   ggstance::geom_linerangeh(aes(y=rownames(prob_trav), xmin=HPD2.5, xmax=HPD97.5)) +
@@ -127,16 +127,20 @@ Gravity model parameters are fit through normalized connectivity values ($\pi_{i
 
 
 ## Combining models to estimate full mobility matrix
+The two models described above can now be combined into a departure-diffusion model to give the full mobility matrix $\hat{M}$. Here, \( \tau_i \) (the probability of leaving origin \(i\)) is the departure process and \( \pi_{ij} \) (the probability of going from \(i\) to \(j\)) is the diffusion process. The values of $\pi_{ij}$ sum to unity along each row, but the diagonal is missing, indicating that this is a relative quantity. That is to say, $\pi_{ij}$ gives the probability of going from $i$ to $j$ **given** that travel outside origin $i$ occurs. Therefore, we can use basic conditional probability rules [@blitzstein_introduction_2014] to define the travel routes in the off-diagonals.
 
-Thus far we have estimated $\tau_i$ (the probability of leaving origin $i$) and $\pi_{ij}$ (the probability of going from $i$ to $j$). The values of $\pi_{ij}$ sum to unity along each row, but the diagonal is missing, indicating that this is a relative quantity. That is to say, $\pi_{ij}$ gives the probability of going from $i$ to $j$ **given** that travel outside origin $i$ occurs. Therefore, we can use basic conditional probability rules [@blitzstein_introduction_2014] to define the travel routes in the off-diagonals.
 $$
-\Pr( \text{leave}_i, \text{travel}_{i \rightarrow j}) = \Pr( \text{travel}_{i \rightarrow j} \mid \text{leave}_i ) \Pr(\text{leave}_i ) = \pi_{ij} \tau_i. 
+\Pr( \text{depart}_i, \text{diffuse}_{i \rightarrow j}) = \Pr( \text{diffuse}_{i \rightarrow j} \mid \text{depart}_i ) \Pr(\text{depart}_i ) = \pi_{ij} \tau_i. 
 $$
-The diagonal elements then represent the probability of staying in the origin location $i$, represented as the complement of $\tau_i$:
+and
 $$
-\Pr( \text{stay}_i) =  1 - \tau_i.
+\Pr( \neg \text{depart}_i ) =  1 - \tau_i.
 $$
+
 Now each row of the estimated mobility matrix $\hat{M}$ sum to 1 including the diagonal to give the absolute probability of travel **within** origins and **among** origins and destinations.
+
+
+
 
 ## Fitting a mobility model to data
 The parameters $\tau_i$ and $\pi_{ij}$ can be estimated together using the `fit_mobility()` function:

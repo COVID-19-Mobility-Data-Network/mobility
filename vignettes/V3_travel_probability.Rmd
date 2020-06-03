@@ -70,7 +70,7 @@ prob_trav <- summarize_mobility(
   fit_prob_travel(travel=y, total=m)
 )
 ```
-```{r, echo=FALSE, fig.width=5, fig.height=7}
+```{r, fig.width=5, fig.height=7}
 ggplot(data=prob_trav) +
   geom_point(aes(x=Mean, y=rownames(prob_trav)), size=2) +
   ggstance::geom_linerangeh(aes(y=rownames(prob_trav), xmin=HPD2.5, xmax=HPD97.5)) +
@@ -83,7 +83,7 @@ ggplot(data=prob_trav) +
                      legend.position='right')
 ```
 
-### Simulate values travel probability for each location
+### Simulate values of travel probability for each location
 There can be relatively large confidence intervals around the travel probability estimated for locations without data. Since these locations inherit the population-level mean, uncertainty will likely be higher than locations with data. If we wanted to then use this model in a simulation, we may want to include this uncertainty in the model.
 
 The `sim_prob_travel()` function can be used to simulate values of travel probability for each location. Each time the function is called, it returns one random realization for each location.

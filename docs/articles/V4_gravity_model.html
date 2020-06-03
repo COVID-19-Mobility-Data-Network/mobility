@@ -63,9 +63,6 @@
       <a href="../articles/V3_travel_probability.html">Fitting and simulating travel probability</a>
     </li>
     <li>
-      <a href="../articles/V4_gravity_compendium.html">A compendium of diffusion models</a>
-    </li>
-    <li>
       <a href="../articles/V4_gravity_model.html">Fitting and simulating a gravity model</a>
     </li>
     <li>
@@ -91,7 +88,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="V4_gravity_model_files/header-attrs-2.1/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Fitting and simulating a gravity model</h1>
@@ -105,8 +102,8 @@
     
     
 <p>Historically, the gravity model has been used to model connectivity among locations based on the distances among <span class="math inline">\(i\)</span> origins and <span class="math inline">\(j\)</span> destinations (<span class="math inline">\(d_{ij}\)</span>) and population sizes of each location (<span class="math inline">\(N_i\)</span> and <span class="math inline">\(N_j\)</span>). A major advantage of the gravity model is that distance and population size are simple covariates that can be obtained in almost any context, allowing a researcher to infer connectivity with little information.</p>
-<p>When fitting the gravity model to data, we also need a matrix of observed trip volume (<span class="math inline">\(M\)</span>). Trip volume is an intentionally vague term here because a mobility data matrix can be populated with a variety of measurements that capture relative amounts of travel among locations. For example, if we are using Call Data Records (CDR) which are measures of mobile phone usage supplied by mobile phone companies, the unit of travel volume is likely to be the total number of person trips per unit time. Or if we are using a travel survey that researchers have collated from questionares given to residents of an area, the measurement of travel volume might be the total number of individuals that reported travelling from <span class="math inline">\(i\)</span> to <span class="math inline">\(j\)</span> in the past month.</p>
-<p>The actual unit of travel volume is less important when modeling connectivity because the gravity model formula estimates relative travel volume that is normalized across all <span class="math inline">\(j\)</span> destinations of an origin, so that the rows of <span class="math inline">\(M\)</span> sum to 1. However, it is important that all <span class="math inline">\(ij\)</span> cells in <span class="math inline">\(M\)</span> have the <strong>same</strong> unit of travel volume per unit time because the model estimates parameters based on relative differences in trip volume.</p>
+<p>When fitting the gravity model to data, we also need a matrix of observed travel volume (<span class="math inline">\(M\)</span>). Travel volume is an intentionally vague term here because a mobility data matrix can be populated with a variety of measurements that capture relative amounts of travel among locations. For example, if we are using Call Data Records (CDR) which are measures of mobile phone usage supplied by mobile phone companies, the unit of travel volume is likely to be the total number of person trips per unit time. Or if we are using a travel survey that researchers have collated from questionares given to residents of an area, the measurement of travel volume might be the total number of individuals that reported travelling from <span class="math inline">\(i\)</span> to <span class="math inline">\(j\)</span> in the past month.</p>
+<p>The actual unit of travel volume is less important when modeling connectivity because the gravity model formula estimates relative travel volume that is normalized across all <span class="math inline">\(j\)</span> destinations of an origin, so that the rows of <span class="math inline">\(M\)</span> sum to 1. However, it is important that all <span class="math inline">\(ij\)</span> cells in <span class="math inline">\(M\)</span> have the <strong>same</strong> unit of travel volume per unit time because the model estimates parameters based on relative differences in travel volume.</p>
 <p>The rest of this vignette shows an example of how to estimate and simulate connectivity (<span class="math inline">\(\hat{\pi}_{ij}\)</span>) for all possible <span class="math inline">\(i \rightarrow j\)</span> travel routes found in supplied data matrices (<span class="math inline">\(M\)</span>, <span class="math inline">\(D\)</span>, and <span class="math inline">\(N\)</span>).</p>
 <div id="build-data-matrices" class="section level3">
 <h3 class="hasAnchor">
@@ -116,6 +113,24 @@
 <span class="no">D</span> <span class="kw">&lt;-</span> <span class="no">mobility_matrices</span>$<span class="no">D</span>
 <span class="no">N</span> <span class="kw">&lt;-</span> <span class="no">mobility_matrices</span>$<span class="no">N</span></pre></body></html></div>
 <p>By design, we have added additional stochasticity around trip counts in the movement matrix (<span class="math inline">\(M\)</span>) and randomly sampled 80% of observed routes to simulate missing observations, which are shown as grey cells in the plot below.</p>
+<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu">ggplot</span>(<span class="kw">data</span><span class="kw">=</span><span class="fu">melt</span>(<span class="no">M</span>)) +
+  <span class="fu">geom_tile</span>(<span class="fu">aes</span>(<span class="kw">x</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="no">destination</span>),
+                <span class="kw">y</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="no">origin</span>),
+                <span class="kw">fill</span><span class="kw">=</span><span class="no">value</span>)) +
+  <span class="fu">xlab</span>(<span class="st">'Destination'</span>) + <span class="fu">ylab</span>(<span class="st">"Origin"</span>) +
+  <span class="fu">theme_bw</span>() + <span class="fu">theme</span>(<span class="kw">axis.text.x</span><span class="kw">=</span><span class="fu">element_text</span>(<span class="kw">size</span><span class="kw">=</span><span class="fl">10</span>),
+                     <span class="kw">axis.text.y</span><span class="kw">=</span><span class="fu">element_text</span>(<span class="kw">size</span><span class="kw">=</span><span class="fl">10</span>),
+                     <span class="kw">axis.title.x</span><span class="kw">=</span><span class="fu">element_text</span>(<span class="kw">size</span><span class="kw">=</span><span class="fl">12</span>, <span class="kw">margin</span> <span class="kw">=</span> <span class="fu">margin</span>(<span class="kw">t</span> <span class="kw">=</span> <span class="fl">15</span>)),
+                     <span class="kw">axis.title.y</span><span class="kw">=</span><span class="fu">element_text</span>(<span class="kw">size</span><span class="kw">=</span><span class="fl">12</span>, <span class="kw">margin</span> <span class="kw">=</span> <span class="fu">margin</span>(<span class="kw">r</span> <span class="kw">=</span> <span class="fl">15</span>)),
+                     <span class="kw">legend.position</span><span class="kw">=</span><span class="st">'bottom'</span>) +
+  <span class="kw pkg">viridis</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/viridis/man/scale_viridis.html">scale_fill_viridis</a></span>(<span class="kw">option</span><span class="kw">=</span><span class="st">'inferno'</span>, <span class="kw">direction</span><span class="kw">=</span><span class="fl">1</span>) +
+  <span class="fu">guides</span>(<span class="kw">fill</span><span class="kw">=</span><span class="fu">guide_colorbar</span>(<span class="kw">title</span><span class="kw">=</span><span class="st">'Observed trips'</span>,
+                             <span class="kw">title.position</span><span class="kw">=</span><span class="st">'top'</span>,
+                             <span class="kw">label.theme</span><span class="kw">=</span><span class="fu">element_text</span>(<span class="kw">size</span><span class="kw">=</span><span class="fl">9</span>),
+                             <span class="kw">barwidth</span><span class="kw">=</span><span class="fl">20</span>,
+                             <span class="kw">barheight</span><span class="kw">=</span><span class="fl">0.5</span>,
+                             <span class="kw">frame.colour</span><span class="kw">=</span><span class="st">'black'</span>,
+                             <span class="kw">ticks</span><span class="kw">=</span><span class="fl">TRUE</span>))</pre></body></html></div>
 <p><img src="V4_gravity_model_files/figure-html/data_plot-1.png" width="624"></p>
 </div>
 <div id="fit-gravity-model-to-data" class="section level3">
@@ -133,7 +148,7 @@
         } \Bigg)
 \end{aligned}   
 \]</span> Gravity model parameters are fit through normalized connectivity values (<span class="math inline">\(\pi_{ij}\)</span>) that scale the Poission likelihood so that it is proportional to the observed trip counts (<span class="math inline">\(m_{ij}\)</span>). The exponential parameters <span class="math inline">\(\omega_1\)</span> and <span class="math inline">\(\omega_2\)</span> are weights that modify the contribution of origin and destination population sizes, and <span class="math inline">\(\theta\)</span> is a proportionality constant. The denominator of the gravity model, <span class="math inline">\(d_{ij}^\gamma\)</span>, serves as the dispersal kernel function. The fitting function <code><a href="../reference/fit_gravity.html">fit_gravity()</a></code> estimates the posterior distribution of model parameters using Bayesian MCMC inference.</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">mod</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/fit_gravity.html">fit_gravity</a></span>(<span class="kw">M</span><span class="kw">=</span><span class="no">M</span>,
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">mod</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/fit_gravity.html">fit_gravity</a></span>(<span class="kw">M</span><span class="kw">=</span><span class="no">M</span>,
                    <span class="kw">D</span><span class="kw">=</span><span class="no">D</span>,
                    <span class="kw">N</span><span class="kw">=</span><span class="no">N</span>,
                    <span class="kw">n_chain</span><span class="kw">=</span><span class="fl">2</span>,
@@ -155,16 +170,16 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; NOTE: Stopping adaptation</span></pre></body></html></div>
 <p>The above code fits the gravity model using 4 sampling chains, discards the first 1000 samples as ‘burin in’, and then takes 1000 samples thinning by 2 to give 500 total samples per chain. The <code>DIC=TRUE</code> argument tells the function to calculate the Deviance Information Criterion (DIC).</p>
-<p>Running a gravity model on a large number of locations (e.g. <span class="math inline">\(\gt 100\)</span>) or drawing a large number of samples from posterior distributions (e.g. 10000) may take several minutes. If computation is cumbersome, then the model can run sampling chains in parallel instead of sequentially by specifying <code>parallel = TRUE</code>.</p>
+<p>Running a gravity model on a large number of locations (e.g. <span class="math inline">\(\gt 100\)</span>) or drawing a large number of samples from posterior distributions (e.g. 10000) may take several minutes. If computation is cumbersome, then the model can run sampling chains in parallel instead of sequentially by specifying <code>parallel = TRUE</code>.</p>
 <p>The fitting function <code><a href="../reference/fit_gravity.html">fit_gravity()</a></code> returns results as a <code><a href="https://rdrr.io/pkg/coda/man/mcmc.list.html">coda::mcmc.list()</a></code> object shown below. The <code><a href="https://rdrr.io/pkg/coda/man/mcmc.list.html">coda::mcmc.list()</a></code> is a common object class that holds the posterior samples for each parameter and each sampling chain.</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(<span class="no">mod</span>)
+<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(<span class="no">mod</span>)
 <span class="co">#&gt; List of 2</span>
-<span class="co">#&gt;  $ : 'mcmc' num [1:500, 1:7] 35318 35321 35318 35319 35321 ...</span>
+<span class="co">#&gt;  $ : 'mcmc' num [1:500, 1:7] 35317 35320 35319 35317 35320 ...</span>
 <span class="co">#&gt;   ..- attr(*, "dimnames")=List of 2</span>
 <span class="co">#&gt;   .. ..$ : NULL</span>
 <span class="co">#&gt;   .. ..$ : chr [1:7] "deviance" "gamma" "omega_1" "omega_2" ...</span>
 <span class="co">#&gt;   ..- attr(*, "mcpar")= num [1:3] 1 500 1</span>
-<span class="co">#&gt;  $ : 'mcmc' num [1:500, 1:7] 35318 35317 35320 35318 35317 ...</span>
+<span class="co">#&gt;  $ : 'mcmc' num [1:500, 1:7] 35320 35318 35323 35317 35317 ...</span>
 <span class="co">#&gt;   ..- attr(*, "dimnames")=List of 2</span>
 <span class="co">#&gt;   .. ..$ : NULL</span>
 <span class="co">#&gt;   .. ..$ : chr [1:7] "deviance" "gamma" "omega_1" "omega_2" ...</span>
@@ -175,45 +190,65 @@
 <h3 class="hasAnchor">
 <a href="#model-summary-and-validation" class="anchor"></a>Model summary and validation</h3>
 <p>To calculate summary statistics of estimated parameter values, you can supply a fitted model object to the <code><a href="../reference/summarize_mobility.html">summarize_mobility()</a></code> function. This function is a wrapper for the <code><a href="https://rdrr.io/pkg/MCMCvis/man/MCMCsummary.html">MCMCvis::MCMCsummary()</a></code> function that calculates summary statistics for each parameter across each chain along with convergance diagnosics like the Gelman-Rubin convergence diagnostic and (<span class="math inline">\(\hat{R}\)</span>) and samples auto-correlation foreach parameter.</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">mod</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/summarize_mobility.html">summarize_mobility</a></span>(<span class="no">mod</span>)
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">mod</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/summarize_mobility.html">summarize_mobility</a></span>(<span class="no">mod</span>)
 <span class="no">mod</span>
 <span class="co">#&gt;                  Mean         SD       HPD2.5      HPD97.5 Rhat SSeff  AC2</span>
-<span class="co">#&gt; gamma    1.725043e+00 0.01249107 1.701985e+00 1.750193e+00    1   894 0.06</span>
-<span class="co">#&gt; omega_1  1.334712e+00 0.64115954 4.849711e-01 2.625634e+00    1   480 0.33</span>
-<span class="co">#&gt; omega_2  3.017519e-02 0.01519093 2.586293e-03 5.845981e-02    1  1000 0.05</span>
-<span class="co">#&gt; theta    1.047659e+00 0.71209015 7.804999e-02 2.576831e+00    1   793 0.22</span>
-<span class="co">#&gt; DIC      3.532764e+04 2.40999041 3.532491e+04 3.533260e+04    1   768 0.11</span>
-<span class="co">#&gt; deviance 3.531906e+04 2.40999041 3.531633e+04 3.532402e+04    1   768 0.11</span>
-<span class="co">#&gt; pD       4.287444e+00         NA           NA           NA   NA    NA   NA</span>
+<span class="co">#&gt; gamma    1.724788e+00 0.01275328 1.700223e+00     1.749106    1   935 0.05</span>
+<span class="co">#&gt; omega_1  1.357638e+00 0.62077818 5.110265e-01     2.708234    1   538 0.20</span>
+<span class="co">#&gt; omega_2  3.108966e-02 0.01529954 5.015861e-03     0.058185    1   948 0.10</span>
+<span class="co">#&gt; theta    1.088368e+00 0.73418095 5.701398e-02     2.512925    1   653 0.21</span>
+<span class="co">#&gt; DIC      3.532837e+04 2.38441092 3.532550e+04 35333.192574    1   880 0.13</span>
+<span class="co">#&gt; deviance 3.531920e+04 2.38441092 3.531633e+04 35324.031184    1   880 0.13</span>
+<span class="co">#&gt; pD       4.580695e+00         NA           NA           NA   NA    NA   NA</span>
 <span class="co">#&gt;            AC5  AC10</span>
-<span class="co">#&gt; gamma    -0.08  0.01</span>
-<span class="co">#&gt; omega_1   0.05 -0.06</span>
-<span class="co">#&gt; omega_2   0.01  0.00</span>
-<span class="co">#&gt; theta     0.01  0.05</span>
-<span class="co">#&gt; DIC       0.03 -0.01</span>
-<span class="co">#&gt; deviance  0.03 -0.01</span>
+<span class="co">#&gt; gamma    -0.02 -0.01</span>
+<span class="co">#&gt; omega_1   0.05  0.06</span>
+<span class="co">#&gt; omega_2  -0.06  0.05</span>
+<span class="co">#&gt; theta    -0.05 -0.03</span>
+<span class="co">#&gt; DIC      -0.01  0.07</span>
+<span class="co">#&gt; deviance -0.01  0.07</span>
 <span class="co">#&gt; pD          NA    NA</span></pre></body></html></div>
 <p>The <code><a href="../reference/check_mobility.html">check_mobility()</a></code> function provides goodness of fit metrics and summary plots.</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="../reference/check_mobility.html">check_mobility</a></span>(<span class="no">M</span>, <span class="no">D</span>, <span class="no">N</span>, <span class="no">mod</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="fu"><a href="../reference/check_mobility.html">check_mobility</a></span>(<span class="no">M</span>, <span class="no">D</span>, <span class="no">N</span>, <span class="no">mod</span>)</pre></body></html></div>
 <p><img src="V4_gravity_model_files/figure-html/check-1.png" width="696"></p>
 <pre><code>#&gt; $DIC
-#&gt; [1] 35327.64
+#&gt; [1] 35328.37
 #&gt; 
 #&gt; $RMSE
-#&gt; [1] 776.7412
+#&gt; [1] 776.6754
 #&gt; 
 #&gt; $MAPE
-#&gt; [1] 4.824018
+#&gt; [1] 4.823935
 #&gt; 
 #&gt; $R2
-#&gt; [1] 0.9046472</code></pre>
+#&gt; [1] 0.9047991</code></pre>
 <p>Now that we have verified that our model fits the data adequately, we can simulate connectivity values among the off-diagonal locations by using the estimated parameter values from the fitted gravity model in the <code><a href="../reference/sim_gravity.html">sim_gravity()</a></code> function.</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">pi_hat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/sim_gravity.html">sim_gravity</a></span>(<span class="kw">N</span><span class="kw">=</span><span class="no">N</span>,
+<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">pi_hat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/sim_gravity.html">sim_gravity</a></span>(<span class="kw">N</span><span class="kw">=</span><span class="no">N</span>,
                       <span class="kw">D</span><span class="kw">=</span><span class="no">D</span>,
                       <span class="kw">theta</span><span class="kw">=</span><span class="no">mod</span>[<span class="st">'theta'</span>, <span class="st">'Mean'</span>],
                       <span class="kw">omega_1</span><span class="kw">=</span><span class="no">mod</span>[<span class="st">'omega_1'</span>, <span class="st">'Mean'</span>],
                       <span class="kw">omega_2</span><span class="kw">=</span><span class="no">mod</span>[<span class="st">'omega_2'</span>, <span class="st">'Mean'</span>],
                       <span class="kw">gamma</span><span class="kw">=</span><span class="no">mod</span>[<span class="st">'gamma'</span>, <span class="st">'Mean'</span>])</pre></body></html></div>
+<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/diag.html">diag</a></span>(<span class="no">pi_hat</span>) <span class="kw">&lt;-</span> <span class="fl">NA</span>
+
+<span class="fu">ggplot</span>(<span class="kw">data</span><span class="kw">=</span><span class="fu">melt</span>(<span class="no">pi_hat</span>)) +
+  <span class="fu">geom_tile</span>(<span class="fu">aes</span>(<span class="kw">x</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="no">destination</span>),
+                <span class="kw">y</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="no">origin</span>),
+                <span class="kw">fill</span><span class="kw">=</span><span class="no">value</span>)) +
+  <span class="fu">xlab</span>(<span class="st">'Destination'</span>) + <span class="fu">ylab</span>(<span class="st">"Origin"</span>) +
+  <span class="fu">theme_bw</span>() + <span class="fu">theme</span>(<span class="kw">axis.text.x</span><span class="kw">=</span><span class="fu">element_text</span>(<span class="kw">size</span><span class="kw">=</span><span class="fl">10</span>),
+                     <span class="kw">axis.text.y</span><span class="kw">=</span><span class="fu">element_text</span>(<span class="kw">size</span><span class="kw">=</span><span class="fl">10</span>),
+                     <span class="kw">axis.title.x</span><span class="kw">=</span><span class="fu">element_text</span>(<span class="kw">size</span><span class="kw">=</span><span class="fl">12</span>, <span class="kw">margin</span> <span class="kw">=</span> <span class="fu">margin</span>(<span class="kw">t</span> <span class="kw">=</span> <span class="fl">15</span>)),
+                     <span class="kw">axis.title.y</span><span class="kw">=</span><span class="fu">element_text</span>(<span class="kw">size</span><span class="kw">=</span><span class="fl">12</span>, <span class="kw">margin</span> <span class="kw">=</span> <span class="fu">margin</span>(<span class="kw">r</span> <span class="kw">=</span> <span class="fl">15</span>)),
+                     <span class="kw">legend.position</span><span class="kw">=</span><span class="st">'bottom'</span>) +
+  <span class="kw pkg">viridis</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/viridis/man/scale_viridis.html">scale_fill_viridis</a></span>(<span class="kw">option</span><span class="kw">=</span><span class="st">'inferno'</span>, <span class="kw">direction</span><span class="kw">=</span><span class="fl">1</span>) +
+  <span class="fu">guides</span>(<span class="kw">fill</span><span class="kw">=</span><span class="fu">guide_colorbar</span>(<span class="kw">title</span><span class="kw">=</span><span class="st">'Observed proportion of trips'</span>,
+                             <span class="kw">title.position</span><span class="kw">=</span><span class="st">'top'</span>,
+                             <span class="kw">label.theme</span><span class="kw">=</span><span class="fu">element_text</span>(<span class="kw">size</span><span class="kw">=</span><span class="fl">9</span>),
+                             <span class="kw">barwidth</span><span class="kw">=</span><span class="fl">20</span>,
+                             <span class="kw">barheight</span><span class="kw">=</span><span class="fl">0.5</span>,
+                             <span class="kw">frame.colour</span><span class="kw">=</span><span class="st">'black'</span>,
+                             <span class="kw">ticks</span><span class="kw">=</span><span class="fl">TRUE</span>))</pre></body></html></div>
 <p><img src="V4_gravity_model_files/figure-html/sim_plot-1.png" width="624"></p>
 </div>
   </div>

@@ -27,9 +27,9 @@ knitr::opts_chunk$set(
 
 Historically, the gravity model has been used to model connectivity among locations based on the distances among $i$ origins and $j$ destinations ($d_{ij}$) and population sizes of each location ($N_i$ and $N_j$). A major advantage of the gravity model is that distance and population size are simple covariates that can be obtained in almost any context, allowing a researcher to infer connectivity with little information. 
 
-When fitting the gravity model to data, we also need a matrix of observed trip volume ($M$). Trip volume is an intentionally vague term here because a mobility data matrix can be populated with a variety of measurements that capture relative amounts of travel among locations. For example, if we are using Call Data Records (CDR) which are measures of mobile phone usage supplied by mobile phone companies, the unit of travel volume is likely to be the total number of person trips per unit time. Or if we are using a travel survey that researchers have collated from questionares given to residents of an area, the measurement of travel volume might be the total number of individuals that reported travelling from $i$ to $j$ in the past month. 
+When fitting the gravity model to data, we also need a matrix of observed travel volume ($M$). Travel volume is an intentionally vague term here because a mobility data matrix can be populated with a variety of measurements that capture relative amounts of travel among locations. For example, if we are using Call Data Records (CDR) which are measures of mobile phone usage supplied by mobile phone companies, the unit of travel volume is likely to be the total number of person trips per unit time. Or if we are using a travel survey that researchers have collated from questionares given to residents of an area, the measurement of travel volume might be the total number of individuals that reported travelling from $i$ to $j$ in the past month. 
 
-The actual unit of travel volume is less important when modeling connectivity because the gravity model formula estimates relative travel volume that is normalized across all $j$ destinations of an origin, so that the rows of $M$ sum to 1. However, it is important that all $ij$ cells in $M$ have the **same** unit of travel volume per unit time because the model estimates parameters based on relative differences in trip volume.
+The actual unit of travel volume is less important when modeling connectivity because the gravity model formula estimates relative travel volume that is normalized across all $j$ destinations of an origin, so that the rows of $M$ sum to 1. However, it is important that all $ij$ cells in $M$ have the **same** unit of travel volume per unit time because the model estimates parameters based on relative differences in travel volume.
 
 The rest of this vignette shows an example of how to estimate and simulate connectivity ($\hat{\pi}_{ij}$) for all possible $i \rightarrow j$ travel routes found in supplied data matrices ($M$, $D$, and $N$).
 
@@ -43,7 +43,7 @@ N <- mobility_matrices$N
 
 By design, we have added additional stochasticity around trip counts in the movement matrix ($M$) and randomly sampled 80% of observed routes to simulate missing observations, which are shown as grey cells in the plot below.
 
-```{r data_plot, fig.height=6.5, fig.width=6.5, echo=FALSE}
+```{r data_plot, fig.height=6.5, fig.width=6.5}
 ggplot(data=melt(M)) +
   geom_tile(aes(x=factor(destination),
                 y=factor(origin),
@@ -124,7 +124,7 @@ pi_hat <- sim_gravity(N=N,
                       gamma=mod['gamma', 'Mean'])
 ```
 
-```{r sim_plot, fig.height=6.5, fig.width=6.5, echo=FALSE}
+```{r sim_plot, fig.height=6.5, fig.width=6.5}
 diag(pi_hat) <- NA
 
 ggplot(data=melt(pi_hat)) +

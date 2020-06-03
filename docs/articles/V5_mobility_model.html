@@ -63,9 +63,6 @@
       <a href="../articles/V3_travel_probability.html">Fitting and simulating travel probability</a>
     </li>
     <li>
-      <a href="../articles/V4_gravity_compendium.html">A compendium of diffusion models</a>
-    </li>
-    <li>
       <a href="../articles/V4_gravity_model.html">Fitting and simulating a gravity model</a>
     </li>
     <li>
@@ -91,7 +88,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="V5_mobility_model_files/header-attrs-2.1/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Fitting and simulating a full mobility model</h1>
@@ -104,7 +101,7 @@
 
     
     
-<p>So, what do we mean by “mobility” model? The mobility model estimated by this package is different from using just a gravity model in that it estimates values along the diagonal of the mobility matrix (<span class="math inline">\(\hat{M}_{ii}\)</span>), unlike gravity model formulations which estimate off-diagonal values only (<span class="math inline">\(\hat{M}_{ij}\)</span>). This is achieved by combining models that estimate: 1) the probabilty of travel outside the origin location <span class="math inline">\(i\)</span> (<span class="math inline">\(\tau_i\)</span>) which helps us to fill in the diagonal of the mobility matrix, and 2) the distribution of travel from the origin location <span class="math inline">\(i\)</span> to all <span class="math inline">\(j\)</span> destinations (<span class="math inline">\(\pi_{ij}\)</span>) which fills in the off-diagonal elements.</p>
+<p>So, what do we mean by “mobility” model? The mobility model estimated by this package is different from using just a gravity model in that it uses a flexible departure-diffusion model framework that estimates diagonal and off-diagonal elements of the mobility matrix (<span class="math inline">\(\hat{M}_{ii}\)</span>) separately and combines both models using conditional probability rules. This is achieved by combining models that estimate: 1) the probabilty of travel outside the origin location <span class="math inline">\(i\)</span> (<span class="math inline">\(\tau_i\)</span>)—the departure process, and 2) the distribution of travel from the origin location <span class="math inline">\(i\)</span> to all <span class="math inline">\(j\)</span> destinations (<span class="math inline">\(\pi_{ij}\)</span>)—the diffusion process.</p>
 <p>A common problem with mobility data, regardless of the source, is missing observations. This occurs when some <span class="math inline">\(i \rightarrow j\)</span> routes in the mobility data matrix were not observed during the time interval of data collection, or in the case of travel survey data, questions about travel may be collected for only a few locations. However, the role of a mobility matrix in other models (e.g. disease transmission models) is often to supply connectivity or travel volume for all possible routes of travel among locations. Therefore, the model fitting and simulation functions in this package are designed to help estimate <span class="math inline">\(\tau_i\)</span> and <span class="math inline">\(\pi_{ij}\)</span> for missing locations and allow extrapolation to other spatial scales.</p>
 <p>The following vignette will use simulated data to give an example of how a full mobility model can be estimated and simulated from incomplete data. Both models described below can be fitted to data independently using the <code><a href="../reference/fit_prob_travel.html">fit_prob_travel()</a></code> and <code><a href="../reference/fit_gravity.html">fit_gravity()</a></code> functions. The <code><a href="../reference/fit_mobility.html">fit_mobility()</a></code> function is a wrapper that combines these models to estimate both diagonal and off-diagonal elements of the mobility matrix. The <code><a href="../reference/check_mobility.html">check_mobility()</a></code> and <code><a href="../reference/sim_mobility.html">sim_mobility()</a></code> functions then facilitate model validation and stochastic simulation of the fitted mobility model.</p>
 <div id="build-data-matrices" class="section level2">
@@ -115,6 +112,24 @@
 <span class="no">D</span> <span class="kw">&lt;-</span> <span class="no">mobility_matrices</span>$<span class="no">D</span>
 <span class="no">N</span> <span class="kw">&lt;-</span> <span class="no">mobility_matrices</span>$<span class="no">N</span></pre></body></html></div>
 <p>By design, we have added additional stochasticity around trip counts in the movement matrix (<span class="math inline">\(M\)</span>) and randomly sampled 70% of observed routes to simulate missing observations, which are shown as grey cells in the plot below.</p>
+<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu">ggplot</span>(<span class="kw">data</span><span class="kw">=</span><span class="fu">melt</span>(<span class="no">M</span>)) +
+  <span class="fu">geom_tile</span>(<span class="fu">aes</span>(<span class="kw">x</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="no">destination</span>),
+                <span class="kw">y</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="no">origin</span>),
+                <span class="kw">fill</span><span class="kw">=</span><span class="no">value</span>)) +
+  <span class="fu">xlab</span>(<span class="st">'Destination'</span>) + <span class="fu">ylab</span>(<span class="st">"Origin"</span>) +
+  <span class="fu">theme_bw</span>() + <span class="fu">theme</span>(<span class="kw">axis.text.x</span><span class="kw">=</span><span class="fu">element_text</span>(<span class="kw">size</span><span class="kw">=</span><span class="fl">10</span>),
+                     <span class="kw">axis.text.y</span><span class="kw">=</span><span class="fu">element_text</span>(<span class="kw">size</span><span class="kw">=</span><span class="fl">10</span>),
+                     <span class="kw">axis.title.x</span><span class="kw">=</span><span class="fu">element_text</span>(<span class="kw">size</span><span class="kw">=</span><span class="fl">12</span>, <span class="kw">margin</span> <span class="kw">=</span> <span class="fu">margin</span>(<span class="kw">t</span> <span class="kw">=</span> <span class="fl">15</span>)),
+                     <span class="kw">axis.title.y</span><span class="kw">=</span><span class="fu">element_text</span>(<span class="kw">size</span><span class="kw">=</span><span class="fl">12</span>, <span class="kw">margin</span> <span class="kw">=</span> <span class="fu">margin</span>(<span class="kw">r</span> <span class="kw">=</span> <span class="fl">15</span>)),
+                     <span class="kw">legend.position</span><span class="kw">=</span><span class="st">'bottom'</span>) +
+  <span class="kw pkg">viridis</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/viridis/man/scale_viridis.html">scale_fill_viridis</a></span>(<span class="kw">option</span><span class="kw">=</span><span class="st">'inferno'</span>, <span class="kw">direction</span><span class="kw">=</span><span class="fl">1</span>) +
+  <span class="fu">guides</span>(<span class="kw">fill</span><span class="kw">=</span><span class="fu">guide_colorbar</span>(<span class="kw">title</span><span class="kw">=</span><span class="st">'Observed trips'</span>,
+                             <span class="kw">title.position</span><span class="kw">=</span><span class="st">'top'</span>,
+                             <span class="kw">label.theme</span><span class="kw">=</span><span class="fu">element_text</span>(<span class="kw">size</span><span class="kw">=</span><span class="fl">9</span>),
+                             <span class="kw">barwidth</span><span class="kw">=</span><span class="fl">20</span>,
+                             <span class="kw">barheight</span><span class="kw">=</span><span class="fl">0.5</span>,
+                             <span class="kw">frame.colour</span><span class="kw">=</span><span class="st">'black'</span>,
+                             <span class="kw">ticks</span><span class="kw">=</span><span class="fl">TRUE</span>))</pre></body></html></div>
 <p><img src="V5_mobility_model_files/figure-html/data_plot-1.png" width="624"></p>
 </div>
 <div id="estimate-probability-of-travel-outside-each-origin-location" class="section level2">
@@ -134,7 +149,7 @@ y_i \sim \text{Binom}(\tau_i, \sum_{j} M_{ij})
 \end{aligned}
 \]</span></p>
 <p>This structure allows origin locations to have probabilities <span class="math inline">\(\tau_i\)</span> which are driven by data in each location and all unobserved locations regress to the population mean <span class="math inline">\(\tau_\text{pop}\)</span>.</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">total</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(<span class="no">M</span>, <span class="kw">na.rm</span><span class="kw">=</span><span class="fl">TRUE</span>)
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">total</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(<span class="no">M</span>, <span class="kw">na.rm</span><span class="kw">=</span><span class="fl">TRUE</span>)
 <span class="no">prob_trav</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/summarize_mobility.html">summarize_mobility</a></span>(
   <span class="fu"><a href="../reference/fit_prob_travel.html">fit_prob_travel</a></span>(<span class="kw">travel</span><span class="kw">=</span><span class="no">total</span>-<span class="fu"><a href="https://rdrr.io/r/base/diag.html">diag</a></span>(<span class="no">M</span>), <span class="kw">total</span><span class="kw">=</span><span class="no">total</span>)
 )
@@ -151,6 +166,16 @@ y_i \sim \text{Binom}(\tau_i, \sum_{j} M_{ij})
 <span class="co">#&gt; Initializing model</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; NOTE: Stopping adaptation</span></pre></body></html></div>
+<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu">ggplot</span>(<span class="kw">data</span><span class="kw">=</span><span class="no">prob_trav</span>) +
+  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="kw">x</span><span class="kw">=</span><span class="no">Mean</span>, <span class="kw">y</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="no">prob_trav</span>)), <span class="kw">size</span><span class="kw">=</span><span class="fl">2</span>) +
+  <span class="kw pkg">ggstance</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/ggstance/man/geom_linerangeh.html">geom_linerangeh</a></span>(<span class="fu">aes</span>(<span class="kw">y</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="no">prob_trav</span>), <span class="kw">xmin</span><span class="kw">=</span><span class="no">HPD2.5</span>, <span class="kw">xmax</span><span class="kw">=</span><span class="no">HPD97.5</span>)) +
+  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.window.html">xlim</a></span>(<span class="fl">0</span>,<span class="fl">1</span>) +
+  <span class="fu">xlab</span>(<span class="st">'Probability of travel outside origin'</span>) + <span class="fu">ylab</span>(<span class="st">'Origin'</span>) +
+  <span class="fu">theme_bw</span>() + <span class="fu">theme</span>(<span class="kw">axis.text.x</span><span class="kw">=</span><span class="fu">element_text</span>(<span class="kw">size</span><span class="kw">=</span><span class="fl">9</span>),
+                     <span class="kw">axis.text.y</span><span class="kw">=</span><span class="fu">element_text</span>(<span class="kw">size</span><span class="kw">=</span><span class="fl">9</span>),
+                     <span class="kw">axis.title.x</span><span class="kw">=</span><span class="fu">element_text</span>(<span class="kw">size</span><span class="kw">=</span><span class="fl">12</span>, <span class="kw">margin</span> <span class="kw">=</span> <span class="fu">margin</span>(<span class="kw">t</span> <span class="kw">=</span> <span class="fl">15</span>)),
+                     <span class="kw">axis.title.y</span><span class="kw">=</span><span class="fu">element_text</span>(<span class="kw">size</span><span class="kw">=</span><span class="fl">12</span>, <span class="kw">margin</span> <span class="kw">=</span> <span class="fu">margin</span>(<span class="kw">r</span> <span class="kw">=</span> <span class="fl">15</span>)),
+                     <span class="kw">legend.position</span><span class="kw">=</span><span class="st">'right'</span>)</pre></body></html></div>
 <p><img src="V5_mobility_model_files/figure-html/unnamed-chunk-1-1.png" width="480"></p>
 </div>
 <div id="estimate-probability-of-travel-between-origins-and-destinations-using-gravity-model" class="section level2">
@@ -172,17 +197,19 @@ y_i \sim \text{Binom}(\tau_i, \sum_{j} M_{ij})
 <div id="combining-models-to-estimate-full-mobility-matrix" class="section level2">
 <h2 class="hasAnchor">
 <a href="#combining-models-to-estimate-full-mobility-matrix" class="anchor"></a>Combining models to estimate full mobility matrix</h2>
-<p>Thus far we have estimated <span class="math inline">\(\tau_i\)</span> (the probability of leaving origin <span class="math inline">\(i\)</span>) and <span class="math inline">\(\pi_{ij}\)</span> (the probability of going from <span class="math inline">\(i\)</span> to <span class="math inline">\(j\)</span>). The values of <span class="math inline">\(\pi_{ij}\)</span> sum to unity along each row, but the diagonal is missing, indicating that this is a relative quantity. That is to say, <span class="math inline">\(\pi_{ij}\)</span> gives the probability of going from <span class="math inline">\(i\)</span> to <span class="math inline">\(j\)</span> <strong>given</strong> that travel outside origin <span class="math inline">\(i\)</span> occurs. Therefore, we can use basic conditional probability rules <span class="citation">(Blitzstein and Hwang 2014)</span> to define the travel routes in the off-diagonals. <span class="math display">\[
-\Pr( \text{leave}_i, \text{travel}_{i \rightarrow j}) = \Pr( \text{travel}_{i \rightarrow j} \mid \text{leave}_i ) \Pr(\text{leave}_i ) = \pi_{ij} \tau_i. 
-\]</span> The diagonal elements then represent the probability of staying in the origin location <span class="math inline">\(i\)</span>, represented as the complement of <span class="math inline">\(\tau_i\)</span>: <span class="math display">\[
-\Pr( \text{stay}_i) =  1 - \tau_i.
-\]</span> Now each row of the estimated mobility matrix <span class="math inline">\(\hat{M}\)</span> sum to 1 including the diagonal to give the absolute probability of travel <strong>within</strong> origins and <strong>among</strong> origins and destinations.</p>
+<p>The two models described above can now be combined into a departure-diffusion model to give the full mobility matrix <span class="math inline">\(\hat{M}\)</span>. Here, <span class="math inline">\(\tau_i\)</span> (the probability of leaving origin <span class="math inline">\(i\)</span>) is the departure process and <span class="math inline">\(\pi_{ij}\)</span> (the probability of going from <span class="math inline">\(i\)</span> to <span class="math inline">\(j\)</span>) is the diffusion process. The values of <span class="math inline">\(\pi_{ij}\)</span> sum to unity along each row, but the diagonal is missing, indicating that this is a relative quantity. That is to say, <span class="math inline">\(\pi_{ij}\)</span> gives the probability of going from <span class="math inline">\(i\)</span> to <span class="math inline">\(j\)</span> <strong>given</strong> that travel outside origin <span class="math inline">\(i\)</span> occurs. Therefore, we can use basic conditional probability rules <span class="citation">(Blitzstein and Hwang 2014)</span> to define the travel routes in the off-diagonals.</p>
+<p><span class="math display">\[
+\Pr( \text{depart}_i, \text{diffuse}_{i \rightarrow j}) = \Pr( \text{diffuse}_{i \rightarrow j} \mid \text{depart}_i ) \Pr(\text{depart}_i ) = \pi_{ij} \tau_i. 
+\]</span> and <span class="math display">\[
+\Pr( \neg \text{depart}_i ) =  1 - \tau_i.
+\]</span></p>
+<p>Now each row of the estimated mobility matrix <span class="math inline">\(\hat{M}\)</span> sum to 1 including the diagonal to give the absolute probability of travel <strong>within</strong> origins and <strong>among</strong> origins and destinations.</p>
 </div>
 <div id="fitting-a-mobility-model-to-data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#fitting-a-mobility-model-to-data" class="anchor"></a>Fitting a mobility model to data</h2>
 <p>The parameters <span class="math inline">\(\tau_i\)</span> and <span class="math inline">\(\pi_{ij}\)</span> can be estimated together using the <code><a href="../reference/fit_mobility.html">fit_mobility()</a></code> function:</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">mod</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/summarize_mobility.html">summarize_mobility</a></span>(
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">mod</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/summarize_mobility.html">summarize_mobility</a></span>(
   <span class="fu"><a href="../reference/fit_mobility.html">fit_mobility</a></span>(<span class="no">M</span>, <span class="no">D</span>, <span class="no">N</span>), <span class="kw">ac_lags</span><span class="kw">=</span><span class="fl">5</span>
 )
 <span class="co">#&gt; Estimating probability of travel outside origin...</span>
@@ -237,7 +264,7 @@ y_i \sim \text{Binom}(\tau_i, \sum_{j} M_{ij})
 <h2 class="hasAnchor">
 <a href="#checking-the-goodness-of-fit-of-a-mobility-model" class="anchor"></a>Checking the goodness of fit of a mobility model</h2>
 <p>It is important to validate whether a fitted model is capturing trends in the supplied mobility data. The <code><a href="../reference/check_mobility.html">check_mobility()</a></code> function will calculate goodness of fit measures for a fitted model object.</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu"><a href="../reference/check_mobility.html">check_mobility</a></span>(<span class="kw">M</span><span class="kw">=</span><span class="no">M</span>,
+<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="fu"><a href="../reference/check_mobility.html">check_mobility</a></span>(<span class="kw">M</span><span class="kw">=</span><span class="no">M</span>,
                <span class="kw">D</span><span class="kw">=</span><span class="no">D</span>,
                <span class="kw">N</span><span class="kw">=</span><span class="no">N</span>,
                <span class="kw">mod</span><span class="kw">=</span><span class="no">mod</span>)</pre></body></html></div>
@@ -257,7 +284,7 @@ y_i \sim \text{Binom}(\tau_i, \sum_{j} M_{ij})
 <h2 class="hasAnchor">
 <a href="#simulating-a-mobility-matrix-from-a-fitted-model" class="anchor"></a>Simulating a mobility matrix from a fitted model</h2>
 <p>Now that we have a mobility model that fits provides sufficient fit to the data, we can now simulate values for the routes that are missing in the original data matrix <span class="math inline">\(M\)</span>. Values of <span class="math inline">\(\hat{M}\)</span> can then be simulated with the <code><a href="../reference/sim_mobility.html">sim_mobility()</a></code> function. The code below shows how to produce a simple point estimate prediction of <span class="math inline">\(\hat{M}\)</span> using mean parameter values from the fitted model.</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">mod_sim</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/sim_mobility.html">sim_mobility</a></span>(<span class="no">D</span>,
+<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">mod_sim</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/sim_mobility.html">sim_mobility</a></span>(<span class="no">D</span>,
                         <span class="no">N</span>,
                         <span class="kw">theta</span> <span class="kw">=</span> <span class="no">mod</span>[<span class="st">'theta'</span>,<span class="st">'Mean'</span>],
                         <span class="kw">omega_1</span> <span class="kw">=</span> <span class="no">mod</span>[<span class="st">'omega_1'</span>,<span class="st">'Mean'</span>],
@@ -273,7 +300,7 @@ y_i \sim \text{Binom}(\tau_i, \sum_{j} M_{ij})
 <span class="co">#&gt;      D 0.192223638 0.04609943 0.029177691 0.2987482774 0.042750967</span>
 <span class="co">#&gt;      E 0.008548539 0.02362198 0.019780445 0.0039104480 0.822419792</span></pre></body></html></div>
 <p>For applications where we want to simulate stochastic realizations of the mobility matrix based on the uncertainty in model parameters, such as in a spatial disease transmission model, we can give the <code><a href="../reference/sim_mobility.html">sim_mobility()</a></code> function the model object fitted by <code><a href="../reference/fit_mobility.html">fit_mobility()</a></code> and ask for <code>n</code> stochastic realizations. The following code will return a three-dimensional array where the third dimension contains the <code>n</code> simultions.</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">mod_sim</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/sim_mobility.html">sim_mobility</a></span>(<span class="no">D</span>,
+<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">mod_sim</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/sim_mobility.html">sim_mobility</a></span>(<span class="no">D</span>,
                         <span class="no">N</span>,
                         <span class="kw">mod</span><span class="kw">=</span><span class="no">mod</span>,
                         <span class="kw">n</span><span class="kw">=</span><span class="fl">3</span>)
@@ -308,9 +335,9 @@ y_i \sim \text{Binom}(\tau_i, \sum_{j} M_{ij})
 <div id="references" class="section level2">
 <h2 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h2>
-<div id="refs">
+<div id="refs" class="references hanging-indent">
 <div id="ref-blitzstein_introduction_2014">
-<p>Blitzstein, Joseph K., and Jessica Hwang. 2014. <em>Introduction to Probability</em>. First edition. Boca Raton: Chapman; Hall/CRC.</p>
+<p>Blitzstein, Joseph, and Jessica Hwang. 2014. <em>Introduction to Probability, First Edition</em>. Chapman; Hall/CRC.</p>
 </div>
 <div id="ref-gelman_bayesian_2003">
 <p>Gelman, Andrew, John Carlin, Hal Stern, and Donald Rubin. 2003. <em>Bayesian Data Analysis, Second Edition (Chapman &amp; Hall/CRC Texts in Statistical Science)</em>. Chapman; Hall/CRC.</p>
