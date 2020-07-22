@@ -1,0 +1,31 @@
+template:
+  params:
+    theme: flatly
+    bootswatch: flatly
+    ganalytics: UA-173221313-1
+
+reference:
+- title: "Data"
+  desc: "Simulated data and functions to synthesis data objects"
+- contents:
+  - starts_with("travel_")
+  - mobility_matrices
+  - gravity_priors
+  - get_stay_data
+  - get_mob_matrix
+  - get_distance_matrix
+  - get_pop_vec
+- title: "Modeling"
+  desc: "Fitting, summarizing, and checking mobility model objects."
+- contents:
+  - starts_with("fit_")
+  - summarize_mobility
+  - check_mobility
+- title: "Simulation"
+  desc: "Simulating mobility models and their components."
+- contents:
+  - starts_with("sim_")
+- title: "Utility"
+- contents:
+  - starts_with("get_")
+
