@@ -12,7 +12,6 @@ fit_mobility(
   n_burn = 1000,
   n_samp = 1000,
   n_thin = 1,
-  prior = NULL,
   DIC = FALSE,
   parallel = FALSE
 )
@@ -31,8 +30,6 @@ fit_mobility(
 \item{n_samp}{number of iterations to sample each chain}
 
 \item{n_thin}{interval to thin samples}
-
-\item{prior}{a list object containing shape and rate parameters to be used as priors}
 
 \item{DIC}{logical indicating whether or not to calculate the Deviance Information Criterion (DIC) (default = \code{FALSE})}
 
@@ -60,7 +57,7 @@ Other model:
 \code{\link{fit_gravity}()},
 \code{\link{fit_jags}()},
 \code{\link{fit_prob_travel}()},
-\code{\link{summarize_mobility}()}
+\code{\link{summary.mobility.model}()}
 }
 \author{
 John Giles

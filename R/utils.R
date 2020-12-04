@@ -425,13 +425,14 @@ get_crossdist <- function(xy1,
 ##' Calculate summary statistics for a mobility model
 ##'
 ##' This is a wrapper function of \code{\link[MCMCvis:MCMCsummary]{MCMCsummary}} that calculates summary statistics for each
-##' parameter in a \code{\link[coda:mcmc.list]{mcmc.list}} object. Summary statistics are calculated for all parameters across
+##' parameter in a \code{mobility.model} object. Summary statistics are calculated for all parameters across
 ##' each chain along with convergance diagnosics like the Gelman-Rubin convergence diagnostic and (Rhat) and samples
 ##' auto-correlation foreach parameter. If the model object contains deviance and penalty parameters, then Deviance Information
 ##' Criterion (DIC) is calculated and appended to the summary.
 ##'
-##' @param mod an mcmc.list object
-##' @param ac_lags vector of lags over which to calculate autocorrelation of samples within chains (default = c(2,5,10))
+##' @param object a \code{mobility.model} object (can also accept a \code{\link[coda:mcmc.list]{mcmc.list}} object)
+##' @param probs numeric vector giving the quantiles to calculate for each parameter (default = c(0.025, 0.5, 0.975))
+##' @param ac_lags numeric vector of lags over which to calculate autocorrelation of samples within chains (default = c(2,5,10))
 ##'
 ##' @return a dataframe with summary statistics
 ##'
@@ -444,53 +445,61 @@ get_crossdist <- function(xy1,
 ##' @export
 ##'
 
-summarize_mobility <- function(mod, ac_lags=c(2,5,10)) {
+summary.mobility.model <- function(object, probs=c(0.025, 0.5, 0.975), ac_lags=c(2,5,10)) {
 
-  if (!(class(mod) == 'mcmc.list')) stop('Model object must be mcmc.list')
+  if (all(
+    !is.null(object$summary),
+    identical(probs, c(0.025, 0.5, 0.975)),
+    identical(ac_lags, c(2,5,10)))
+  ) {
 
-  param_names <- dimnames(mod[[1]])[[2]]
-  param_DIC <- c('DIC', 'deviance', 'pD')
+    return(object$summary)
 
-  out <- tryCatch({
+  } else {
 
-    tmp <- MCMCvis::MCMCsummary(mod,
-                                HPD=TRUE,
-                                func=function(x, lags=ac_lags) {
-                                  round(acf(x, lag.max=lags[length(lags)], plot=FALSE)$acf[lags], 2)
-                                },
-                                func_name=stringr::str_c('AC', ac_lags))
+    if ('mobility.model' %in% class(object)) object <- object$model
+    if (!(class(object) == 'mcmc.list')) stop('Model object must be of class mobility.model or mcmc.list')
 
-    names(tmp)[c(1:4,6)] <- c('Mean', 'SD', 'HPD2.5', 'HPD97.5', 'SSeff')
+    param_names <- dimnames(object[[1]])[[2]]
+    param_DIC <- c('DIC', 'deviance', 'pD')
 
-    if (all(param_DIC %in% param_names)) {
+    out <- tryCatch({
 
-      tmp['pD', !(colnames(tmp) == 'Mean')] <- NA
-      tmp <- rbind(tmp[!(rownames(tmp) %in% param_DIC),], tmp[param_DIC,])
-    }
+      tmp <- MCMCvis::MCMCsummary(object,
+                                  probs=probs,
+                                  func=function(x, lags=ac_lags) {
+                                    round(acf(x, lag.max=lags[length(lags)], plot=FALSE)$acf[lags], 2)
+                                  },
+                                  func_name=stringr::str_c('AC', ac_lags))
 
-    tmp
+      if (all(param_DIC %in% param_names)) {
 
-  }, error = function(e) {
+        tmp['pD', !(colnames(tmp) == 'Mean')] <- NA
+        tmp <- rbind(tmp[!(rownames(tmp) %in% param_DIC),], tmp[param_DIC,])
+      }
 
-    message('ERROR: cannot calculate DIC for this model')
+      tmp
 
-    mod <- coda::as.mcmc.list(
-      lapply(mod, function(x) coda::as.mcmc(x[,!(colnames(x) %in% param_DIC)]))
-    )
+    }, error = function(e) {
 
-    tmp <- MCMCvis::MCMCsummary(mod,
-                                HPD=TRUE,
-                                func=function(x, lags=ac_lags) {
-                                  round(acf(x, lag.max=lags[length(lags)], plot=FALSE)$acf[lags], 2)
-                                },
-                                func_name=stringr::str_c('AC', ac_lags))
+      message('ERROR: cannot calculate DIC for this model')
 
-    names(tmp)[c(1:4,6)] <- c('Mean', 'SD', 'HPD2.5', 'HPD97.5', 'SSeff')
-    tmp
+      mod <- coda::as.mcmc.list(
+        lapply(object, function(x) coda::as.mcmc(x[,!(colnames(x) %in% param_DIC)]))
+      )
 
-  })
+      tmp <- MCMCvis::MCMCsummary(object,
+                                  probs=probs,
+                                  func=function(x, lags=ac_lags) {
+                                    round(acf(x, lag.max=lags[length(lags)], plot=FALSE)$acf[lags], 2)
+                                  },
+                                  func_name=stringr::str_c('AC', ac_lags))
+      tmp
 
-  out
+    })
+
+    return(out)
+  }
 }
 
 

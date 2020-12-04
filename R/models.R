@@ -269,23 +269,24 @@ combine_rjags <- function(a, b) {
 
 ##' Fit gravity model to movement matrix
 ##'
-##' This function fits gravity model parameters to a supplied movement matrix using Bayesian MCMC inference. The function defines the model and serves as a wrapper for the \code{\link{fit_jags}}
-##' function.
+##' This function fits a variety of gravity models to a supplied movement matrix (\code{M}) and covariates (\code{D} and \code{N}) using Bayesian MCMC inference.
+##' The function specifies the type of gravity model and serves as a wrapper for the \code{\link{fit_jags}} function.
 ##'
 ##' @param M named matrix of trip counts among all \eqn{ij} location pairs
 ##' @param D named matrix of distances among all \eqn{ij} location pairs
 ##' @param N named vector of population sizes for all locations (either N or both n_orig and n_dest must be supplied)
 ##' @param N_orig named vector of population sizes for each origin
 ##' @param N_dest named vector of population sizes for each destination
+##' @param type character vector indicating the type of gravity model to fit (default = \code{'basic'}). Gravity model types include: \code{basic},
+##' \code{transport}, \code{power}, \code{exp}, \code{power_norm}, \code{exp_norm}, \code{marshall}.
 ##' @param n_chain number of MCMC sampling chains
 ##' @param n_burn number of iterations to discard before sampling of chains begins (burn in)
 ##' @param n_samp number of iterations to sample each chain
 ##' @param n_thin interval to thin samples
-##' @param prior a list object containing shape and rate parameters to be used as priors
 ##' @param DIC logical indicating whether or not to calculate the Deviance Information Criterion (DIC) (default = \code{FALSE})
 ##' @param parallel logical indicating whether or not to run MCMC chains in parallel or sequentially (default = \code{FALSE})
 ##'
-##' @return a runjags model object containing fitted gravity model paramters
+##' @return An object of class \code{mobility.model} containing model information, data, and fitted gravity model parameters
 ##'
 ##' @author John Giles
 ##'
@@ -303,11 +304,11 @@ fit_gravity <- function(
   N=NULL,
   N_orig=NULL,
   N_dest=NULL,
+  type='basic',
   n_chain=2,
   n_burn=1000,
   n_samp=1000,
   n_thin=1,
-  prior=NULL,
   DIC=FALSE,
   parallel=FALSE
 ) {
@@ -364,6 +365,192 @@ fit_gravity <- function(
   vals <- c(D, N_orig, N_dest)
   if (any(is.na(vals)) | any(is.nan(vals))) stop('D and N are covariates and cannot contain missing values')
 
+  if (!all(unlist(lapply(list(M, N_orig, N_dest), is.integer)))) {
+    M[,] <- as.integer(M)
+    N_orig[] <- as.integer(N_orig)
+    N_dest[] <- as.integer(N_dest)
+  }
+
+  jags_data <- list(
+    M=M,
+    D=D,
+    N_orig=N_orig,
+    N_dest=N_dest
+  )
+
+  if (type == 'basic') {
+
+
+    jags_model <- "
+      model {
+
+        for (i in 1:length(N_orig)) {
+          for (j in 1:length(N_dest)) {
+
+            M[i,j] ~ dpois( theta * ((N_orig[i] * N_dest[j]) / (D[i,j]+0.001)) )
+
+          }
+        }
+
+        # Priors
+        theta ~ dlnorm(log(1), log(1e03))
+
+      }"
+
+    params <- 'theta'
+
+
+  } else if (type == 'transport') {
+
+    jags_model <- "
+      model {
+
+        for (i in 1:length(N_orig)) {
+          for (j in 1:length(N_dest)) {
+
+            M[i,j] ~ dpois( theta * N_orig[i] * N_dest[j] * (D[i,j]+0.001)^(-gamma) )
+
+          }
+        }
+
+        # Priors
+        theta ~ dlnorm(log(1), log(1e03))
+        gamma ~ dgamma(2, 2)
+
+      }"
+
+    params <- c('theta', 'gamma')
+
+  } else if (type == 'power') {
+
+    jags_model <- "
+      model {
+
+        for (i in 1:length(N_orig)) {
+          for (j in 1:length(N_dest)) {
+
+            M[i,j] ~ dpois( theta * (N_orig[i]^omega_1) * (N_dest[j]^omega_2) * (D[i,j]+0.001)^(-gamma) )
+
+          }
+        }
+
+        # Priors
+        theta ~ dlnorm(log(1), log(1e03))
+        omega_1 ~ dgamma(2, 2)
+        omega_2 ~ dgamma(2, 2)
+        gamma ~ dgamma(2, 2)
+
+      }"
+
+    params <- c('omega_1', 'omega_2', 'theta', 'gamma')
+
+  } else if (type == 'exp') {
+
+    jags_model <- "
+      model {
+
+        for (i in 1:length(N_orig)) {
+          for (j in 1:length(N_dest)) {
+
+            M[i,j] ~ dpois(theta * (N_orig[i]^omega_1) * (N_dest[j]^omega_2) * exp((-D[i,j]+0.001)/delta))
+
+          }
+        }
+
+        # Priors
+        theta ~ dlnorm(log(1), log(1e03))
+        omega_1 ~ dgamma(2, 2)
+        omega_2 ~ dgamma(2, 2)
+        delta ~ dnorm(mean(D), 1/sd(D)) T(0,)
+
+      }"
+
+    params <- c('omega_1', 'omega_2', 'theta', 'delta')
+
+  } else if (type == 'power_norm') {
+
+    jags_model <- "
+      model {
+
+        for (i in 1:length(N_orig)) {
+          for (j in 1:length(N_dest)) {
+
+            M[i,j] ~ dpois( theta * N_orig[i] * (c[i,j]/sum(c[i,])) )
+
+          }
+        }
+
+        for (i in 1:length(N_orig)) {
+          for (j in 1:length(N_dest)) {
+
+            c[i,j] <- (N_dest[j]^omega) * (D[i,j]+0.001)^(-gamma)
+
+          }
+        }
+
+        # Priors
+        theta ~ dlnorm(log(1), log(1e03))
+        omega ~ dgamma(2, 2)
+        gamma ~ dgamma(2, 2)
+
+      }"
+
+    params <- c('theta', 'omega', 'gamma')
+
+  } else if (type == 'exp_norm') {
+
+    jags_model <- "
+      model {
+
+        for (i in 1:length(N_orig)) {
+          for (j in 1:length(N_dest)) {
+
+            M[i,j] ~ dpois( theta * N_orig[i] * (c[i,j]/sum(c[i,])) )
+
+          }
+        }
+
+        for (i in 1:length(N_orig)) {
+          for (j in 1:length(N_dest)) {
+
+            c[i,j] <- (N_dest[j]^omega) * exp((-D[i,j]+0.001)/delta)
+
+          }
+        }
+
+        # Priors
+        theta ~ dlnorm(log(1), log(1e03))
+        omega ~ dgamma(2, 2)
+        delta ~ dnorm(mean(D), 1/sd(D)) T(0,)
+
+      }"
+
+    params <- c('theta', 'omega', 'delta')
+
+  } else if (type == 'marshall') {
+
+    jags_model <- "
+      model {
+
+        for (i in 1:length(N_orig)) {
+          for (j in 1:length(N_dest)) {
+
+            M[i,j] ~ dpois( (N_dest[j]^tau) * ((1+(D[i,j]/rho))^-alpha)  )
+
+          }
+        }
+
+        # Priors
+        tau ~ dgamma(2, 2)
+        rho ~ dlnorm(log(1), log(1e03))
+        alpha ~ dgamma(2, 2)
+
+      }"
+
+    params <- c('tau', 'rho', 'alpha')
+
+  }
+
   message(
     paste('::Fitting gravity model for',
           dim(M)[1],
@@ -373,85 +560,39 @@ fit_gravity <- function(
           sep=' ')
   )
 
-  if (!all(unlist(lapply(list(M, N_orig, N_dest), is.integer)))) {
-    M[,] <- as.integer(M)
-    N_orig[] <- as.integer(N_orig)
-    N_dest[] <- as.integer(N_dest)
-  }
+  t <- Sys.time()
+  message(paste('Model fitting initiated at', t))
 
-  diag(M) <- 0
+  mod <- fit_jags(jags_data=jags_data,
+                  jags_model=jags_model,
+                  params=params,
+                  n_chain=n_chain,
+                  n_burn=n_burn,
+                  n_samp=n_samp,
+                  n_thin=n_thin,
+                  DIC=DIC,
+                  parallel=parallel)
 
-  if (is.null(prior)) {
+  t <- difftime(Sys.time(), t)
+  message(paste('Model fitting completed in', round(t, 1), attributes(t)$units))
 
-    message('Using uniformative priors')
-    null_prior <- c(2, 2)
-    prior <- list(theta=null_prior,
-                  omega_1=null_prior,
-                  omega_2=null_prior,
-                  gamma=null_prior)
-
-  } else {
-
-    message('Using supplied informative priors')
-  }
-
-  jags_data <- list(
-    M=M,
-    D=D,
-    N_orig=N_orig,
-    N_dest=N_dest,
-    prior_theta=prior$theta,
-    prior_omega_1=prior$omega_1,
-    prior_omega_2=prior$omega_2,
-    prior_gamma=prior$gamma
+  return(
+    structure(
+      list(
+        type='gravity',
+        subtype=type,
+        n_chain=n_chain,
+        n_burn=n_burn,
+        n_samp=n_samp,
+        n_thin=n_thin,
+        DIC=DIC,
+        data=jags_data,
+        model=mod,
+        summary=summary.mobility.model(mod)),
+      class=c('mobility.model', paste0('gravity.', type))
+    )
   )
 
-  jags_model <- "
-  model {
-
-    # Poisson likelihood
-    for (i in 1:length(N_orig)) {
-      for (j in 1:length(N_dest)) {
-
-        M[i,j] ~ dpois(pi_hat[i,j]*N_orig[i])
-      }
-
-      pi_hat[i,1:length(N_dest)] <- c[i,]/sum(c[i,])
-    }
-
-    # Gravity model
-    for (i in 1:length(N_orig)) {
-      for (j in 1:length(N_dest)) {
-
-        c[i,j] <- ifelse(
-          i == j,
-          1e-06,
-          exp(log(theta) + (omega_1*log(N_dest[i]) + omega_2*log(N_orig[j]) - log( f_d[i,j] )))
-        )
-
-        f_d[i,j] <- D[i,j]^gamma
-      }
-    }
-
-    # Priors
-    theta ~ dgamma(prior_theta[1], prior_theta[2])
-    omega_1 ~ dgamma(prior_omega_1[1], prior_omega_1[2])
-    omega_2 ~ dgamma(prior_omega_2[1], prior_omega_2[2])
-    gamma ~ dgamma(prior_gamma[1], prior_gamma[2])
-
-  }"
-
-  params <- c('omega_1', 'omega_2', 'theta', 'gamma')
-
-  fit_jags(jags_data=jags_data,
-           jags_model=jags_model,
-           params=params,
-           n_chain=n_chain,
-           n_burn=n_burn,
-           n_samp=n_samp,
-           n_thin=n_thin,
-           DIC=DIC,
-           parallel=parallel)
 }
 
 
@@ -604,7 +745,6 @@ fit_prob_travel <- function(
 ##' @param n_burn number of iterations to discard before sampling of chains begins (burn in)
 ##' @param n_samp number of iterations to sample each chain
 ##' @param n_thin interval to thin samples
-##' @param prior a list object containing shape and rate parameters to be used as priors
 ##' @param DIC logical indicating whether or not to calculate the Deviance Information Criterion (DIC) (default = \code{FALSE})
 ##' @param parallel logical indicating whether or not to run MCMC chains in parallel or sequentially (default = \code{FALSE})
 ##'
@@ -627,7 +767,6 @@ fit_mobility <- function(
   n_burn=1000,
   n_samp=1000,
   n_thin=1,
-  prior=NULL,
   DIC=FALSE,
   parallel=FALSE
 ){
@@ -655,7 +794,6 @@ fit_mobility <- function(
                      n_burn=n_burn,
                      n_samp=n_samp,
                      n_thin=n_thin,
-                     prior=prior,
                      DIC=DIC,
                      parallel=parallel)
   message('Complete.')

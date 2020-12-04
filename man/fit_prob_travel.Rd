@@ -80,7 +80,7 @@ Other model:
 \code{\link{fit_gravity}()},
 \code{\link{fit_jags}()},
 \code{\link{fit_mobility}()},
-\code{\link{summarize_mobility}()}
+\code{\link{summary.mobility.model}()}
 
 Other travel probability: 
 \code{\link{get_stay_data}()},

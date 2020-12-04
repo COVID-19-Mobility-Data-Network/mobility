@@ -3,38 +3,5 @@ M <- mobility_matrices$M
 D <- mobility_matrices$D
 N <- mobility_matrices$N
 
-mod <- fit_gravity(M, D, N, DIC=TRUE)
-summarize_mobility(mod)
-
-
-# Probability of travel
-n_orig <- 10
-n_missing <- 3
-orig_id <- LETTERS[1:n_orig]
-
-N <- rpois(n_orig, 100)    # population size of each origin
-p <- rbeta(n_orig, 1, 2)   # probability of leaving origin
-
-travel <- setNames(rbinom(n_orig, N, p), orig_id)
-total <- setNames(N, orig_id)
-
-miss <- sample(1:n_orig, n_missing) # missing observations
-travel[miss] <- total[miss] <- NA
-
-# Estimate probability of travel for each locations (missing locations regress to mean)
-prob_trav <- summarize_mobility(
-  fit_prob_travel(travel=travel, total=total)
-)
-
-library(ggplot2)
-ggplot(data=prob_trav) +
-  geom_point(aes(x=Mean, y=orig_id), size=2) +
-  ggstance::geom_linerangeh(aes(y=orig_id, xmin=HPD2.5, xmax=HPD97.5)) +
-  xlab('Probability of travel outside origin') + ylab('Origin') +
-  xlim(0,1) +
-  theme_bw() + theme(axis.text.x=element_text(size=10),
-                     axis.text.y=element_text(size=10),
-                     axis.title.x=element_text(size=12, margin = margin(t = 15)),
-                     axis.title.y=element_text(size=12, margin = margin(r = 15)),
-                     panel.border = element_rect(colour = "black", fill=NA, size=1),
-                     legend.position='right')
+mod <- fit_gravity(M, D, N, type='transport', DIC=TRUE)
+summary(mod)

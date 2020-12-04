@@ -10,11 +10,11 @@ fit_gravity(
   N = NULL,
   N_orig = NULL,
   N_dest = NULL,
+  type = "basic",
   n_chain = 2,
   n_burn = 1000,
   n_samp = 1000,
   n_thin = 1,
-  prior = NULL,
   DIC = FALSE,
   parallel = FALSE
 )
@@ -30,6 +30,9 @@ fit_gravity(
 
 \item{N_dest}{named vector of population sizes for each destination}
 
+\item{type}{character vector indicating the type of gravity model to fit (default = \code{'basic'}). Gravity model types include: \code{basic},
+\code{transport}, \code{power}, \code{exp}, \code{power_norm}, \code{exp_norm}, \code{marshall}.}
+
 \item{n_chain}{number of MCMC sampling chains}
 
 \item{n_burn}{number of iterations to discard before sampling of chains begins (burn in)}
@@ -38,18 +41,16 @@ fit_gravity(
 
 \item{n_thin}{interval to thin samples}
 
-\item{prior}{a list object containing shape and rate parameters to be used as priors}
-
 \item{DIC}{logical indicating whether or not to calculate the Deviance Information Criterion (DIC) (default = \code{FALSE})}
 
 \item{parallel}{logical indicating whether or not to run MCMC chains in parallel or sequentially (default = \code{FALSE})}
 }
 \value{
-a runjags model object containing fitted gravity model paramters
+An object of class \code{mobility.model} containing model information, data, and fitted gravity model parameters
 }
 \description{
-This function fits gravity model parameters to a supplied movement matrix using Bayesian MCMC inference. The function defines the model and serves as a wrapper for the \code{\link{fit_jags}}
-function.
+This function fits a variety of gravity models to a supplied movement matrix (\code{M}) and covariates (\code{D} and \code{N}) using Bayesian MCMC inference.
+The function specifies the type of gravity model and serves as a wrapper for the \code{\link{fit_jags}} function.
 }
 \examples{
 M <- mobility_matrices$M
@@ -64,7 +65,7 @@ Other model:
 \code{\link{fit_jags}()},
 \code{\link{fit_mobility}()},
 \code{\link{fit_prob_travel}()},
-\code{\link{summarize_mobility}()}
+\code{\link{summary.mobility.model}()}
 
 Other gravity: 
 \code{\link{sim_gravity}()}
