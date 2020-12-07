@@ -445,11 +445,13 @@ get_crossdist <- function(xy1,
 ##' @export
 ##'
 
-summary.mobility.model <- function(object, probs=c(0.025, 0.5, 0.975), ac_lags=c(2,5,10)) {
+summary.mobility.model <- function(object,
+                                   probs=c(0.025, 0.25, 0.5, 0.75, 0.975),
+                                   ac_lags=c(2, 5, 10)) {
 
   if (all(
     !is.null(object$summary),
-    identical(probs, c(0.025, 0.5, 0.975)),
+    identical(probs, c(0.025, 0.25, 0.5, 0.75, 0.975)),
     identical(ac_lags, c(2,5,10)))
   ) {
 
@@ -472,9 +474,10 @@ summary.mobility.model <- function(object, probs=c(0.025, 0.5, 0.975), ac_lags=c
                                   },
                                   func_name=stringr::str_c('AC', ac_lags))
 
+
       if (all(param_DIC %in% param_names)) {
 
-        tmp['pD', !(colnames(tmp) == 'Mean')] <- NA
+        tmp['pD', !(colnames(tmp) == 'mean')] <- NA
         tmp <- rbind(tmp[!(rownames(tmp) %in% param_DIC),], tmp[param_DIC,])
       }
 
@@ -497,6 +500,9 @@ summary.mobility.model <- function(object, probs=c(0.025, 0.5, 0.975), ac_lags=c
       tmp
 
     })
+
+    sel <- 3:(3+length(probs)-1)
+    names(out)[sel] <- stringr::str_c('Q', gsub('*%', '', names(out)[sel]))
 
     return(out)
   }

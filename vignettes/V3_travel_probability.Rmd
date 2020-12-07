@@ -47,39 +47,41 @@ m
 ### Estimate probability of travel for each location
 To estimate the probability of traveling outside the origin location $i$, the `fit_prob_travel()` function uses a Beta-Binomial model with hierarchical structure to infer travel probability in unobserved locations.
 $$
-y_i \sim \text{Binom}(\tau_i, m_i)
+y_i \sim \text{Binom}(\tau_i, \sum_{\forall j} m_{ij})
 $$
-The random variable $y_i$ is the observed number of trips that leave origin $i$ within the time interval. Binomial parameters $\tau_i$ and $m_i$ are the success probability and total number of observed trips emanating from origin $i$ respectively. 
+The random variable $y_i$ is the observed number of trips that leave origin $i$ within the time interval. Binomial parameters $\tau_i$ and $\sum_{\forall j} m_{ij}$ are the success probability and total number of observed trips emanating from origin $i$ respectively. 
 $$
 \begin{aligned}
-\tau_i &\sim \text{Beta}(\alpha, \beta) \\
-\tau_\text{pop} &\sim \text{Beta}(\bar{\alpha}, \bar{\beta})
+\tau_i &\sim \text{Beta}(1+\alpha, 1+\beta) \\
+\tau_\text{pop} &\sim \text{Beta}(1+\bar{\alpha}, 1+\bar{\beta})
 \end{aligned}
 $$
 Binomial probabilities for each origin $\tau_i$ are drawn from a Beta distributed prior with shape and rate parameters $\alpha$ and $\beta$. The hierarchical structure comes from estimating $\alpha$ and $\beta$ as population-level hyper-priors for the origin-level probabilities $\tau_i$ and allowing $\tau_\text{pop}$ to inherit the overall population-level distribution denoted as $\bar{\alpha}$ and $\bar{\beta}$.
 $$
 \begin{aligned}
-\alpha &\sim \text{Gamma}(1,0.1) \\
-\beta &\sim \text{Gamma}(1,0.1)
+\alpha &\sim \text{Gamma}(0.01, 0.01) \\
+\beta &\sim \text{Gamma}(0.01, 0.01)
 \end{aligned}
 $$  
 
 This structure allows origin locations to have probabilities $\tau_i$ which are driven by data in each location and all unobserved locations regress to the population mean $\tau_\text{pop}$.
 ```{r fit1}
-prob_trav <- summarize_mobility(
+prob_trav <- summary(
   fit_prob_travel(travel=y, total=m)
 )
 ```
 ```{r, fig.width=5, fig.height=7}
 ggplot(data=prob_trav) +
-  geom_point(aes(x=Mean, y=rownames(prob_trav)), size=2) +
-  ggstance::geom_linerangeh(aes(y=rownames(prob_trav), xmin=HPD2.5, xmax=HPD97.5)) +
-  xlim(0,1) +
+  geom_point(aes(x=mean, y=names(y)), size=2) +
+  ggstance::geom_linerangeh(aes(y=names(y), xmin=Q2.5, xmax=Q97.5)) +
+  ggstance::geom_linerangeh(aes(y=names(y), xmin=Q25, xmax=Q75), size=1) +
   xlab('Probability of travel outside origin') + ylab('Origin') +
-  theme_bw() + theme(axis.text.x=element_text(size=9),
-                     axis.text.y=element_text(size=9),
+  xlim(0,1) +
+  theme_bw() + theme(axis.text.x=element_text(size=10),
+                     axis.text.y=element_text(size=10),
                      axis.title.x=element_text(size=12, margin = margin(t = 15)),
                      axis.title.y=element_text(size=12, margin = margin(r = 15)),
+                     panel.border = element_rect(colour = "black", fill=NA, size=1),
                      legend.position='right')
 ```
 
@@ -90,8 +92,8 @@ The `sim_prob_travel()` function can be used to simulate values of travel probab
 
 ```{r}
 # Simulate n realizations of travel probability for each location
-sim_prob_travel(mu=prob_trav$Mean,
-                sigma=prob_trav$SD,
+sim_prob_travel(mu=prob_trav$mean,
+                sigma=prob_trav$sd,
                 id=names(y),
                 n=5)
 ```

@@ -12,15 +12,15 @@ miss <- sample(1:n_orig, n_missing) # missing observations
 travel[miss] <- total[miss] <- NA
 
 # Estimate probability of travel for each locations (missing locations regress to mean)
-prob_trav <- summarize_mobility(
+prob_trav <- summary(
   fit_prob_travel(travel=travel, total=total)
 )
 
-library(ggplot2)
 ggplot(data=prob_trav) +
-  geom_vline(aes(xintercept=Mean[ which(is.na(travel))[1] ]), color='red', linetype=2) +
-  geom_point(aes(x=Mean, y=orig_id), size=2) +
-  ggstance::geom_linerangeh(aes(y=orig_id, xmin=HPD2.5, xmax=HPD97.5)) +
+  geom_vline(aes(xintercept=mean[ which(is.na(travel))[1] ]), color='red', linetype=2) +
+  geom_point(aes(x=mean, y=orig_id), size=2) +
+  ggstance::geom_linerangeh(aes(y=orig_id, xmin=Q2.5, xmax=Q97.5)) +
+  ggstance::geom_linerangeh(aes(y=orig_id, xmin=Q25, xmax=Q75), size=1) +
   xlab('Probability of travel outside origin') + ylab('Origin') +
   xlim(0,1) +
   theme_bw() + theme(axis.text.x=element_text(size=10),

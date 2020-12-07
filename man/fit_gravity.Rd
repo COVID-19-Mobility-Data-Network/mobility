@@ -31,7 +31,7 @@ fit_gravity(
 \item{N_dest}{named vector of population sizes for each destination}
 
 \item{type}{character vector indicating the type of gravity model to fit (default = \code{'basic'}). Gravity model types include: \code{basic},
-\code{transport}, \code{power}, \code{exp}, \code{power_norm}, \code{exp_norm}, \code{marshall}.}
+\code{transport}, \code{power}, \code{exp}, \code{power_norm}, \code{exp_norm}, \code{Marshall}.}
 
 \item{n_chain}{number of MCMC sampling chains}
 
@@ -58,12 +58,13 @@ D <- mobility_matrices$D
 N <- mobility_matrices$N
 
 mod <- fit_gravity(M, D, N)
+
+mod <- fit_gravity(M, D, N, type='transport', DIC=TRUE)
 }
 \seealso{
 Other model: 
 \code{\link{check_mobility}()},
 \code{\link{fit_jags}()},
-\code{\link{fit_mobility}()},
 \code{\link{fit_prob_travel}()},
 \code{\link{summary.mobility.model}()}
 

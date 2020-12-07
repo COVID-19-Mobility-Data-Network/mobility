@@ -69,7 +69,6 @@ check_mobility(M=M,
 Other model: 
 \code{\link{fit_gravity}()},
 \code{\link{fit_jags}()},
-\code{\link{fit_mobility}()},
 \code{\link{fit_prob_travel}()},
 \code{\link{summary.mobility.model}()}
 }

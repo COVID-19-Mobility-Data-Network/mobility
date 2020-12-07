@@ -278,7 +278,7 @@ combine_rjags <- function(a, b) {
 ##' @param N_orig named vector of population sizes for each origin
 ##' @param N_dest named vector of population sizes for each destination
 ##' @param type character vector indicating the type of gravity model to fit (default = \code{'basic'}). Gravity model types include: \code{basic},
-##' \code{transport}, \code{power}, \code{exp}, \code{power_norm}, \code{exp_norm}, \code{marshall}.
+##' \code{transport}, \code{power}, \code{exp}, \code{power_norm}, \code{exp_norm}, \code{Marshall}.
 ##' @param n_chain number of MCMC sampling chains
 ##' @param n_burn number of iterations to discard before sampling of chains begins (burn in)
 ##' @param n_samp number of iterations to sample each chain
@@ -527,7 +527,7 @@ fit_gravity <- function(
 
     params <- c('theta', 'omega', 'delta')
 
-  } else if (type == 'marshall') {
+  } else if (type %in% c('Marshall', 'marshall')) {
 
     jags_model <- "
       model {
@@ -670,13 +670,13 @@ fit_prob_travel <- function(
     }
 
     # Population-level priors
-    tau_pop ~ dbeta(alpha, beta)
-    alpha ~ dgamma(2, 0.05)
-    beta ~ dgamma(2, 0.05)
+    tau_pop ~ dbeta(1+alpha, 1+beta)
+    alpha ~ dgamma(0.01, 0.01)
+    beta ~ dgamma(0.1, 0.01)
 
     # Origin-level priors
     for (i in 1:length(travel)) {
-      tau[i] ~ dbeta(alpha + 1e-05, beta + 1e-05)
+      tau[i] ~ dbeta( 1+alpha, 1+beta)
     }
   }"
 
@@ -722,99 +722,23 @@ fit_prob_travel <- function(
       if (DIC) out[[i]] <- coda::as.mcmc(cbind(out[[i]], DIC_samps[[i]]))
     }
 
-    return(out)
-
-  } else {
-
-    return(out)
-  }
-}
-
-
-##' Fit full mobility model to movement matrix
-##'
-##' This function fits a full mobility model to the supplied movement matrix using Bayesian MCMC inference. The full mobility model uses
-##' the \code{\link{fit_prob_travel}} function to estimate the probability of travel outside the origin location and the \code{\link{fit_gravity}}
-##' function to estimate travel to all destination locations. Unlike \code{\link{fit_gravity}}, \code{\link{fit_mobility}} requires the diagonal of
-##' movement matrix \code{M} to be filled.
-##'
-##' @param M named matrix of trip counts among all \eqn{ij} location pairs
-##' @param D named matrix of distances among all \eqn{ij} location pairs
-##' @param N named vector of population sizes for all locations (either N or both n_orig and n_dest must be supplied)
-##' @param n_chain number of MCMC sampling chains
-##' @param n_burn number of iterations to discard before sampling of chains begins (burn in)
-##' @param n_samp number of iterations to sample each chain
-##' @param n_thin interval to thin samples
-##' @param DIC logical indicating whether or not to calculate the Deviance Information Criterion (DIC) (default = \code{FALSE})
-##' @param parallel logical indicating whether or not to run MCMC chains in parallel or sequentially (default = \code{FALSE})
-##'
-##' @return a runjags model object containing fitted gravity model paramters
-##'
-##' @author John Giles
-##'
-##' @example R/examples/fit_mobility.R
-##'
-##' @family model
-##'
-##' @export
-##'
-
-fit_mobility <- function(
-  M,
-  D,
-  N,
-  n_chain=2,
-  n_burn=1000,
-  n_samp=1000,
-  n_thin=1,
-  DIC=FALSE,
-  parallel=FALSE
-){
-
-  if(all(is.na(diag(M)))) stop('Diagonal of M is empty')
-
-  message('Estimating probability of travel outside origin...')
-  total <- rowSums(M, na.rm=TRUE)
-  mod_trav <- fit_prob_travel(travel=total-diag(M),
-                              total=total,
-                              n_chain=n_chain,
-                              n_burn=n_burn,
-                              n_samp=n_samp,
-                              n_thin=n_thin,
-                              DIC=DIC)
-  message('Complete.')
-
-  tau_hat <- summarize_mobility(mod_trav)[,'Mean']
-
-  message('Estimating travel among destinations with gravity model...')
-  out <- fit_gravity(M=M,
-                     D=D,
-                     N=N,
-                     n_chain=n_chain,
-                     n_burn=n_burn,
-                     n_samp=n_samp,
-                     n_thin=n_thin,
-                     DIC=DIC,
-                     parallel=parallel)
-  message('Complete.')
-
-  if (DIC) {
-
-    sel <- coda::varnames(mod_trav) %in% c('deviance', 'pD', 'DIC')
-
-    for (i in 1:n_chain) {
-      out[[i]][,'deviance'] <- out[[i]][,'deviance'] + mod_trav[[i]][,'deviance']
-      out[[i]][,'pD'] <- out[[i]][,'pD'] + mod_trav[[i]][,'pD']
-      out[[i]][,'DIC'] <- out[[i]][,'DIC'] + mod_trav[[i]][,'DIC']
-      out[[i]] <- coda::as.mcmc(cbind(out[[i]], mod_trav[[i]][,!sel]))
-    }
-
-  } else {
-
-    for (i in 1:n_chain) {
-      out[[i]] <- coda::as.mcmc(cbind(out[[i]], mod_trav[[i]]))
-    }
   }
 
-  out
+  return(
+    structure(
+      list(
+        type='prob_travel',
+        subtype=NULL,
+        n_chain=n_chain,
+        n_burn=n_burn,
+        n_samp=n_samp,
+        n_thin=n_thin,
+        DIC=DIC,
+        data=jags_data,
+        model=out,
+        summary=summary.mobility.model(out)),
+      class=c('mobility.model', 'prob_travel')
+    )
+  )
+
 }
