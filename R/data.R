@@ -1,7 +1,7 @@
-##' Example data matrices required by gravity functions
+##' Example data matrices required by mobility model functions
 ##'
-##' This data object is a list containing named matrices required by the \code{\link{sim_gravity}} and \code{\link{fit_gravity}} functions.
-##' The matrices provide hypothetical trip counts representing travel among 10 locations (\eqn{M}), along with distances (\eqn{D}) and population sizes (\eqn{N}).
+##' This data object is a list containing named matrices required by the \code{\link{mobility}} model fitting function.
+##' The matrices provide simulated trip counts representing travel among 10 locations (\eqn{M}), along with distances (\eqn{D}) and population sizes (\eqn{N}).
 ##'
 ##' @format a list of 3
 ##' \describe{
@@ -72,15 +72,3 @@
 ##'
 "travel_data_sim"
 
-##' Example priors for gravity model
-##'
-##' This data object is a dataframe containing posterior estimates of the mean and standard deviation of the
-##' four gravity model parameters. The estimates are derived from a gravity model fitted to Call Data Records in Namibia.
-##'
-##' @format dataframe
-##'
-##' @author John Giles
-##'
-##' @example R/examples/gravity_priors.R
-##'
-"gravity_priors"

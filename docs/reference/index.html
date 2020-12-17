@@ -81,7 +81,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mobility</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -110,13 +110,13 @@
       <a href="../articles/V2_build_matrices.html">Building matrices from longform travel data</a>
     </li>
     <li>
-      <a href="../articles/V3_travel_probability.html">Fitting and simulating travel probability</a>
+      <a href="../articles/V3_fitting_mobility_models.html">Fitting and simulating a mobility model</a>
     </li>
     <li>
-      <a href="../articles/V4_gravity_model.html">Fitting and simulating a gravity model</a>
+      <a href="../articles/V4_fitting_prob_travel.html">Fitting and simulating travel probability</a>
     </li>
     <li>
-      <a href="../articles/V5_mobility_model.html">Fitting and simulating a full mobility model</a>
+      <a href="../articles/V5_list_models.html">A curated list of mobility models</a>
     </li>
   </ul>
 </li>
@@ -156,7 +156,7 @@
       <tr>
         <th colspan="2">
           <h2 id="section-data" class="hasAnchor"><a href="#section-data" class="anchor"></a>Data</h2>
-          <p class="section-desc"><p>Simulated data and functions to synthesis data objects</p></p>
+          <p class="section-desc"><p>Simulated data and generalized data objects</p></p>
         </th>
       </tr>
       
@@ -181,42 +181,12 @@
         <td>
           <p><code><a href="mobility_matrices.html">mobility_matrices</a></code> </p>
         </td>
-        <td><p>Example data matrices required by gravity functions</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="gravity_priors.html">gravity_priors</a></code> </p>
-        </td>
-        <td><p>Example priors for gravity model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_stay_data.html">get_stay_data()</a></code> </p>
-        </td>
-        <td><p>Make data set of travel and stays</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_mob_matrix.html">get_mob_matrix()</a></code> </p>
-        </td>
-        <td><p>Get mobility matrix from longform data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_distance_matrix.html">get_distance_matrix()</a></code> </p>
-        </td>
-        <td><p>Build distance matrix from XY coordinates</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_pop_vec.html">get_pop_vec()</a></code> </p>
-        </td>
-        <td><p>Get unique origin and destination names</p></td>
+        <td><p>Example data matrices required by mobility model functions</p></td>
       </tr>
     </tbody><tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-modeling" class="hasAnchor"><a href="#section-modeling" class="anchor"></a>Modeling</h2>
+          <h2 id="section-modeling-and-simulation" class="hasAnchor"><a href="#section-modeling-and-simulation" class="anchor"></a>Modeling and simulation</h2>
           <p class="section-desc"><p>Fitting, summarizing, and checking mobility model objects.</p></p>
         </th>
       </tr>
@@ -228,9 +198,33 @@
       <tr>
         
         <td>
-          <p><code><a href="fit_gravity.html">fit_gravity()</a></code> </p>
+          <p><code><a href="mobility.html">mobility()</a></code> </p>
         </td>
-        <td><p>Fit gravity model to movement matrix</p></td>
+        <td><p>Fit mobility model to data</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="summary.html">summary()</a></code> </p>
+        </td>
+        <td><p>Calculate summary statistics for 'mobility.model' class</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="check.html">check()</a></code> </p>
+        </td>
+        <td><p>Check goodness of fit for 'mobility.model' class</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="predict.html">predict()</a></code> </p>
+        </td>
+        <td><p>Prediction and simulation method for 'mobility.model' class</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="compare.html">compare()</a></code> </p>
+        </td>
+        <td><p>Compare the goodness of fit of multiple mobility models</p></td>
       </tr><tr>
         
         <td>
@@ -240,70 +234,15 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="fit_mobility.html">fit_mobility()</a></code> </p>
-        </td>
-        <td><p>Fit full mobility model to movement matrix</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="fit_prob_travel.html">fit_prob_travel()</a></code> </p>
         </td>
         <td><p>Estimate probability of travelling outside origin</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="summarize_mobility.html">summarize_mobility()</a></code> </p>
-        </td>
-        <td><p>Calculate summary statistics for a mobility model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="check_mobility.html">check_mobility()</a></code> </p>
-        </td>
-        <td><p>Check goodness of fit of a mobility model</p></td>
-      </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-simulation" class="hasAnchor"><a href="#section-simulation" class="anchor"></a>Simulation</h2>
-          <p class="section-desc"><p>Simulating mobility models and their components.</p></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="sim_gravity.html">sim_gravity()</a></code> </p>
-        </td>
-        <td><p>Simulate connectivity values using gravity model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="sim_mobility.html">sim_mobility()</a></code> </p>
-        </td>
-        <td><p>Simulate a full mobility model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="sim_param.html">sim_param()</a></code> </p>
-        </td>
-        <td><p>Simulate parameter values</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="sim_prob_travel.html">sim_prob_travel()</a></code> </p>
-        </td>
-        <td><p>Simulate probability of leaving origin</p></td>
       </tr>
     </tbody><tbody>
       <tr>
         <th colspan="2">
           <h2 id="section-utility" class="hasAnchor"><a href="#section-utility" class="anchor"></a>Utility</h2>
-          <p class="section-desc"></p>
+          <p class="section-desc"><p>Helper functions to synthesis data objects</p></p>
         </th>
       </tr>
       
@@ -390,7 +329,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

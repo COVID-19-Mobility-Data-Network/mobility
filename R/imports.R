@@ -7,8 +7,8 @@
 ##' @import doParallel
 ##' @import foreach
 ##' @import rjags
-## @importFrom foreach %do%
-## @importFrom foreach %dopar%
+##' @importFrom foreach %do%
+##' @importFrom foreach %dopar%
 ##' @importFrom magrittr %>%
 ##' @importFrom truncnorm rtruncnorm
 NULL

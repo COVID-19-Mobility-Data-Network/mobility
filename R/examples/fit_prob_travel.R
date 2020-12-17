@@ -16,6 +16,7 @@ prob_trav <- summary(
   fit_prob_travel(travel=travel, total=total)
 )
 
+library(ggplot2)
 ggplot(data=prob_trav) +
   geom_vline(aes(xintercept=mean[ which(is.na(travel))[1] ]), color='red', linetype=2) +
   geom_point(aes(x=mean, y=orig_id), size=2) +

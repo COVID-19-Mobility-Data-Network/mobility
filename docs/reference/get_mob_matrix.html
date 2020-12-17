@@ -82,7 +82,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mobility</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -111,13 +111,13 @@
       <a href="../articles/V2_build_matrices.html">Building matrices from longform travel data</a>
     </li>
     <li>
-      <a href="../articles/V3_travel_probability.html">Fitting and simulating travel probability</a>
+      <a href="../articles/V3_fitting_mobility_models.html">Fitting and simulating a mobility model</a>
     </li>
     <li>
-      <a href="../articles/V4_gravity_model.html">Fitting and simulating a gravity model</a>
+      <a href="../articles/V4_fitting_prob_travel.html">Fitting and simulating travel probability</a>
     </li>
     <li>
-      <a href="../articles/V5_mobility_model.html">Fitting and simulating a full mobility model</a>
+      <a href="../articles/V5_list_models.html">A curated list of mobility models</a>
     </li>
   </ul>
 </li>
@@ -151,7 +151,7 @@
     <p>Takes X and Y coordinates of two locations and returns cross distance for all entries.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_mob_matrix</span>(<span class='no'>orig</span>, <span class='no'>dest</span>, <span class='no'>value</span>, <span class='kw'>missing_obs</span> <span class='kw'>=</span> <span class='st'>"NA"</span>)</pre>
+    <pre class="usage"><span class='fu'>get_mob_matrix</span><span class='op'>(</span><span class='va'>orig</span>, <span class='va'>dest</span>, <span class='va'>value</span>, missing_obs <span class='op'>=</span> <span class='st'>"NA"</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -183,35 +183,39 @@
 <code><a href='get_crossdist.html'>get_crossdist</a>()</code>,
 <code><a href='get_distance_matrix.html'>get_distance_matrix</a>()</code>,
 <code><a href='get_stay_data.html'>get_stay_data</a>()</code></p></div>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>John Giles</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='no'>travel_data_sim</span>
+    <pre class="examples"><div class='input'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='va'>travel_data_sim</span>
 
-<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='no'>x</span>, <span class='fu'><a href='get_unique_ids.html'>get_unique_ids</a></span>(<span class='no'>x</span>, <span class='kw'>adm_start</span><span class='kw'>=</span><span class='fl'>2</span>))
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='fu'><a href='get_unique_ids.html'>get_unique_ids</a></span><span class='op'>(</span><span class='va'>x</span>, adm_start<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='no'>M</span> <span class='kw'>&lt;-</span> <span class='fu'>get_mob_matrix</span>(<span class='kw'>orig</span><span class='kw'>=</span><span class='no'>x</span>$<span class='no'>orig_id</span>,
-                    <span class='kw'>dest</span><span class='kw'>=</span><span class='no'>x</span>$<span class='no'>dest_id</span>,
-                    <span class='kw'>value</span><span class='kw'>=</span><span class='no'>x</span>$<span class='no'>trips</span>)
+<span class='va'>M</span> <span class='op'>&lt;-</span> <span class='fu'>get_mob_matrix</span><span class='op'>(</span>orig<span class='op'>=</span><span class='va'>x</span><span class='op'>$</span><span class='va'>orig_id</span>,
+                    dest<span class='op'>=</span><span class='va'>x</span><span class='op'>$</span><span class='va'>dest_id</span>,
+                    value<span class='op'>=</span><span class='va'>x</span><span class='op'>$</span><span class='va'>trips</span><span class='op'>)</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggplot2</span>)
-<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span>(<span class='kw'>data</span><span class='kw'>=</span><span class='kw pkg'>reshape2</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/reshape2/man/melt.html'>melt</a></span>(<span class='no'>M</span>)) +
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_tile.html'>geom_tile</a></span>(<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span>(<span class='kw'>x</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span>(<span class='no'>destination</span>),
-                <span class='kw'>y</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span>(<span class='no'>origin</span>),
-                <span class='kw'>fill</span><span class='kw'>=</span><span class='no'>value</span>)) +
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>xlab</a></span>(<span class='st'>'Destination'</span>) + <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>ylab</a></span>(<span class='st'>"Origin"</span>) +
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_bw</a></span>() + <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/theme.html'>theme</a></span>(<span class='kw'>axis.text.x</span><span class='kw'>=</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span>(<span class='kw'>size</span><span class='kw'>=</span><span class='fl'>10</span>),
-                     <span class='kw'>axis.text.y</span><span class='kw'>=</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span>(<span class='kw'>size</span><span class='kw'>=</span><span class='fl'>10</span>),
-                     <span class='kw'>axis.title.x</span><span class='kw'>=</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span>(<span class='kw'>size</span><span class='kw'>=</span><span class='fl'>12</span>, <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>margin</a></span>(<span class='kw'>t</span> <span class='kw'>=</span> <span class='fl'>15</span>)),
-                     <span class='kw'>axis.title.y</span><span class='kw'>=</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span>(<span class='kw'>size</span><span class='kw'>=</span><span class='fl'>12</span>, <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>margin</a></span>(<span class='kw'>r</span> <span class='kw'>=</span> <span class='fl'>15</span>)),
-                     <span class='kw'>legend.position</span><span class='kw'>=</span><span class='st'>'bottom'</span>) +
-  <span class='kw pkg'>viridis</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/viridis/man/scale_viridis.html'>scale_fill_viridis</a></span>(<span class='kw'>option</span><span class='kw'>=</span><span class='st'>'inferno'</span>, <span class='kw'>direction</span><span class='kw'>=</span><span class='fl'>1</span>) +
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/guides.html'>guides</a></span>(<span class='kw'>fill</span><span class='kw'>=</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/guide_colourbar.html'>guide_colorbar</a></span>(<span class='kw'>title</span><span class='kw'>=</span><span class='st'>'Observed trips'</span>,
-                             <span class='kw'>title.position</span><span class='kw'>=</span><span class='st'>'top'</span>,
-                             <span class='kw'>label.theme</span><span class='kw'>=</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span>(<span class='kw'>size</span><span class='kw'>=</span><span class='fl'>9</span>),
-                             <span class='kw'>barwidth</span><span class='kw'>=</span><span class='fl'>20</span>,
-                             <span class='kw'>barheight</span><span class='kw'>=</span><span class='fl'>0.5</span>,
-                             <span class='kw'>frame.colour</span><span class='kw'>=</span><span class='st'>'black'</span>,
-                             <span class='kw'>ticks</span><span class='kw'>=</span><span class='fl'>TRUE</span>))</div><div class='img'><img src='get_mob_matrix-1.png' alt='' width='700' height='433' /></div></pre>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://ggplot2.tidyverse.org'>ggplot2</a></span><span class='op'>)</span>
+<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span>data<span class='op'>=</span><span class='fu'>reshape2</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/reshape2/man/melt.html'>melt</a></span><span class='op'>(</span><span class='va'>M</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_tile.html'>geom_tile</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='va'>destination</span><span class='op'>)</span>,
+                y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='va'>origin</span><span class='op'>)</span>,
+                fill<span class='op'>=</span><span class='va'>value</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>xlab</a></span><span class='op'>(</span><span class='st'>'Destination'</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>ylab</a></span><span class='op'>(</span><span class='st'>"Origin"</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_bw</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/theme.html'>theme</a></span><span class='op'>(</span>axis.text.x<span class='op'>=</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span><span class='op'>(</span>size<span class='op'>=</span><span class='fl'>10</span><span class='op'>)</span>,
+                     axis.text.y<span class='op'>=</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span><span class='op'>(</span>size<span class='op'>=</span><span class='fl'>10</span><span class='op'>)</span>,
+                     axis.title.x<span class='op'>=</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span><span class='op'>(</span>size<span class='op'>=</span><span class='fl'>12</span>, margin <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>margin</a></span><span class='op'>(</span>t <span class='op'>=</span> <span class='fl'>15</span><span class='op'>)</span><span class='op'>)</span>,
+                     axis.title.y<span class='op'>=</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span><span class='op'>(</span>size<span class='op'>=</span><span class='fl'>12</span>, margin <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>margin</a></span><span class='op'>(</span>r <span class='op'>=</span> <span class='fl'>15</span><span class='op'>)</span><span class='op'>)</span>,
+                     legend.position<span class='op'>=</span><span class='st'>'bottom'</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>viridis</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/viridis/man/scale_viridis.html'>scale_fill_viridis</a></span><span class='op'>(</span>option<span class='op'>=</span><span class='st'>'inferno'</span>, direction<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/guides.html'>guides</a></span><span class='op'>(</span>fill<span class='op'>=</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/guide_colourbar.html'>guide_colorbar</a></span><span class='op'>(</span>title<span class='op'>=</span><span class='st'>'Observed trips'</span>,
+                             title.position<span class='op'>=</span><span class='st'>'top'</span>,
+                             label.theme<span class='op'>=</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span><span class='op'>(</span>size<span class='op'>=</span><span class='fl'>9</span><span class='op'>)</span>,
+                             barwidth<span class='op'>=</span><span class='fl'>20</span>,
+                             barheight<span class='op'>=</span><span class='fl'>0.5</span>,
+                             frame.colour<span class='op'>=</span><span class='st'>'black'</span>,
+                             ticks<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='img'><img src='get_mob_matrix-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -227,7 +231,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

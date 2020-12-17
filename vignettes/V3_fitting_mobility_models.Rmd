@@ -1,0 +1,194 @@
+---
+title: "Fitting and simulating a mobility model"
+output: rmarkdown::html_vignette
+header-includes:
+   - \usepackage{amsmath}
+   - \usepackage{amssymb}
+   - \usepackage{amsfonts}
+vignette: >
+  %\VignetteIndexEntry{Fitting and simulating a mobility model}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+library(mobility)
+library(ggplot2)
+library(reshape2)
+library(viridis)
+library(ggstance)
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  autodep=TRUE
+)
+```
+
+One of the most commonly used types of mobility model is the gravity model, which is used to model connectivity among locations based on the distances among $i$ origins and $j$ destinations ($d_{ij}$) and population sizes of each location ($N_i$ and $N_j$). A major advantage of the gravity model is that distance and population size are simple covariates that can be obtained in almost any context, allowing a researcher to infer connectivity with little information. 
+
+When fitting the gravity model to data, we also need a matrix of observed travel volume ($M$). Travel volume is an intentionally vague term here because a mobility data matrix can be populated with a variety of measurements that capture relative amounts of travel among locations. For example, if we are using Call Data Records (CDR) which are measures of mobile phone usage supplied by mobile phone companies, the unit of travel volume is likely to be the total number of person trips per unit time. Or if we are using a travel survey that researchers have collated from questionares given to residents of an area, the measurement of travel volume might be the total number of individuals that reported travelling from $i$ to $j$ in the past month. It is important that all $ij$ cells in $M$ have the same unit of travel volume per unit time because the model estimates parameters based on relative differences in travel volume.
+
+The rest of this vignette shows a simple example of how to use the workhorse functions in this package (`mobility()`, `predict()`, and `check()`) to estimate travel volume ($\hat{M}_{ij}$) for all $i \rightarrow j$ travel routes found in the supplied data matrices ($M$, $D$, and $N$). Travel volume can also be predicted for a different geographic region or data on a different spatial scale by supplying these other data to the `newdata` argument of the `predict()` function.
+
+## Build data matrices
+Before we can fit a mobility model, we must build data matrices from the longform travel data. The utility functions `get_mob_matrix()`, `get_distance_matrix()`, and `get_pop_vec()` can be used to generate data matrices representing travel volume among locations ($M$), along with distances ($D$) and population sizes ($N$). The `mobiliy_matrices()` data object included with this package provides a list of simulated data matrices and is formatted for the `data` argument of the `mobility()` function, which requires a list of numerical matrices/vectors with matching dimensions and names.
+```{r data}
+str(mobility::mobility_matrices)
+```
+
+By design, we have added additional stochasticity around trip counts in the movement matrix ($M$) and randomly sampled 80% of observed routes to simulate missing observations, which are shown as grey cells in the plot below.
+
+```{r data_plot, fig.height=6.5, fig.width=6.5}
+ggplot(data=melt(mobility_matrices$M)) +
+  geom_tile(aes(x=factor(destination),
+                y=factor(origin),
+                fill=value)) +
+  xlab('Destination') + ylab("Origin") +
+  theme_bw() + theme(axis.text.x=element_text(size=10),
+                     axis.text.y=element_text(size=10),
+                     axis.title.x=element_text(size=12, margin = margin(t = 15)),
+                     axis.title.y=element_text(size=12, margin = margin(r = 15)),
+                     legend.position='bottom') +
+  viridis::scale_fill_viridis(option='inferno', direction=1) +
+  guides(fill=guide_colorbar(title='Observed number of trips',
+                             title.position='top',
+                             label.theme=element_text(size=9),
+                             barwidth=20,
+                             barheight=0.5,
+                             frame.colour='black',
+                             ticks=TRUE))
+```
+
+
+## Fit a mobility model to the data
+Several different mobility models can be fitted to the data using the `mobility()` function. This function uses the distance among locations ($D$) and population sizes ($N$) as covariates in the specified model equation, which is fitted to the movement matrix ($M$) with a Poisson likelihood link function. Fitting a gravity model can be specified using the `model = 'gravity'` argument. The `mobility()` function contains several variants of the gravity model which can be specified by the `type` argument. 
+```{r fit}
+mod <- mobility(data=mobility_matrices,
+                model='gravity',
+                type='power_norm',
+                n_chain=2,
+                n_burn=1000,
+                n_samp=1000,
+                n_thin=2,
+                DIC=TRUE)
+```
+
+In this example, specifying `type = 'power_norm'` will fit a normalized gravity model, which uses a power law dispersal kernel and normalizes the connectivity of all routes emanating from origin $i$:
+$$
+\begin{aligned}
+        m_{ij} &\sim \text{Poisson}\big(\lambda_{ij}\big)\\
+        \\
+        \lambda_{ij} &= \theta N_i \Bigg(
+        \frac{
+        N_j^\omega d_{ij}^{-\gamma}
+        }{
+        \sum_{\forall j} N_j^\omega d_{ij}^{-\gamma}
+        } \Bigg)
+\end{aligned}   
+$$
+Here, $\theta$ is a proportionality constant representing the overall number of trips per person taken from the origin population $N_i$, and the exponential parameter $\omega$ scales the attractive force of each $j$ destination population sizes. The kernel function $d_{ij}^{-\gamma}$ serves as a penalty on the proportion of travel from $i$ to $j$ based on distance. The function estimates the posterior distribution of these model parameters using a Poisson likelihood and Bayesian MCMC inference. The additional arguments determine the parameters for the MCMC algorithm. Here, the function will use 2 sampling chains, discards the first 1000 samples as 'burin in', and then take 1000 samples thinning by 2 to give 500 total samples per chain. The `DIC=TRUE` argument tells the function to calculate the Deviance Information Criterion (DIC) of the fitted model. 
+
+Fitting a mobility model to a large number of locations (e.g. $\gt 100$) or drawing a large number of samples from posterior distributions (e.g. 10000) may take several minutes. If computation is cumbersome, then the model can run sampling chains in parallel instead of sequentially by specifying `parallel = TRUE`.
+
+The fitting function `mobility()` returns results as a `mobility.model` that contains information on the type of model, the data used, and the estimated model parameters.
+```{r chains}
+str(mod)
+```
+
+## Model summary and validation
+To calculate summary statistics of estimated parameter values, you can supply a fitted `mobility.model` object to the `summary()` function. This function is a wrapper for the `MCMCvis::MCMCsummary()` function that calculates summary statistics for each parameter across each chain along with convergance diagnosics like the Gelman-Rubin convergence diagnostic and ($\hat{R}$) and samples auto-correlation foreach parameter.
+```{r summary}
+summary(mod, probs=c(0.025, 0.975), ac_lags=10)
+```
+
+The `check()` function provides goodness of fit metrics and summary plots for the fitted model.
+```{r check, fig.height=4, fig.width=7.25}
+check(mod)
+```
+
+## Simulating a fitted mobility model
+Once we have verified that our model fits the data adequately, we can simulate connectivity values among locations in our data using the estimated parameter values in the `'mobility.model'` object using the `predict()` function.
+
+```{r sim}
+M_hat <- predict(mod)
+```
+
+```{r sim_plot, fig.height=6.5, fig.width=6.5}
+breaks <- c(500, 1000, 2000, 4000)
+ggplot(data=melt(M_hat)) +
+  geom_tile(aes(x=factor(destination),
+                y=factor(origin),
+                fill=log(value))) +
+  xlab('Destination') + ylab("Origin") +
+  theme_bw() + theme(axis.text.x=element_text(size=10),
+                     axis.text.y=element_text(size=10),
+                     axis.title.x=element_text(size=12, margin = margin(t = 15)),
+                     axis.title.y=element_text(size=12, margin = margin(r = 15)),
+                     legend.position='bottom') +
+  viridis::scale_fill_viridis(option='inferno', 
+                              direction=1,
+                              breaks=log(breaks),
+                              labels=breaks) +
+  guides(fill=guide_colorbar(title='Estimated number of trips',
+                             title.position='top',
+                             label.theme=element_text(size=9),
+                             barwidth=20,
+                             barheight=0.5,
+                             frame.colour='black',
+                             ticks=TRUE))
+```
+
+## Predicting a fitted mobility model onto new data
+As shown above, the `predict()` function  can be used to simulate the volume of travel among locations in the input data, and to infer travel for routes that are originally unobserved. If a new data set is supplied using the `'newdata'` argument, then the `predict()` function will predict travel volume given the new distance matrix ($D$) and population size vector ($N$) based on the fitted `mobility.model` object, allowing the fitted model to be projected onto data of a different geographic scale.
+
+```{r pred}
+# Simulate some new data
+set.seed(123)
+n <- 20
+ids <- letters[1:n]
+
+# Distance matrix
+D <- get_distance_matrix(x=rnorm(n, -100, 2),
+                         y=rnorm(n, 20, 1),
+                         id=ids)*111.35
+
+# Vector of population sizes
+N <- rnbinom(n, size=5, mu=5000)
+names(N) <- ids
+
+# Predict mobility model using new data
+M_hat <- predict(object=mod, newdata=list(D=D, N=N))
+```
+
+```{r pred_plot, fig.height=6.5, fig.width=6.5}
+breaks <- c(500, 1000, 2000, 4000)
+ggplot(data=melt(M_hat)) +
+  geom_tile(aes(x=factor(destination),
+                y=factor(origin),
+                fill=log(value))) +
+  xlab('Destination') + ylab("Origin") +
+  theme_bw() + theme(axis.text.x=element_text(size=10),
+                     axis.text.y=element_text(size=10),
+                     axis.title.x=element_text(size=12, margin = margin(t = 15)),
+                     axis.title.y=element_text(size=12, margin = margin(r = 15)),
+                     legend.position='bottom') +
+  viridis::scale_fill_viridis(option='inferno', 
+                              direction=1,
+                              breaks=log(breaks),
+                              labels=breaks) +
+  guides(fill=guide_colorbar(title='Estimated number of trips',
+                             title.position='top',
+                             label.theme=element_text(size=9),
+                             barwidth=20,
+                             barheight=0.5,
+                             frame.colour='black',
+                             ticks=TRUE))
+```
+
+## Stochastic simulation of a mobility model
+As the default, the number of simulations is set to `nsim = 1` so that the `predict()` function simulates the mean point estimate of the provided mobility model using the mean of the posterior distribution of each estimated parameter. When `nsim > 1`, the function performs stochastic simulation of the given model using the mean and standard deviation of the posterior parameter distributions. The `seed` argument can also be defined for reproducible simulation results.   
+```{r stoch}
+M_hat <- predict(mod, nsim=5, seed=123)
+str(M_hat)
+```

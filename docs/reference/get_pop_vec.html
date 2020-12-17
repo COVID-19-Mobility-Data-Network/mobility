@@ -82,7 +82,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mobility</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -111,13 +111,13 @@
       <a href="../articles/V2_build_matrices.html">Building matrices from longform travel data</a>
     </li>
     <li>
-      <a href="../articles/V3_travel_probability.html">Fitting and simulating travel probability</a>
+      <a href="../articles/V3_fitting_mobility_models.html">Fitting and simulating a mobility model</a>
     </li>
     <li>
-      <a href="../articles/V4_gravity_model.html">Fitting and simulating a gravity model</a>
+      <a href="../articles/V4_fitting_prob_travel.html">Fitting and simulating travel probability</a>
     </li>
     <li>
-      <a href="../articles/V5_mobility_model.html">Fitting and simulating a full mobility model</a>
+      <a href="../articles/V5_list_models.html">A curated list of mobility models</a>
     </li>
   </ul>
 </li>
@@ -151,7 +151,7 @@
     <p>This function returns coordinates for all unique locations in supplied data.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_pop_vec</span>(<span class='no'>data</span>, <span class='kw'>orig</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>dest</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>get_pop_vec</span><span class='op'>(</span><span class='va'>data</span>, orig <span class='op'>=</span> <span class='cn'>TRUE</span>, dest <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -181,27 +181,34 @@
 <code><a href='get_gamma_params.html'>get_gamma_params</a>()</code>,
 <code><a href='get_unique_coords.html'>get_unique_coords</a>()</code>,
 <code><a href='get_unique_ids.html'>get_unique_ids</a>()</code></p></div>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>John Giles</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='no'>travel_data_sim</span>, <span class='fu'><a href='get_unique_ids.html'>get_unique_ids</a></span>(<span class='no'>travel_data_sim</span>, <span class='kw'>adm_start</span><span class='kw'>=</span><span class='fl'>2</span>))
+    <pre class="examples"><div class='input'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='va'>travel_data_sim</span>, <span class='fu'><a href='get_unique_ids.html'>get_unique_ids</a></span><span class='op'>(</span><span class='va'>travel_data_sim</span>, adm_start<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># Unique coordinates for all locations</span>
-<span class='fu'>get_pop_vec</span>(<span class='no'>x</span>)</div><div class='output co'>#&gt;     A     B     C     D     E     F     G     H     I     J     K     L     M 
+<span class='fu'>get_pop_vec</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;     A     B     C     D     E     F     G     H     I     J     K     L     M 
 #&gt;  5065  8179  3961  5540  1337  5776   623   255 21284    85  1112  9542  7596 
 #&gt;     N     O     Q     R     S     T     U     V     W     Y     Z 
 #&gt;  2839  6360  4449   609  7515  1846  7355   240 11983  9603 14619 </div><div class='input'>
 <span class='co'># Origins only</span>
-<span class='fu'>get_pop_vec</span>(<span class='no'>x</span>, <span class='kw'>dest</span><span class='kw'>=</span><span class='fl'>FALSE</span>)</div><div class='output co'>#&gt;     C     D     E     G     H     I     J     K     N     O     Q     R     S 
+<span class='fu'>get_pop_vec</span><span class='op'>(</span><span class='va'>x</span>, dest<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;     C     D     E     G     H     I     J     K     N     O     Q     R     S 
 #&gt;  3961  5540  1337   623   255 21284    85  1112  2839  6360  4449   609  7515 
 #&gt;     T     V     Y     Z 
 #&gt;  1846   240  9603 14619 </div><div class='input'>
 <span class='co'># Destinations only</span>
-<span class='fu'>get_pop_vec</span>(<span class='no'>x</span>, <span class='kw'>orig</span><span class='kw'>=</span><span class='fl'>FALSE</span>)</div><div class='output co'>#&gt;     A     B     C     D     E     F     G     H     I     J     K     L     M 
+<span class='fu'>get_pop_vec</span><span class='op'>(</span><span class='va'>x</span>, orig<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;     A     B     C     D     E     F     G     H     I     J     K     L     M 
 #&gt;  5065  8179  3961  5540  8994  5776  4048 14445 16746  6716  1112  9542  7596 
 #&gt;     N     O     Q     R     S     T     U     V     W     Y     Z 
 #&gt;  2839  8603  4449  6184  7515  1846  7355   240 11983 14977 14619 </div><div class='input'>
 <span class='co'># Without supplied ids</span>
-<span class='fu'>get_pop_vec</span>(<span class='no'>travel_data_sim</span>)</div><div class='output co'>#&gt; <span class='message'>Added missing unique location names.</span></div><div class='output co'>#&gt; A_B_A A_B_B A_B_C A_B_D A_B_E A_B_F A_B_G A_B_H A_B_I A_B_J A_B_K A_B_L A_B_M 
+<span class='fu'>get_pop_vec</span><span class='op'>(</span><span class='va'>travel_data_sim</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Added missing unique location names.</span></div><div class='output co'>#&gt; A_B_A A_B_B A_B_C A_B_D A_B_E A_B_F A_B_G A_B_H A_B_I A_B_J A_B_K A_B_L A_B_M 
 #&gt;  5065  8179  3961  5540  1337  5776   623   255 21284    85  1112  9542  7596 
 #&gt; A_B_N A_B_O A_B_Q A_B_R A_B_S A_B_T A_B_U A_B_V A_B_W A_B_Y A_B_Z 
 #&gt;  2839  6360  4449   609  7515  1846  7355   240 11983  9603 14619 </div></pre>
@@ -220,7 +227,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

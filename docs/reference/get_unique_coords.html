@@ -82,7 +82,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mobility</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -111,13 +111,13 @@
       <a href="../articles/V2_build_matrices.html">Building matrices from longform travel data</a>
     </li>
     <li>
-      <a href="../articles/V3_travel_probability.html">Fitting and simulating travel probability</a>
+      <a href="../articles/V3_fitting_mobility_models.html">Fitting and simulating a mobility model</a>
     </li>
     <li>
-      <a href="../articles/V4_gravity_model.html">Fitting and simulating a gravity model</a>
+      <a href="../articles/V4_fitting_prob_travel.html">Fitting and simulating travel probability</a>
     </li>
     <li>
-      <a href="../articles/V5_mobility_model.html">Fitting and simulating a full mobility model</a>
+      <a href="../articles/V5_list_models.html">A curated list of mobility models</a>
     </li>
   </ul>
 </li>
@@ -151,7 +151,7 @@
     <p>This function returns the coordinates for all unique origins and/or destinations in supplied data.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_unique_coords</span>(<span class='no'>data</span>, <span class='kw'>orig</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>dest</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>get_unique_coords</span><span class='op'>(</span><span class='va'>data</span>, orig <span class='op'>=</span> <span class='cn'>TRUE</span>, dest <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -181,12 +181,16 @@
 <code><a href='get_gamma_params.html'>get_gamma_params</a>()</code>,
 <code><a href='get_pop_vec.html'>get_pop_vec</a>()</code>,
 <code><a href='get_unique_ids.html'>get_unique_ids</a>()</code></p></div>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>John Giles</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='no'>travel_data_sim</span>, <span class='fu'><a href='get_unique_ids.html'>get_unique_ids</a></span>(<span class='no'>travel_data_sim</span>, <span class='kw'>adm_start</span><span class='kw'>=</span><span class='fl'>1</span>))
+    <pre class="examples"><div class='input'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='va'>travel_data_sim</span>, <span class='fu'><a href='get_unique_ids.html'>get_unique_ids</a></span><span class='op'>(</span><span class='va'>travel_data_sim</span>, adm_start<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># Unique coordinates for all locations</span>
-<span class='fu'>get_unique_coords</span>(<span class='no'>x</span>)</div><div class='output co'>#&gt;            x        y  id
+<span class='fu'>get_unique_coords</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;            x        y  id
 #&gt; 1  -88.29221 30.83746 B_A
 #&gt; 2  -89.69678 29.24754 B_B
 #&gt; 3  -89.13090 29.77110 B_C
@@ -212,7 +216,8 @@
 #&gt; 23 -89.94231 29.22100 B_Y
 #&gt; 24 -90.86426 29.62520 B_Z</div><div class='input'>
 <span class='co'># Origins only</span>
-<span class='fu'>get_unique_coords</span>(<span class='no'>x</span>, <span class='kw'>dest</span><span class='kw'>=</span><span class='fl'>FALSE</span>)</div><div class='output co'>#&gt;            x        y  id
+<span class='fu'>get_unique_coords</span><span class='op'>(</span><span class='va'>x</span>, dest<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;            x        y  id
 #&gt; 1  -89.13090 29.77110 B_C
 #&gt; 2  -92.66871 30.16262 B_D
 #&gt; 3  -89.21258 29.99380 B_E
@@ -231,7 +236,8 @@
 #&gt; 16 -89.94231 29.22100 B_Y
 #&gt; 17 -90.86426 29.62520 B_Z</div><div class='input'>
 <span class='co'># Destinations only</span>
-<span class='fu'>get_unique_coords</span>(<span class='no'>x</span>, <span class='kw'>orig</span><span class='kw'>=</span><span class='fl'>FALSE</span>)</div><div class='output co'>#&gt;            x        y  id
+<span class='fu'>get_unique_coords</span><span class='op'>(</span><span class='va'>x</span>, orig<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;            x        y  id
 #&gt; 1  -88.29221 30.83746 B_A
 #&gt; 2  -89.69678 29.24754 B_B
 #&gt; 3  -89.13090 29.77110 B_C
@@ -257,7 +263,8 @@
 #&gt; 23 -90.53148 29.73601 B_Y
 #&gt; 24 -90.86426 29.62520 B_Z</div><div class='input'>
 <span class='co'># Without supplied ids</span>
-<span class='fu'>get_unique_coords</span>(<span class='no'>travel_data_sim</span>)</div><div class='output co'>#&gt; <span class='message'>Added missing unique location names.</span></div><div class='output co'>#&gt;            x        y    id
+<span class='fu'>get_unique_coords</span><span class='op'>(</span><span class='va'>travel_data_sim</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Added missing unique location names.</span></div><div class='output co'>#&gt;            x        y    id
 #&gt; 1  -88.29221 30.83746 A_B_A
 #&gt; 2  -89.69678 29.24754 A_B_B
 #&gt; 3  -89.13090 29.77110 A_B_C
@@ -297,7 +304,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

@@ -84,7 +84,7 @@ calculating the Deviance Information Criterion (DIC) and running sampling chains
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mobility</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -113,13 +113,13 @@ calculating the Deviance Information Criterion (DIC) and running sampling chains
       <a href="../articles/V2_build_matrices.html">Building matrices from longform travel data</a>
     </li>
     <li>
-      <a href="../articles/V3_travel_probability.html">Fitting and simulating travel probability</a>
+      <a href="../articles/V3_fitting_mobility_models.html">Fitting and simulating a mobility model</a>
     </li>
     <li>
-      <a href="../articles/V4_gravity_model.html">Fitting and simulating a gravity model</a>
+      <a href="../articles/V4_fitting_prob_travel.html">Fitting and simulating travel probability</a>
     </li>
     <li>
-      <a href="../articles/V5_mobility_model.html">Fitting and simulating a full mobility model</a>
+      <a href="../articles/V5_list_models.html">A curated list of mobility models</a>
     </li>
   </ul>
 </li>
@@ -155,17 +155,17 @@ The function uses code adapted from the <code><a href='https://rdrr.io/pkg/rjags
 calculating the Deviance Information Criterion (DIC) and running sampling chains in parallel.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>fit_jags</span>(
-  <span class='no'>jags_data</span>,
-  <span class='no'>jags_model</span>,
-  <span class='no'>params</span>,
-  <span class='kw'>n_chain</span> <span class='kw'>=</span> <span class='fl'>2</span>,
-  <span class='kw'>n_burn</span> <span class='kw'>=</span> <span class='fl'>1000</span>,
-  <span class='kw'>n_samp</span> <span class='kw'>=</span> <span class='fl'>1000</span>,
-  <span class='kw'>n_thin</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>DIC</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
-)</pre>
+    <pre class="usage"><span class='fu'>fit_jags</span><span class='op'>(</span>
+  <span class='va'>jags_data</span>,
+  <span class='va'>jags_model</span>,
+  <span class='va'>params</span>,
+  n_chain <span class='op'>=</span> <span class='fl'>2</span>,
+  n_burn <span class='op'>=</span> <span class='fl'>1000</span>,
+  n_samp <span class='op'>=</span> <span class='fl'>1000</span>,
+  n_thin <span class='op'>=</span> <span class='fl'>1</span>,
+  DIC <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  parallel <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -217,20 +217,24 @@ calculating the Deviance Information Criterion (DIC) and running sampling chains
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>Other model: 
-<code><a href='check_mobility.html'>check_mobility</a>()</code>,
-<code><a href='fit_gravity.html'>fit_gravity</a>()</code>,
-<code><a href='fit_mobility.html'>fit_mobility</a>()</code>,
+<code><a href='check.html'>check</a>()</code>,
+<code><a href='compare.html'>compare</a>()</code>,
 <code><a href='fit_prob_travel.html'>fit_prob_travel</a>()</code>,
-<code><a href='summarize_mobility.html'>summarize_mobility</a>()</code></p></div>
+<code><a href='mobility.html'>mobility</a>()</code>,
+<code><a href='predict.html'>predict</a>()</code>,
+<code><a href='summary.html'>summary</a>()</code></p></div>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>John Giles</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>N</span> <span class='kw'>&lt;-</span> <span class='fl'>100</span>
-<span class='no'>lambda</span> <span class='kw'>&lt;-</span> <span class='fl'>10</span>
-<span class='no'>y</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Poisson.html'>rpois</a></span>(<span class='kw'>n</span><span class='kw'>=</span><span class='no'>N</span>, <span class='kw'>lambda</span><span class='kw'>=</span><span class='no'>lambda</span>)
+    <pre class="examples"><div class='input'><span class='va'>N</span> <span class='op'>&lt;-</span> <span class='fl'>100</span>
+<span class='va'>lambda</span> <span class='op'>&lt;-</span> <span class='fl'>10</span>
+<span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Poisson.html'>rpois</a></span><span class='op'>(</span>n<span class='op'>=</span><span class='va'>N</span>, lambda<span class='op'>=</span><span class='va'>lambda</span><span class='op'>)</span>
 
-<span class='no'>jags_data</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>N</span><span class='kw'>=</span><span class='no'>N</span>, <span class='kw'>y</span><span class='kw'>=</span><span class='no'>y</span>)
+<span class='va'>jags_data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>N<span class='op'>=</span><span class='va'>N</span>, y<span class='op'>=</span><span class='va'>y</span><span class='op'>)</span>
 
-<span class='no'>jags_model</span> <span class='kw'>&lt;-</span> <span class='st'>"
+<span class='va'>jags_model</span> <span class='op'>&lt;-</span> <span class='st'>"
 model {
 
   for(i in 1:N){
@@ -243,11 +247,12 @@ model {
 
 }"</span>
 
-<span class='no'>params</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>'lambda'</span>)
+<span class='va'>params</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>'lambda'</span><span class='op'>)</span>
 
-<span class='no'>mod</span> <span class='kw'>&lt;-</span> <span class='fu'>fit_jags</span>(<span class='kw'>jags_data</span><span class='kw'>=</span><span class='no'>jags_data</span>,
-                <span class='kw'>jags_model</span><span class='kw'>=</span><span class='no'>jags_model</span>,
-                <span class='kw'>params</span><span class='kw'>=</span><span class='no'>params</span>)</div><div class='output co'>#&gt; Compiling model graph
+<span class='va'>mod</span> <span class='op'>&lt;-</span> <span class='fu'>fit_jags</span><span class='op'>(</span>jags_data<span class='op'>=</span><span class='va'>jags_data</span>,
+                jags_model<span class='op'>=</span><span class='va'>jags_model</span>,
+                params<span class='op'>=</span><span class='va'>params</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; Compiling model graph
 #&gt;    Resolving undeclared variables
 #&gt;    Allocating nodes
 #&gt; Graph information:
@@ -272,7 +277,7 @@ model {
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

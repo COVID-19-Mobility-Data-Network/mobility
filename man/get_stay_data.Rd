@@ -35,8 +35,7 @@ Other data synthesis:
 \code{\link{get_mob_matrix}()}
 
 Other travel probability: 
-\code{\link{fit_prob_travel}()},
-\code{\link{sim_prob_travel}()}
+\code{\link{fit_prob_travel}()}
 }
 \author{
 John Giles

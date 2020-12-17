@@ -88,7 +88,7 @@ When both data_pred and agg_adm are NULL, the lowest admin unit of data is used
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mobility</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -117,13 +117,13 @@ When both data_pred and agg_adm are NULL, the lowest admin unit of data is used
       <a href="../articles/V2_build_matrices.html">Building matrices from longform travel data</a>
     </li>
     <li>
-      <a href="../articles/V3_travel_probability.html">Fitting and simulating travel probability</a>
+      <a href="../articles/V3_fitting_mobility_models.html">Fitting and simulating a mobility model</a>
     </li>
     <li>
-      <a href="../articles/V4_gravity_model.html">Fitting and simulating a gravity model</a>
+      <a href="../articles/V4_fitting_prob_travel.html">Fitting and simulating travel probability</a>
     </li>
     <li>
-      <a href="../articles/V5_mobility_model.html">Fitting and simulating a full mobility model</a>
+      <a href="../articles/V5_list_models.html">A curated list of mobility models</a>
     </li>
   </ul>
 </li>
@@ -163,7 +163,7 @@ counts depend on the arguemtns supplied:</p><ol>
 
     </div>
 
-    <pre class="usage"><span class='fu'>get_stay_data</span>(<span class='no'>data</span>, <span class='kw'>data_pred</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>agg_adm</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>get_stay_data</span><span class='op'>(</span><span class='va'>data</span>, data_pred <span class='op'>=</span> <span class='cn'>NULL</span>, agg_adm <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -192,11 +192,14 @@ counts depend on the arguemtns supplied:</p><ol>
 <code><a href='get_distance_matrix.html'>get_distance_matrix</a>()</code>,
 <code><a href='get_mob_matrix.html'>get_mob_matrix</a>()</code></p>
 <p>Other travel probability: 
-<code><a href='fit_prob_travel.html'>fit_prob_travel</a>()</code>,
-<code><a href='sim_prob_travel.html'>sim_prob_travel</a>()</code></p></div>
+<code><a href='fit_prob_travel.html'>fit_prob_travel</a>()</code></p></div>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>John Giles</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>stay_data</span> <span class='kw'>&lt;-</span> <span class='fu'>get_stay_data</span>(<span class='no'>travel_data_sim</span>, <span class='kw'>agg_adm</span><span class='kw'>=</span><span class='fl'>2</span>)</div><div class='output co'>#&gt; <span class='message'>Added missing unique location names.</span></div><div class='output co'>#&gt; <span class='message'>Using total trip count method</span></div></pre>
+    <pre class="examples"><div class='input'><span class='va'>stay_data</span> <span class='op'>&lt;-</span> <span class='fu'>get_stay_data</span><span class='op'>(</span><span class='va'>travel_data_sim</span>, agg_adm<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Added missing unique location names.</span></div><div class='output co'>#&gt; <span class='message'>Using total trip count method</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -212,7 +215,7 @@ counts depend on the arguemtns supplied:</p><ol>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

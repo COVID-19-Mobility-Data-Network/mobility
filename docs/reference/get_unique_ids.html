@@ -82,7 +82,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mobility</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -111,13 +111,13 @@
       <a href="../articles/V2_build_matrices.html">Building matrices from longform travel data</a>
     </li>
     <li>
-      <a href="../articles/V3_travel_probability.html">Fitting and simulating travel probability</a>
+      <a href="../articles/V3_fitting_mobility_models.html">Fitting and simulating a mobility model</a>
     </li>
     <li>
-      <a href="../articles/V4_gravity_model.html">Fitting and simulating a gravity model</a>
+      <a href="../articles/V4_fitting_prob_travel.html">Fitting and simulating travel probability</a>
     </li>
     <li>
-      <a href="../articles/V5_mobility_model.html">Fitting and simulating a full mobility model</a>
+      <a href="../articles/V5_list_models.html">A curated list of mobility models</a>
     </li>
   </ul>
 </li>
@@ -151,14 +151,14 @@
     <p>This function builds unique character string identifiers for all origins and destinations.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_unique_ids</span>(
-  <span class='no'>data</span>,
-  <span class='kw'>orig</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>dest</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>adm_start</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>adm_stop</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>name_class</span> <span class='kw'>=</span> <span class='st'>"character"</span>
-)</pre>
+    <pre class="usage"><span class='fu'>get_unique_ids</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  orig <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  dest <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  adm_start <span class='op'>=</span> <span class='cn'>NULL</span>,
+  adm_stop <span class='op'>=</span> <span class='cn'>NULL</span>,
+  name_class <span class='op'>=</span> <span class='st'>"character"</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -200,9 +200,13 @@
 <code><a href='get_gamma_params.html'>get_gamma_params</a>()</code>,
 <code><a href='get_pop_vec.html'>get_pop_vec</a>()</code>,
 <code><a href='get_unique_coords.html'>get_unique_coords</a>()</code></p></div>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>John Giles</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>get_unique_ids</span>(<span class='no'>travel_data_sim</span>)</div><div class='output co'>#&gt;    orig_id dest_id
+    <pre class="examples"><div class='input'><span class='fu'>get_unique_ids</span><span class='op'>(</span><span class='va'>travel_data_sim</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;    orig_id dest_id
 #&gt; 1    A_B_O   A_B_G
 #&gt; 2    A_B_S   A_B_U
 #&gt; 3    A_B_N   A_B_L
@@ -250,7 +254,8 @@
 #&gt; 45   A_B_D   A_B_D
 #&gt; 46   A_B_Q   A_B_Q</div><div class='input'>
 <span class='co'># Starting at admin level 1</span>
-<span class='fu'>get_unique_ids</span>(<span class='no'>travel_data_sim</span>, <span class='kw'>adm_start</span><span class='kw'>=</span><span class='fl'>1</span>)</div><div class='output co'>#&gt;    orig_id dest_id
+<span class='fu'>get_unique_ids</span><span class='op'>(</span><span class='va'>travel_data_sim</span>, adm_start<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;    orig_id dest_id
 #&gt; 1      B_O     B_G
 #&gt; 2      B_S     B_U
 #&gt; 3      B_N     B_L
@@ -298,7 +303,8 @@
 #&gt; 45     B_D     B_D
 #&gt; 46     B_Q     B_Q</div><div class='input'>
 <span class='co'># Use numeric facto levels</span>
-<span class='fu'>get_unique_ids</span>(<span class='no'>travel_data_sim</span>, <span class='kw'>name_class</span><span class='kw'>=</span><span class='st'>'numeric'</span>)</div><div class='output co'>#&gt;        orig_id     dest_id
+<span class='fu'>get_unique_ids</span><span class='op'>(</span><span class='va'>travel_data_sim</span>, name_class<span class='op'>=</span><span class='st'>'numeric'</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;        orig_id     dest_id
 #&gt; 1  001_001_015 001_001_007
 #&gt; 2  001_001_018 001_001_020
 #&gt; 3  001_001_014 001_001_012
@@ -346,7 +352,8 @@
 #&gt; 45 001_001_004 001_001_004
 #&gt; 46 001_001_016 001_001_016</div><div class='input'>
 <span class='co'># Numeric for only the origin locations</span>
-<span class='fu'>get_unique_ids</span>(<span class='no'>travel_data_sim</span>, <span class='kw'>dest</span><span class='kw'>=</span><span class='fl'>FALSE</span>, <span class='kw'>name_class</span><span class='kw'>=</span><span class='st'>'numeric'</span>)</div><div class='output co'>#&gt;        orig_id
+<span class='fu'>get_unique_ids</span><span class='op'>(</span><span class='va'>travel_data_sim</span>, dest<span class='op'>=</span><span class='cn'>FALSE</span>, name_class<span class='op'>=</span><span class='st'>'numeric'</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;        orig_id
 #&gt; 1  001_001_010
 #&gt; 2  001_001_013
 #&gt; 3  001_001_009
@@ -408,7 +415,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

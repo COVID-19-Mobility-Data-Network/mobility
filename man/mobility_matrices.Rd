@@ -3,7 +3,7 @@
 \docType{data}
 \name{mobility_matrices}
 \alias{mobility_matrices}
-\title{Example data matrices required by gravity functions}
+\title{Example data matrices required by mobility model functions}
 \format{
 a list of 3
 \describe{
@@ -16,8 +16,8 @@ a list of 3
 mobility_matrices
 }
 \description{
-This data object is a list containing named matrices required by the \code{\link{sim_gravity}} and \code{\link{fit_gravity}} functions.
-The matrices provide hypothetical trip counts representing travel among 10 locations (\eqn{M}), along with distances (\eqn{D}) and population sizes (\eqn{N}).
+This data object is a list containing named matrices required by the \code{\link{mobility}} model fitting function.
+The matrices provide simulated trip counts representing travel among 10 locations (\eqn{M}), along with distances (\eqn{D}) and population sizes (\eqn{N}).
 }
 \author{
 John Giles

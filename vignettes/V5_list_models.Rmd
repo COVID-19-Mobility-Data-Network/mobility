@@ -1,0 +1,206 @@
+---
+title: "A curated list of mobility models"
+output: rmarkdown::html_vignette
+header-includes:
+   - \usepackage{amsmath}
+   - \usepackage{amssymb}
+   - \usepackage{amsfonts}
+vignette: >
+  %\VignetteIndexEntry{A curated list of mobility models}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+library(mobility)
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  autodep=TRUE
+)
+```
+
+Mobility models in general describe interactions between separate locations in space, such travel among administrative units. There many types of mobility models (gravity and radiation are common model types) and there are many parameterizations of each model type. The 'mobility' R package provides methods for fitting and simulating different parameterizations of gravity, radiation, and departure-diffusion models. This vignette contains a list of all the mobility models that are currently available in this package.
+
+The models list below can be called by specifying the `model` and `type` arguments of the `mobility()` function. This function fits the specified model to the supplied data matrices using the Bayesian MCMC algorithm JAGS. Each of the models have a likelihood function that assumes a Poisson error structure with mean $\lambda_{ij}$: 
+
+$$
+\begin{aligned}
+        m_{ij} &\sim \text{Poisson}(\lambda_{ij})\\
+\end{aligned}   
+$$
+
+Where, where $m_{ij}$ is an element of the data matrix $M$ and gives the observed number of trips from origin $i$ to destination $j$, and the expected mean number of trips $\lambda_{ij}$ is defined by one of the models below.
+
+## Gravity models
+Gravity models are one of the most common types of spatial diffusion models and are routinely used in the fields of transportation science, economics, ecology, and epidemiology (Viboud et al. 2006; Xia, Bjørnstad, and Grenfell 2004). However, there are many different parameterizations of this model, so we have included a number of different model types in this package. Below are brief descriptions of each model type with example function calls that fit each model to data.
+
+### Basic
+The basic gravity model is the simplest gravity model with only one estimated parameter, $\theta$.
+$$
+\begin{aligned}
+        \lambda_{ij} &= \theta
+        \Bigg( \frac{
+        N_{i} N_{j}
+        }{
+        d_{ij}
+        } \Bigg)
+\end{aligned}   
+$$
+
+The parameter $\theta$ acts as a proportionality constant that scales the product of the origin and destination population sizes ($N_i$) and ($N_j$) divided by the distance between $i$ and $j$ ($d_{ij}$). The basic gravity model can be called by:
+```{r, eval=FALSE}
+mod <- mobility(data=mobility_matrices, model='gravity', type='basic')
+```
+
+
+
+### Transport
+A common form of the gravity model used in transportation science has two parameters, $\theta$ and $\gamma$.
+$$
+\begin{aligned}
+        \lambda_{ij} &= \theta
+        \Bigg(\frac{
+        N_{i} N_{j}
+        }{
+        d_{ij}^{\gamma}
+        }\Bigg)
+\end{aligned}   
+$$
+Where, $\theta$ is a proportionality constant and the exponent $\gamma$ on $d_{ij}$ allows adjustment of the distance-based kernel function. The transport gravity model can be called by:
+```{r, eval=FALSE}
+mod <- mobility(data=mobility_matrices, model='gravity', type='transport')
+```
+
+### Power law
+Compared with the basic and transport gravity model types, the power law gravity model adds parameters as exponents on the population sizes of the origin ($N_i$) and destination ($N_j$).
+$$
+\begin{aligned}
+        \lambda_{ij} &= \theta
+        \Bigg(\frac{
+        N_{i}^{\omega_1} N_{j}^{\omega_2}
+        }{
+        d_{ij}^{\gamma}
+        }\Bigg)
+\end{aligned}   
+$$
+Where, $\theta$ is a proportionality constant, the parameters $\omega_1$ and $\omega_2$ serve as weights that modify the contribution of origin and destination population sizes. In the denominator, $d_{ij}^\gamma$, serves as the dispersal kernel function. The power law gravity model can be called by:
+```{r, eval=FALSE}
+mod <- mobility(data=mobility_matrices, model='gravity', type='power')
+```
+
+### Exponential
+Like the power law gravity model, the exponential gravity model has four parameters, however the distance-based kernel function uses exponential decay instead of the power law.
+$$
+\begin{aligned}
+        \lambda_{ij} &= \theta
+        \Bigg(\frac{
+        N_{i}^{\omega_1} N_{j}^{\omega_2}
+        }{
+        e^{d_{ij}/\delta}
+        }\Bigg)
+\end{aligned}   
+$$
+Where, $\theta$ is a proportionality constant, the parameters $\omega_1$ and $\omega_2$ serve as weights that modify the contribution of origin and destination population sizes. In the denominator, $e^{d_{ij}/\delta}$, serves as the exponential dispersal kernel function with $\delta$ giving the deterence distance. The exponential gravity model can be called by:
+```{r, eval=FALSE}
+mod <- mobility(data=mobility_matrices, model='gravity', type='exp')
+```
+
+### Normalized power law
+The normalized gravity model eliminates the exponent on the origin population size ($N_i$), requiring estimation of three parameters $\theta$, $\omega$, and $\gamma$. As the name suggests, this model normalizes the connectivity of all routes emanating from origin $i$.
+$$
+\begin{aligned}
+        \lambda_{ij} &= \theta N_i \Bigg(
+        \frac{
+        N_j^\omega d_{ij}^{-\gamma}
+        }{
+        \sum_{\forall j} N_j^\omega d_{ij}^{-\gamma}
+        } \Bigg)
+\end{aligned}   
+$$
+Here, $\theta$ is a proportionality constant representing the overall number of trips per person taken from the origin population $N_i$, and the exponential parameter $\omega$ scales the attractive force of each $j$ destination population sizes. The kernel function $d_{ij}^{-\gamma}$ serves as a penalty on the proportion of travel from $i$ to $j$ based on distance. The normalized power law gravity model can be called by:
+```{r, eval=FALSE}
+mod <- mobility(data=mobility_matrices, model='gravity', type='power_norm')
+```
+
+### Normalized exponential
+Similar to the model above, the normalized exponential gravity model normalizes the connectivity of all routes emanating from origin $i$. However, this model uses an exponential dispersal kernal as a penalty on connectivity.
+$$
+\begin{aligned}
+        \lambda_{ij} &= \theta N_i \Bigg(
+        \frac{
+        N_j^\omega e^{-d_{ij}/\delta}
+        }{
+        \sum_{\forall j} N_j^\omega e^{-d_{ij}/\delta}
+        } \Bigg)
+\end{aligned}   
+$$
+Where, $\theta$ is a proportionality constant representing the overall number of trips per person taken from the origin population $N_i$, and the exponential parameter $\omega$ scales the attractive force of each $j$ destination population sizes. The kernel function $e^{-d_{ij}/\delta}$ serves as the exponential dispersal kernal. The normalized exponential gravity model can be called by:
+```{r, eval=FALSE}
+mod <- mobility(data=mobility_matrices, model='gravity', type='exp_norm')
+```
+
+### Marshall
+The gravity model described in Marshall et al. (2018) uses a scaled power law and requires estimation of three parameters $\omega$, $\gamma$, and $\alpha$.
+$$
+\begin{aligned}
+\lambda_{ij} &= N_{j}^\omega \Bigg( 1 + \frac{ d_{ij} }{ \gamma } \Bigg)^{-\alpha}
+\end{aligned}   
+$$
+Where, $\omega$ adjusts the attractive force of each $j$ destination population sizes, $\gamma$ scales the distance from $i$ to $j$, and $\alpha$ determines the power law distance kernel. 
+This scaled power law gravity model can be called by:
+```{r, eval=FALSE}
+mod <- mobility(data=mobility_matrices, model='gravity', type='Marshall')
+```
+
+
+
+
+## Radiation models
+### Basic
+The radiation model was first introduced by Simini et al. (Simini et al. 2012) and was put forth as an ‘parameter-free’ diffusion model to describe commuting flows in the United States. A basic radiation model can be called with `radiation_basic`. 
+
+$$
+\begin{aligned}
+        Y = \alpha + \beta X
+\end{aligned}   
+$$
+
+
+The basic radiation is not actually fit to the data, hence its ‘parameter-free’ label. The terms in the model are...
+
+### Finite
+
+
+
+
+## Departure-diffusion models
+### Power law
+This model comes from here [ref] and is meant to do this and that. This model can be called with the type argument `model_name`. 
+
+$$
+\begin{aligned}
+        Y = \alpha + \beta X
+\end{aligned}   
+$$
+
+This model is fitted to the data this way and the parameters mean this and that…
+
+### Exponential
+
+
+### Radiation
+
+
+
+## References
+
+  1. Marshall, John M., Sean L. Wu, Hector M. Sanchez C, Samson S. Kiware, Micky Ndhlovu, André Lin Ouédraogo, Mahamoudou B. Touré, Hugh J. Sturrock, Azra C. Ghani, and Neil M. Ferguson. 2018. “Mathematical Models of Human Mobility of Relevance to Malaria Transmission in Africa.” Scientific Reports 8 (1): 1–12.
+  
+  2. Simini, Filippo, Marta C. González, Amos Maritan, and Albert-László Barabási. 2012. “A Universal Model for Mobility and Migration Patterns.” Nature 484 (7392): 96–100.
+  
+  3. Viboud, Cécile, Ottar N. Bjørnstad, David L. Smith, Lone Simonsen, Mark A. Miller, and Bryan T. Grenfell. 2006. “Synchrony, Waves, and Spatial Hierarchies in the Spread of Influenza.” Science 312 (5772): 447–51.
+
+  4. Xia, Yingcun, Ottar N. Bjørnstad, and Bryan T. Grenfell. 2004. “Measles Metapopulation Dynamics: A Gravity Model for Epidemiological Coupling and Dynamics.” The American Naturalist 164 (2): 267–81.
+

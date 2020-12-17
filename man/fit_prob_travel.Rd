@@ -33,7 +33,7 @@ fit_prob_travel(
 \item{parallel}{logical indicating whether or not to run MCMC chains in parallel or sequentially (default = \code{FALSE})}
 }
 \value{
-an \code{\link[coda:mcmc.list]{mcmc.list}} object
+An object of class \code{mobility.model} containing model information, data, and fitted model parameters
 }
 \description{
 This function fits a hierarchical beta-binomial model that estimates the probability an individual travels outside their home location
@@ -60,6 +60,7 @@ prob_trav <- summary(
   fit_prob_travel(travel=travel, total=total)
 )
 
+library(ggplot2)
 ggplot(data=prob_trav) +
   geom_vline(aes(xintercept=mean[ which(is.na(travel))[1] ]), color='red', linetype=2) +
   geom_point(aes(x=mean, y=orig_id), size=2) +
@@ -76,14 +77,15 @@ ggplot(data=prob_trav) +
 }
 \seealso{
 Other model: 
-\code{\link{check_mobility}()},
-\code{\link{fit_gravity}()},
+\code{\link{check}()},
+\code{\link{compare}()},
 \code{\link{fit_jags}()},
-\code{\link{summary.mobility.model}()}
+\code{\link{mobility}()},
+\code{\link{predict}()},
+\code{\link{summary}()}
 
 Other travel probability: 
-\code{\link{get_stay_data}()},
-\code{\link{sim_prob_travel}()}
+\code{\link{get_stay_data}()}
 }
 \author{
 John Giles

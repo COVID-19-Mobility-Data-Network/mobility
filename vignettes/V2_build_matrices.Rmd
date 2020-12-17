@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 ```
 
 
-Once the travel data has been converted the to generalized travel data format in the `travel_data_template()` and `travel_data_sim()` objects, utility functions can be used to build the data matrices required for fitting and simulating models. For fitting gravity models the data must be converted into data matrices representing travel among locations ($M$), along with distances ($D$) and population sizes ($N$). 
+Once the travel data has been converted the to generalized travel data format in the `travel_data_template()` and `travel_data_sim()` objects, utility functions can be used to build the data matrices required for fitting and simulating mobility models. For fitting these models the data must be converted into data matrices representing travel among locations ($M$), along with distances between locations ($D$) and population sizes of the origins and destinations ($N$). 
 
 
 ### Unique IDs
@@ -77,7 +77,7 @@ Many times there are missing observations in travel data. This is especially the
 
 
 ### Build distance matrix
-Gravity models require that distances be provided for all routes even if these observations are missing in the mobility matrix ($M$). A distance matrix for all unique routes can be built by getting all unique coordinates in the travel data using the `get_unique_coords()` function and then calculating the distances among all locations with `get_distance_matrix()`. Note that there is no requirement for the units of the distance matrix. However, we recommend the scale used is sensible for the spatial scale of the study area.
+Mobility models require that distances be provided for all routes even if these observations are missing in the mobility matrix ($M$). A distance matrix for all unique routes can be built by getting all unique coordinates in the travel data using the `get_unique_coords()` function and then calculating the distances among all locations with `get_distance_matrix()`. Note that there is no requirement for the units of the distance matrix. However, we recommend the scale used is sensible for the spatial scale of the study area.
 
 ```{r}
 xy <- get_unique_coords(travel_data)
@@ -91,7 +91,7 @@ D[1:5, 1:5]
 ```
 
 ### Population size vector
-Fitting gravity models and models of travel peobability require a vector of population size for each location that is the same length the number of rows and columns in the mobility matrix ($M$) and distance matrix ($D$).
+Fitting mobility modelsalso require a vector of population size for each location that is the same length the number of rows and columns in the mobility matrix ($M$) and distance matrix ($D$).
 
 ```{r}
 N <- get_pop_vec(travel_data)

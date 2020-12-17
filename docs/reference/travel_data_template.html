@@ -85,7 +85,7 @@ using other data assume that the same method for defining population size is use
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mobility</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -114,13 +114,13 @@ using other data assume that the same method for defining population size is use
       <a href="../articles/V2_build_matrices.html">Building matrices from longform travel data</a>
     </li>
     <li>
-      <a href="../articles/V3_travel_probability.html">Fitting and simulating travel probability</a>
+      <a href="../articles/V3_fitting_mobility_models.html">Fitting and simulating a mobility model</a>
     </li>
     <li>
-      <a href="../articles/V4_gravity_model.html">Fitting and simulating a gravity model</a>
+      <a href="../articles/V4_fitting_prob_travel.html">Fitting and simulating travel probability</a>
     </li>
     <li>
-      <a href="../articles/V5_mobility_model.html">Fitting and simulating a full mobility model</a>
+      <a href="../articles/V5_list_models.html">A curated list of mobility models</a>
     </li>
   </ul>
 </li>
@@ -157,12 +157,12 @@ where origin and destination are the same. Note that models fitted and then extr
 using other data assume that the same method for defining population size is used throughout. Either dates or time span must be filled.</p>
     </div>
 
-    <pre class="usage"><span class='no'>travel_data_template</span></pre>
+    <pre class="usage"><span class='va'>travel_data_template</span></pre>
 
 
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
-    <p>a data frame with empty columns and generalized column names</p><dl'>
+    <p>a data frame with empty columns and generalized column names</p><dl>
   <dt>date_start</dt><dd><p>date: beginning of the time interval for the trip count</p></dd>
   <dt>date_stop</dt><dd><p>date: end of the time interval for the trip count</p></dd>
   <dt>date_span</dt><dd><p>integer: time span in days</p></dd>
@@ -194,121 +194,128 @@ using other data assume that the same method for defining population size is use
   
 </dl>
 
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>John Giles</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'>#--------------------------------</span>
 <span class='co'># Travel among locations</span>
 <span class='co'>#--------------------------------</span>
 
-<span class='no'>trip</span> <span class='kw'>&lt;-</span> <span class='no'>travel_data_template</span>
-<span class='no'>n</span> <span class='kw'>&lt;-</span> <span class='fl'>3</span> <span class='co'># Add some observations</span>
-<span class='no'>trip</span>[<span class='fl'>1</span>:<span class='no'>n</span>,] <span class='kw'>&lt;-</span> <span class='fl'>NA</span>
+<span class='va'>trip</span> <span class='op'>&lt;-</span> <span class='va'>travel_data_template</span>
+<span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>3</span> <span class='co'># Add some observations</span>
+<span class='va'>trip</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='va'>n</span>,<span class='op'>]</span> <span class='op'>&lt;-</span> <span class='cn'>NA</span>
 
 <span class='co'># Time span of travel survey</span>
-<span class='no'>trip</span>$<span class='no'>date_start</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span>(<span class='st'>"2020-01-01"</span>)
-<span class='no'>trip</span>$<span class='no'>date_stop</span> <span class='kw'>&lt;-</span> <span class='no'>trip</span>$<span class='no'>date_start</span> + <span class='fl'>30</span>
-<span class='no'>trip</span>$<span class='no'>date_span</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/difftime.html'>difftime</a></span>(<span class='no'>trip</span>$<span class='no'>date_stop</span>, <span class='no'>trip</span>$<span class='no'>date_start</span>, <span class='kw'>units</span><span class='kw'>=</span><span class='st'>'days'</span>)
+<span class='va'>trip</span><span class='op'>$</span><span class='va'>date_start</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='st'>"2020-01-01"</span><span class='op'>)</span>
+<span class='va'>trip</span><span class='op'>$</span><span class='va'>date_stop</span> <span class='op'>&lt;-</span> <span class='va'>trip</span><span class='op'>$</span><span class='va'>date_start</span> <span class='op'>+</span> <span class='fl'>30</span>
+<span class='va'>trip</span><span class='op'>$</span><span class='va'>date_span</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/difftime.html'>difftime</a></span><span class='op'>(</span><span class='va'>trip</span><span class='op'>$</span><span class='va'>date_stop</span>, <span class='va'>trip</span><span class='op'>$</span><span class='va'>date_start</span>, units<span class='op'>=</span><span class='st'>'days'</span><span class='op'>)</span>
 
 <span class='co'># Participant info</span>
-<span class='no'>trip</span>$<span class='no'>indiv_id</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fl'>1</span>:<span class='fl'>100</span>, <span class='no'>n</span>)
-<span class='no'>trip</span>$<span class='no'>indiv_age</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>round</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='no'>n</span>, <span class='fl'>5</span>, <span class='fl'>80</span>))
-<span class='no'>trip</span>$<span class='no'>indiv_sex</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Binomial.html'>rbinom</a></span>(<span class='no'>n</span>, <span class='fl'>1</span>, <span class='fl'>0.5</span>)
+<span class='va'>trip</span><span class='op'>$</span><span class='va'>indiv_id</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>100</span>, <span class='va'>n</span><span class='op'>)</span>
+<span class='va'>trip</span><span class='op'>$</span><span class='va'>indiv_age</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>round</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>5</span>, <span class='fl'>80</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>trip</span><span class='op'>$</span><span class='va'>indiv_sex</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Binomial.html'>rbinom</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>1</span>, <span class='fl'>0.5</span><span class='op'>)</span>
 
 <span class='co'># Origin info</span>
-<span class='no'>trip</span>$<span class='no'>orig_adm0</span> <span class='kw'>&lt;-</span> <span class='st'>'A'</span>
-<span class='no'>trip</span>$<span class='no'>orig_adm1</span> <span class='kw'>&lt;-</span> <span class='st'>'A'</span>
-<span class='no'>trip</span>$<span class='no'>orig_adm2</span> <span class='kw'>&lt;-</span> <span class='st'>'A'</span>
-<span class='no'>trip</span>$<span class='no'>orig_adm3</span> <span class='kw'>&lt;-</span> <span class='no'>LETTERS</span>[<span class='fl'>1</span>:<span class='no'>n</span>]
-<span class='no'>trip</span>$<span class='no'>orig_type</span> <span class='kw'>&lt;-</span> <span class='st'>'Sub-district'</span> <span class='co'># Type of admin unit for lowest admin level</span>
-<span class='no'>trip</span>$<span class='no'>orig_x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='no'>n</span>, <span class='fl'>100</span>, <span class='fl'>5</span>)
-<span class='no'>trip</span>$<span class='no'>orig_y</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='no'>n</span>, <span class='fl'>20</span>, <span class='fl'>2</span>)
-<span class='no'>trip</span>$<span class='no'>orig_pop</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Poisson.html'>rpois</a></span>(<span class='no'>n</span>, <span class='fl'>10000</span>)
+<span class='va'>trip</span><span class='op'>$</span><span class='va'>orig_adm0</span> <span class='op'>&lt;-</span> <span class='st'>'A'</span>
+<span class='va'>trip</span><span class='op'>$</span><span class='va'>orig_adm1</span> <span class='op'>&lt;-</span> <span class='st'>'A'</span>
+<span class='va'>trip</span><span class='op'>$</span><span class='va'>orig_adm2</span> <span class='op'>&lt;-</span> <span class='st'>'A'</span>
+<span class='va'>trip</span><span class='op'>$</span><span class='va'>orig_adm3</span> <span class='op'>&lt;-</span> <span class='va'>LETTERS</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='va'>n</span><span class='op'>]</span>
+<span class='va'>trip</span><span class='op'>$</span><span class='va'>orig_type</span> <span class='op'>&lt;-</span> <span class='st'>'Sub-district'</span> <span class='co'># Type of admin unit for lowest admin level</span>
+<span class='va'>trip</span><span class='op'>$</span><span class='va'>orig_x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>100</span>, <span class='fl'>5</span><span class='op'>)</span>
+<span class='va'>trip</span><span class='op'>$</span><span class='va'>orig_y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>20</span>, <span class='fl'>2</span><span class='op'>)</span>
+<span class='va'>trip</span><span class='op'>$</span><span class='va'>orig_pop</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Poisson.html'>rpois</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>10000</span><span class='op'>)</span>
 
 <span class='co'># Destination info</span>
-<span class='no'>trip</span>$<span class='no'>dest_adm0</span> <span class='kw'>&lt;-</span> <span class='st'>'A'</span>
-<span class='no'>trip</span>$<span class='no'>dest_adm1</span> <span class='kw'>&lt;-</span> <span class='st'>'A'</span>
-<span class='no'>trip</span>$<span class='no'>dest_adm2</span> <span class='kw'>&lt;-</span> <span class='st'>'B'</span>
-<span class='no'>trip</span>$<span class='no'>dest_adm3</span> <span class='kw'>&lt;-</span> <span class='no'>LETTERS</span>[(<span class='no'>n</span>+<span class='fl'>1</span>):(<span class='no'>n</span>*<span class='fl'>2</span>)]
-<span class='no'>trip</span>$<span class='no'>dest_type</span> <span class='kw'>&lt;-</span> <span class='st'>'Sub-district'</span> <span class='co'># Type of admin unit for lowest admin level</span>
-<span class='no'>trip</span>$<span class='no'>dest_x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='no'>n</span>, <span class='fl'>100</span>, <span class='fl'>5</span>)
-<span class='no'>trip</span>$<span class='no'>dest_y</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='no'>n</span>, <span class='fl'>20</span>, <span class='fl'>2</span>)
-<span class='no'>trip</span>$<span class='no'>dest_pop</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Poisson.html'>rpois</a></span>(<span class='no'>n</span>, <span class='fl'>5000</span>)
+<span class='va'>trip</span><span class='op'>$</span><span class='va'>dest_adm0</span> <span class='op'>&lt;-</span> <span class='st'>'A'</span>
+<span class='va'>trip</span><span class='op'>$</span><span class='va'>dest_adm1</span> <span class='op'>&lt;-</span> <span class='st'>'A'</span>
+<span class='va'>trip</span><span class='op'>$</span><span class='va'>dest_adm2</span> <span class='op'>&lt;-</span> <span class='st'>'B'</span>
+<span class='va'>trip</span><span class='op'>$</span><span class='va'>dest_adm3</span> <span class='op'>&lt;-</span> <span class='va'>LETTERS</span><span class='op'>[</span><span class='op'>(</span><span class='va'>n</span><span class='op'>+</span><span class='fl'>1</span><span class='op'>)</span><span class='op'>:</span><span class='op'>(</span><span class='va'>n</span><span class='op'>*</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>]</span>
+<span class='va'>trip</span><span class='op'>$</span><span class='va'>dest_type</span> <span class='op'>&lt;-</span> <span class='st'>'Sub-district'</span> <span class='co'># Type of admin unit for lowest admin level</span>
+<span class='va'>trip</span><span class='op'>$</span><span class='va'>dest_x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>100</span>, <span class='fl'>5</span><span class='op'>)</span>
+<span class='va'>trip</span><span class='op'>$</span><span class='va'>dest_y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>20</span>, <span class='fl'>2</span><span class='op'>)</span>
+<span class='va'>trip</span><span class='op'>$</span><span class='va'>dest_pop</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Poisson.html'>rpois</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>5000</span><span class='op'>)</span>
 
 <span class='co'># Number of reported trips</span>
-<span class='no'>trip</span>$<span class='no'>trips</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Poisson.html'>rpois</a></span>(<span class='no'>n</span>, <span class='fl'>10</span>)
+<span class='va'>trip</span><span class='op'>$</span><span class='va'>trips</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Poisson.html'>rpois</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>10</span><span class='op'>)</span>
 
-<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>trip</span>)</div><div class='output co'>#&gt;   date_start  date_stop date_span indiv_id indiv_age indiv_sex indiv_type
-#&gt; 1 2020-01-01 2020-01-31   30 days       68        21         0       &lt;NA&gt;
-#&gt; 2 2020-01-01 2020-01-31   30 days       15        30         0       &lt;NA&gt;
-#&gt; 3 2020-01-01 2020-01-31   30 days       35        18         1       &lt;NA&gt;
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>trip</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;   date_start  date_stop date_span indiv_id indiv_age indiv_sex indiv_type
+#&gt; 1 2020-01-01 2020-01-31   30 days       59        42         0       &lt;NA&gt;
+#&gt; 2 2020-01-01 2020-01-31   30 days       44        25         0       &lt;NA&gt;
+#&gt; 3 2020-01-01 2020-01-31   30 days       50        36         0       &lt;NA&gt;
 #&gt;   orig_adm0 orig_adm1 orig_adm2 orig_adm3 orig_adm4 orig_adm5    orig_type
 #&gt; 1         A         A         A         A      &lt;NA&gt;      &lt;NA&gt; Sub-district
 #&gt; 2         A         A         A         B      &lt;NA&gt;      &lt;NA&gt; Sub-district
 #&gt; 3         A         A         A         C      &lt;NA&gt;      &lt;NA&gt; Sub-district
 #&gt;      orig_x   orig_y orig_pop dest_adm0 dest_adm1 dest_adm2 dest_adm3 dest_adm4
-#&gt; 1  97.03300 21.28207     9913         A         A         B         D      &lt;NA&gt;
-#&gt; 2  99.38857 18.74082    10150         A         A         B         E      &lt;NA&gt;
-#&gt; 3 105.89892 18.38453     9817         A         A         B         F      &lt;NA&gt;
-#&gt;   dest_adm5    dest_type    dest_x   dest_y dest_pop trips
-#&gt; 1      &lt;NA&gt; Sub-district  97.09174 17.33321     5052     7
-#&gt; 2      &lt;NA&gt; Sub-district  99.16385 19.47607     5063    15
-#&gt; 3      &lt;NA&gt; Sub-district 102.42997 21.30477     5105    11</div><div class='input'>
+#&gt; 1  89.48924 19.79479     9782         A         A         B         D      &lt;NA&gt;
+#&gt; 2 109.46680 20.47992    10208         A         A         B         E      &lt;NA&gt;
+#&gt; 3  95.15937 20.12180     9964         A         A         B         F      &lt;NA&gt;
+#&gt;   dest_adm5    dest_type   dest_x   dest_y dest_pop trips
+#&gt; 1      &lt;NA&gt; Sub-district 109.3887 21.53397     4935    13
+#&gt; 2      &lt;NA&gt; Sub-district 110.7938 19.38358     4861     7
+#&gt; 3      &lt;NA&gt; Sub-district 103.5486 22.02400     5025    13</div><div class='input'>
 
 
 <span class='co'>#-----------------------</span>
 <span class='co'># Stays in home location</span>
 <span class='co'>#-----------------------</span>
 
-<span class='no'>stay</span> <span class='kw'>&lt;-</span> <span class='no'>travel_data_template</span>
-<span class='no'>n</span> <span class='kw'>&lt;-</span> <span class='fl'>3</span> <span class='co'># add some observations</span>
-<span class='no'>stay</span>[<span class='fl'>1</span>:<span class='no'>n</span>,] <span class='kw'>&lt;-</span> <span class='fl'>NA</span>
+<span class='va'>stay</span> <span class='op'>&lt;-</span> <span class='va'>travel_data_template</span>
+<span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>3</span> <span class='co'># add some observations</span>
+<span class='va'>stay</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='va'>n</span>,<span class='op'>]</span> <span class='op'>&lt;-</span> <span class='cn'>NA</span>
 
 <span class='co'># Time span of travel survey</span>
-<span class='no'>stay</span>$<span class='no'>date_start</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span>(<span class='st'>"2020-01-01"</span>)
-<span class='no'>stay</span>$<span class='no'>date_stop</span> <span class='kw'>&lt;-</span> <span class='no'>stay</span>$<span class='no'>date_start</span> + <span class='fl'>30</span>
-<span class='no'>stay</span>$<span class='no'>date_span</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/difftime.html'>difftime</a></span>(<span class='no'>trip</span>$<span class='no'>date_stop</span>, <span class='no'>trip</span>$<span class='no'>date_start</span>, <span class='kw'>units</span><span class='kw'>=</span><span class='st'>'days'</span>)
+<span class='va'>stay</span><span class='op'>$</span><span class='va'>date_start</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='st'>"2020-01-01"</span><span class='op'>)</span>
+<span class='va'>stay</span><span class='op'>$</span><span class='va'>date_stop</span> <span class='op'>&lt;-</span> <span class='va'>stay</span><span class='op'>$</span><span class='va'>date_start</span> <span class='op'>+</span> <span class='fl'>30</span>
+<span class='va'>stay</span><span class='op'>$</span><span class='va'>date_span</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/difftime.html'>difftime</a></span><span class='op'>(</span><span class='va'>trip</span><span class='op'>$</span><span class='va'>date_stop</span>, <span class='va'>trip</span><span class='op'>$</span><span class='va'>date_start</span>, units<span class='op'>=</span><span class='st'>'days'</span><span class='op'>)</span>
 
 <span class='co'># Participant info</span>
-<span class='no'>stay</span>$<span class='no'>indiv_id</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fl'>100</span>:<span class='fl'>200</span>, <span class='no'>n</span>)
-<span class='no'>stay</span>$<span class='no'>indiv_age</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>round</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='no'>n</span>, <span class='fl'>5</span>, <span class='fl'>80</span>))
-<span class='no'>stay</span>$<span class='no'>indiv_sex</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Binomial.html'>rbinom</a></span>(<span class='no'>n</span>, <span class='fl'>1</span>, <span class='fl'>0.5</span>)
+<span class='va'>stay</span><span class='op'>$</span><span class='va'>indiv_id</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='fl'>100</span><span class='op'>:</span><span class='fl'>200</span>, <span class='va'>n</span><span class='op'>)</span>
+<span class='va'>stay</span><span class='op'>$</span><span class='va'>indiv_age</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>round</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>5</span>, <span class='fl'>80</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>stay</span><span class='op'>$</span><span class='va'>indiv_sex</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Binomial.html'>rbinom</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>1</span>, <span class='fl'>0.5</span><span class='op'>)</span>
 
 <span class='co'># Origin info</span>
-<span class='no'>stay</span>$<span class='no'>orig_adm0</span> <span class='kw'>&lt;-</span> <span class='no'>stay</span>$<span class='no'>dest_adm0</span> <span class='kw'>&lt;-</span> <span class='st'>'A'</span>
-<span class='no'>stay</span>$<span class='no'>orig_adm1</span> <span class='kw'>&lt;-</span> <span class='no'>stay</span>$<span class='no'>dest_adm1</span> <span class='kw'>&lt;-</span> <span class='st'>'A'</span>
-<span class='no'>stay</span>$<span class='no'>orig_adm2</span> <span class='kw'>&lt;-</span> <span class='no'>stay</span>$<span class='no'>dest_adm2</span> <span class='kw'>&lt;-</span> <span class='st'>'A'</span>
-<span class='no'>stay</span>$<span class='no'>orig_adm3</span> <span class='kw'>&lt;-</span> <span class='no'>stay</span>$<span class='no'>dest_adm3</span> <span class='kw'>&lt;-</span> <span class='no'>LETTERS</span>[<span class='fl'>1</span>:<span class='no'>n</span>]
-<span class='no'>stay</span>$<span class='no'>orig_type</span> <span class='kw'>&lt;-</span> <span class='no'>stay</span>$<span class='no'>dest_type</span> <span class='kw'>&lt;-</span> <span class='st'>'Sub-district'</span>
-<span class='no'>stay</span>$<span class='no'>orig_x</span> <span class='kw'>&lt;-</span> <span class='no'>stay</span>$<span class='no'>dest_x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='no'>n</span>, <span class='fl'>100</span>, <span class='fl'>5</span>)
-<span class='no'>stay</span>$<span class='no'>orig_y</span> <span class='kw'>&lt;-</span> <span class='no'>stay</span>$<span class='no'>dest_y</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='no'>n</span>, <span class='fl'>20</span>, <span class='fl'>2</span>)
-<span class='no'>stay</span>$<span class='no'>orig_pop</span> <span class='kw'>&lt;-</span> <span class='no'>stay</span>$<span class='no'>dest_pop</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Poisson.html'>rpois</a></span>(<span class='no'>n</span>, <span class='fl'>10000</span>)
+<span class='va'>stay</span><span class='op'>$</span><span class='va'>orig_adm0</span> <span class='op'>&lt;-</span> <span class='va'>stay</span><span class='op'>$</span><span class='va'>dest_adm0</span> <span class='op'>&lt;-</span> <span class='st'>'A'</span>
+<span class='va'>stay</span><span class='op'>$</span><span class='va'>orig_adm1</span> <span class='op'>&lt;-</span> <span class='va'>stay</span><span class='op'>$</span><span class='va'>dest_adm1</span> <span class='op'>&lt;-</span> <span class='st'>'A'</span>
+<span class='va'>stay</span><span class='op'>$</span><span class='va'>orig_adm2</span> <span class='op'>&lt;-</span> <span class='va'>stay</span><span class='op'>$</span><span class='va'>dest_adm2</span> <span class='op'>&lt;-</span> <span class='st'>'A'</span>
+<span class='va'>stay</span><span class='op'>$</span><span class='va'>orig_adm3</span> <span class='op'>&lt;-</span> <span class='va'>stay</span><span class='op'>$</span><span class='va'>dest_adm3</span> <span class='op'>&lt;-</span> <span class='va'>LETTERS</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='va'>n</span><span class='op'>]</span>
+<span class='va'>stay</span><span class='op'>$</span><span class='va'>orig_type</span> <span class='op'>&lt;-</span> <span class='va'>stay</span><span class='op'>$</span><span class='va'>dest_type</span> <span class='op'>&lt;-</span> <span class='st'>'Sub-district'</span>
+<span class='va'>stay</span><span class='op'>$</span><span class='va'>orig_x</span> <span class='op'>&lt;-</span> <span class='va'>stay</span><span class='op'>$</span><span class='va'>dest_x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>100</span>, <span class='fl'>5</span><span class='op'>)</span>
+<span class='va'>stay</span><span class='op'>$</span><span class='va'>orig_y</span> <span class='op'>&lt;-</span> <span class='va'>stay</span><span class='op'>$</span><span class='va'>dest_y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>20</span>, <span class='fl'>2</span><span class='op'>)</span>
+<span class='va'>stay</span><span class='op'>$</span><span class='va'>orig_pop</span> <span class='op'>&lt;-</span> <span class='va'>stay</span><span class='op'>$</span><span class='va'>dest_pop</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Poisson.html'>rpois</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>10000</span><span class='op'>)</span>
 
-<span class='no'>stay</span>$<span class='no'>trips</span> <span class='kw'>&lt;-</span> <span class='fl'>NA</span>
+<span class='va'>stay</span><span class='op'>$</span><span class='va'>trips</span> <span class='op'>&lt;-</span> <span class='cn'>NA</span>
 
-<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>stay</span>)</div><div class='output co'>#&gt;   date_start  date_stop date_span indiv_id indiv_age indiv_sex indiv_type
-#&gt; 1 2020-01-01 2020-01-31   30 days      168        11         1       &lt;NA&gt;
-#&gt; 2 2020-01-01 2020-01-31   30 days      174        44         0       &lt;NA&gt;
-#&gt; 3 2020-01-01 2020-01-31   30 days      196        28         1       &lt;NA&gt;
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>stay</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;   date_start  date_stop date_span indiv_id indiv_age indiv_sex indiv_type
+#&gt; 1 2020-01-01 2020-01-31   30 days      164        59         0       &lt;NA&gt;
+#&gt; 2 2020-01-01 2020-01-31   30 days      155        36         0       &lt;NA&gt;
+#&gt; 3 2020-01-01 2020-01-31   30 days      179        46         1       &lt;NA&gt;
 #&gt;   orig_adm0 orig_adm1 orig_adm2 orig_adm3 orig_adm4 orig_adm5    orig_type
 #&gt; 1         A         A         A         A      &lt;NA&gt;      &lt;NA&gt; Sub-district
 #&gt; 2         A         A         A         B      &lt;NA&gt;      &lt;NA&gt; Sub-district
 #&gt; 3         A         A         A         C      &lt;NA&gt;      &lt;NA&gt; Sub-district
-#&gt;      orig_x   orig_y orig_pop dest_adm0 dest_adm1 dest_adm2 dest_adm3 dest_adm4
-#&gt; 1  94.57423 22.72761    10029         A         A         A         A      &lt;NA&gt;
-#&gt; 2 101.81080 18.57695    10019         A         A         A         B      &lt;NA&gt;
-#&gt; 3  98.32164 21.32436     9879         A         A         A         C      &lt;NA&gt;
-#&gt;   dest_adm5    dest_type    dest_x   dest_y dest_pop trips
-#&gt; 1      &lt;NA&gt; Sub-district  94.57423 22.72761    10029    NA
-#&gt; 2      &lt;NA&gt; Sub-district 101.81080 18.57695    10019    NA
-#&gt; 3      &lt;NA&gt; Sub-district  98.32164 21.32436     9879    NA</div><div class='input'>
+#&gt;     orig_x   orig_y orig_pop dest_adm0 dest_adm1 dest_adm2 dest_adm3 dest_adm4
+#&gt; 1 100.1805 17.78008     9976         A         A         A         A      &lt;NA&gt;
+#&gt; 2 105.0363 20.29881     9893         A         A         A         B      &lt;NA&gt;
+#&gt; 3 103.5655 19.22771    10098         A         A         A         C      &lt;NA&gt;
+#&gt;   dest_adm5    dest_type   dest_x   dest_y dest_pop trips
+#&gt; 1      &lt;NA&gt; Sub-district 100.1805 17.78008     9976    NA
+#&gt; 2      &lt;NA&gt; Sub-district 105.0363 20.29881     9893    NA
+#&gt; 3      &lt;NA&gt; Sub-district 103.5655 19.22771    10098    NA</div><div class='input'>
 <span class='co'># Combine</span>
-<span class='no'>survey_data</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/join.html'>full_join</a></span>(<span class='no'>trip</span>, <span class='no'>stay</span>)</div><div class='output co'>#&gt; <span class='message'>Joining, by = c("date_start", "date_stop", "date_span", "indiv_id", "indiv_age", "indiv_sex", "indiv_type", "orig_adm0", "orig_adm1", "orig_adm2", "orig_adm3", "orig_adm4", "orig_adm5", "orig_type", "orig_x", "orig_y", "orig_pop", "dest_adm0", "dest_adm1", "dest_adm2", "dest_adm3", "dest_adm4", "dest_adm5", "dest_type", "dest_x", "dest_y", "dest_pop", "trips")</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>survey_data</span>)</div><div class='output co'>#&gt;   date_start  date_stop date_span indiv_id indiv_age indiv_sex indiv_type
-#&gt; 1 2020-01-01 2020-01-31   30 days       68        21         0       &lt;NA&gt;
-#&gt; 2 2020-01-01 2020-01-31   30 days       15        30         0       &lt;NA&gt;
-#&gt; 3 2020-01-01 2020-01-31   30 days       35        18         1       &lt;NA&gt;
-#&gt; 4 2020-01-01 2020-01-31   30 days      168        11         1       &lt;NA&gt;
-#&gt; 5 2020-01-01 2020-01-31   30 days      174        44         0       &lt;NA&gt;
-#&gt; 6 2020-01-01 2020-01-31   30 days      196        28         1       &lt;NA&gt;
+<span class='va'>survey_data</span> <span class='op'>&lt;-</span> <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate-joins.html'>full_join</a></span><span class='op'>(</span><span class='va'>trip</span>, <span class='va'>stay</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Joining, by = c("date_start", "date_stop", "date_span", "indiv_id", "indiv_age", "indiv_sex", "indiv_type", "orig_adm0", "orig_adm1", "orig_adm2", "orig_adm3", "orig_adm4", "orig_adm5", "orig_type", "orig_x", "orig_y", "orig_pop", "dest_adm0", "dest_adm1", "dest_adm2", "dest_adm3", "dest_adm4", "dest_adm5", "dest_type", "dest_x", "dest_y", "dest_pop", "trips")</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>survey_data</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;   date_start  date_stop date_span indiv_id indiv_age indiv_sex indiv_type
+#&gt; 1 2020-01-01 2020-01-31   30 days       59        42         0       &lt;NA&gt;
+#&gt; 2 2020-01-01 2020-01-31   30 days       44        25         0       &lt;NA&gt;
+#&gt; 3 2020-01-01 2020-01-31   30 days       50        36         0       &lt;NA&gt;
+#&gt; 4 2020-01-01 2020-01-31   30 days      164        59         0       &lt;NA&gt;
+#&gt; 5 2020-01-01 2020-01-31   30 days      155        36         0       &lt;NA&gt;
+#&gt; 6 2020-01-01 2020-01-31   30 days      179        46         1       &lt;NA&gt;
 #&gt;   orig_adm0 orig_adm1 orig_adm2 orig_adm3 orig_adm4 orig_adm5    orig_type
 #&gt; 1         A         A         A         A      &lt;NA&gt;      &lt;NA&gt; Sub-district
 #&gt; 2         A         A         A         B      &lt;NA&gt;      &lt;NA&gt; Sub-district
@@ -317,45 +324,46 @@ using other data assume that the same method for defining population size is use
 #&gt; 5         A         A         A         B      &lt;NA&gt;      &lt;NA&gt; Sub-district
 #&gt; 6         A         A         A         C      &lt;NA&gt;      &lt;NA&gt; Sub-district
 #&gt;      orig_x   orig_y orig_pop dest_adm0 dest_adm1 dest_adm2 dest_adm3 dest_adm4
-#&gt; 1  97.03300 21.28207     9913         A         A         B         D      &lt;NA&gt;
-#&gt; 2  99.38857 18.74082    10150         A         A         B         E      &lt;NA&gt;
-#&gt; 3 105.89892 18.38453     9817         A         A         B         F      &lt;NA&gt;
-#&gt; 4  94.57423 22.72761    10029         A         A         A         A      &lt;NA&gt;
-#&gt; 5 101.81080 18.57695    10019         A         A         A         B      &lt;NA&gt;
-#&gt; 6  98.32164 21.32436     9879         A         A         A         C      &lt;NA&gt;
-#&gt;   dest_adm5    dest_type    dest_x   dest_y dest_pop trips
-#&gt; 1      &lt;NA&gt; Sub-district  97.09174 17.33321     5052     7
-#&gt; 2      &lt;NA&gt; Sub-district  99.16385 19.47607     5063    15
-#&gt; 3      &lt;NA&gt; Sub-district 102.42997 21.30477     5105    11
-#&gt; 4      &lt;NA&gt; Sub-district  94.57423 22.72761    10029    NA
-#&gt; 5      &lt;NA&gt; Sub-district 101.81080 18.57695    10019    NA
-#&gt; 6      &lt;NA&gt; Sub-district  98.32164 21.32436     9879    NA</div><div class='input'>
+#&gt; 1  89.48924 19.79479     9782         A         A         B         D      &lt;NA&gt;
+#&gt; 2 109.46680 20.47992    10208         A         A         B         E      &lt;NA&gt;
+#&gt; 3  95.15937 20.12180     9964         A         A         B         F      &lt;NA&gt;
+#&gt; 4 100.18055 17.78008     9976         A         A         A         A      &lt;NA&gt;
+#&gt; 5 105.03634 20.29881     9893         A         A         A         B      &lt;NA&gt;
+#&gt; 6 103.56555 19.22771    10098         A         A         A         C      &lt;NA&gt;
+#&gt;   dest_adm5    dest_type   dest_x   dest_y dest_pop trips
+#&gt; 1      &lt;NA&gt; Sub-district 109.3887 21.53397     4935    13
+#&gt; 2      &lt;NA&gt; Sub-district 110.7938 19.38358     4861     7
+#&gt; 3      &lt;NA&gt; Sub-district 103.5486 22.02400     5025    13
+#&gt; 4      &lt;NA&gt; Sub-district 100.1805 17.78008     9976    NA
+#&gt; 5      &lt;NA&gt; Sub-district 105.0363 20.29881     9893    NA
+#&gt; 6      &lt;NA&gt; Sub-district 103.5655 19.22771    10098    NA</div><div class='input'>
 
 
 <span class='co'>#----------------------------------------</span>
 <span class='co'># Dataset with which to extrapolate model</span>
 <span class='co'>#----------------------------------------</span>
 
-<span class='no'>pred</span> <span class='kw'>&lt;-</span> <span class='no'>travel_data_template</span>
-<span class='no'>n</span> <span class='kw'>&lt;-</span> <span class='fl'>6</span> <span class='co'># Add some observations</span>
-<span class='no'>pred</span>[<span class='fl'>1</span>:<span class='no'>n</span>,] <span class='kw'>&lt;-</span> <span class='fl'>NA</span>
+<span class='va'>pred</span> <span class='op'>&lt;-</span> <span class='va'>travel_data_template</span>
+<span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>6</span> <span class='co'># Add some observations</span>
+<span class='va'>pred</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='va'>n</span>,<span class='op'>]</span> <span class='op'>&lt;-</span> <span class='cn'>NA</span>
 
 <span class='co'># Time span of the interval over which to extrapolate the fitted model</span>
-<span class='no'>pred</span>$<span class='no'>date_span</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/difftime.html'>as.difftime</a></span>(<span class='fl'>7</span>, <span class='kw'>units</span><span class='kw'>=</span><span class='st'>'days'</span>)
+<span class='va'>pred</span><span class='op'>$</span><span class='va'>date_span</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/difftime.html'>as.difftime</a></span><span class='op'>(</span><span class='fl'>7</span>, units<span class='op'>=</span><span class='st'>'days'</span><span class='op'>)</span>
 
 <span class='co'># Origin info</span>
-<span class='no'>pred</span>$<span class='no'>orig_adm0</span> <span class='kw'>&lt;-</span> <span class='st'>'A'</span>
-<span class='no'>pred</span>$<span class='no'>orig_adm1</span> <span class='kw'>&lt;-</span> <span class='st'>'A'</span>
-<span class='no'>pred</span>$<span class='no'>orig_adm2</span> <span class='kw'>&lt;-</span> <span class='no'>LETTERS</span>[<span class='fl'>1</span>:<span class='no'>n</span>]
-<span class='no'>pred</span>$<span class='no'>orig_type</span> <span class='kw'>&lt;-</span> <span class='st'>'District'</span> <span class='co'># Type of admin unit for lowest admin level</span>
-<span class='no'>pred</span>$<span class='no'>orig_x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='no'>n</span>, <span class='fl'>100</span>, <span class='fl'>5</span>)
-<span class='no'>pred</span>$<span class='no'>orig_y</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='no'>n</span>, <span class='fl'>20</span>, <span class='fl'>2</span>)
-<span class='no'>pred</span>$<span class='no'>orig_pop</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Poisson.html'>rpois</a></span>(<span class='no'>n</span>, <span class='fl'>1e+05</span>)
+<span class='va'>pred</span><span class='op'>$</span><span class='va'>orig_adm0</span> <span class='op'>&lt;-</span> <span class='st'>'A'</span>
+<span class='va'>pred</span><span class='op'>$</span><span class='va'>orig_adm1</span> <span class='op'>&lt;-</span> <span class='st'>'A'</span>
+<span class='va'>pred</span><span class='op'>$</span><span class='va'>orig_adm2</span> <span class='op'>&lt;-</span> <span class='va'>LETTERS</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='va'>n</span><span class='op'>]</span>
+<span class='va'>pred</span><span class='op'>$</span><span class='va'>orig_type</span> <span class='op'>&lt;-</span> <span class='st'>'District'</span> <span class='co'># Type of admin unit for lowest admin level</span>
+<span class='va'>pred</span><span class='op'>$</span><span class='va'>orig_x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>100</span>, <span class='fl'>5</span><span class='op'>)</span>
+<span class='va'>pred</span><span class='op'>$</span><span class='va'>orig_y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>20</span>, <span class='fl'>2</span><span class='op'>)</span>
+<span class='va'>pred</span><span class='op'>$</span><span class='va'>orig_pop</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Poisson.html'>rpois</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>1e+05</span><span class='op'>)</span>
 
 <span class='co'># Number of reported trips (unobserved for extrapolation data)</span>
-<span class='no'>trip</span>$<span class='no'>trips</span> <span class='kw'>&lt;-</span> <span class='fl'>NA</span>
+<span class='va'>trip</span><span class='op'>$</span><span class='va'>trips</span> <span class='op'>&lt;-</span> <span class='cn'>NA</span>
 
-<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>pred</span>)</div><div class='output co'>#&gt;   date_start date_stop date_span indiv_id indiv_age indiv_sex indiv_type
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>pred</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;   date_start date_stop date_span indiv_id indiv_age indiv_sex indiv_type
 #&gt; 1       &lt;NA&gt;      &lt;NA&gt;         7       NA        NA        NA       &lt;NA&gt;
 #&gt; 2       &lt;NA&gt;      &lt;NA&gt;         7       NA        NA        NA       &lt;NA&gt;
 #&gt; 3       &lt;NA&gt;      &lt;NA&gt;         7       NA        NA        NA       &lt;NA&gt;
@@ -370,12 +378,12 @@ using other data assume that the same method for defining population size is use
 #&gt; 5         A         A         E      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;  District
 #&gt; 6         A         A         F      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;  District
 #&gt;      orig_x   orig_y orig_pop dest_adm0 dest_adm1 dest_adm2 dest_adm3 dest_adm4
-#&gt; 1 100.84887 22.07762   100559      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;
-#&gt; 2 100.57056 19.10041   100200      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;
-#&gt; 3  96.01916 18.58272   100116      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;
-#&gt; 4  98.81975 20.06085   100436      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;
-#&gt; 5 105.92918 19.10025    99725      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;
-#&gt; 6 100.93978 21.34105   100173      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;
+#&gt; 1  96.43136 19.86523   100144      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;
+#&gt; 2 106.34845 20.56020   100194      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;
+#&gt; 3 103.54533 20.66062    99944      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;
+#&gt; 4 105.23461 20.56950   100062      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;
+#&gt; 5  93.94760 20.85719   100205      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;
+#&gt; 6 101.90075 19.75807   100108      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;
 #&gt;   dest_adm5 dest_type dest_x dest_y dest_pop trips
 #&gt; 1      &lt;NA&gt;      &lt;NA&gt;     NA     NA       NA    NA
 #&gt; 2      &lt;NA&gt;      &lt;NA&gt;     NA     NA       NA    NA
@@ -398,7 +406,7 @@ using other data assume that the same method for defining population size is use
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

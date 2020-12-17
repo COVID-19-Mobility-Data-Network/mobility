@@ -267,44 +267,39 @@ combine_rjags <- function(a, b) {
 }
 
 
-##' Fit gravity model to movement matrix
+
+
+##' Estimate probability of travelling outside origin
 ##'
-##' This function fits a variety of gravity models to a supplied movement matrix (\code{M}) and covariates (\code{D} and \code{N}) using Bayesian MCMC inference.
-##' The function specifies the type of gravity model and serves as a wrapper for the \code{\link{fit_jags}} function.
+##' This function fits a hierarchical beta-binomial model that estimates the probability an individual travels outside their home location
+##' within the time period of the survey (tau). The model estimates both the overall population-level probability of travel (tau_pop) and
+##' the origin-level probability of travel (tau_i). Further this method is designed for sparse observations that typically result from
+##' data with high temporal resolution or travel survey data. When data are missing, unobserved routes of travel regress to the population mean.
 ##'
-##' @param M named matrix of trip counts among all \eqn{ij} location pairs
-##' @param D named matrix of distances among all \eqn{ij} location pairs
-##' @param N named vector of population sizes for all locations (either N or both n_orig and n_dest must be supplied)
-##' @param N_orig named vector of population sizes for each origin
-##' @param N_dest named vector of population sizes for each destination
-##' @param type character vector indicating the type of gravity model to fit (default = \code{'basic'}). Gravity model types include: \code{basic},
-##' \code{transport}, \code{power}, \code{exp}, \code{power_norm}, \code{exp_norm}, \code{Marshall}.
+##' @param travel named vector of number of people that reported travelling outside their home location
+##' @param total named vector of the total number of individuals in travel survey for each location
 ##' @param n_chain number of MCMC sampling chains
 ##' @param n_burn number of iterations to discard before sampling of chains begins (burn in)
 ##' @param n_samp number of iterations to sample each chain
 ##' @param n_thin interval to thin samples
-##' @param DIC logical indicating whether or not to calculate the Deviance Information Criterion (DIC) (default = \code{FALSE})
+##' @param DIC logical indicating whether or not to calculate the Deviance Information Criterion (DIC)
 ##' @param parallel logical indicating whether or not to run MCMC chains in parallel or sequentially (default = \code{FALSE})
 ##'
-##' @return An object of class \code{mobility.model} containing model information, data, and fitted gravity model parameters
+##' @return An object of class \code{mobility.model} containing model information, data, and fitted model parameters
 ##'
 ##' @author John Giles
 ##'
-##' @example R/examples/fit_gravity.R
+##' @example R/examples/fit_prob_travel.R
 ##'
 ##' @family model
-##' @family gravity
+##' @family travel probability
 ##'
 ##' @export
 ##'
 
-fit_gravity <- function(
-  M,
-  D,
-  N=NULL,
-  N_orig=NULL,
-  N_dest=NULL,
-  type='basic',
+fit_prob_travel <- function(
+  travel,
+  total,
   n_chain=2,
   n_burn=1000,
   n_samp=1000,
@@ -312,6 +307,189 @@ fit_gravity <- function(
   DIC=FALSE,
   parallel=FALSE
 ) {
+
+  # Check data
+  if (!(identical(length(travel), length(total)))) stop('Dimensions of input data must match')
+  if (!(identical(names(travel), names(total)))) stop('Dimension names of input data do not match.')
+  if (is.null(names(travel))) stop('Vectors are not named.')
+
+  # Work around for NAs
+  na.fix <- any(is.na(travel)) | any(is.na(total))
+  if (na.fix) {
+
+    complete_obs <- complete.cases(cbind(travel, total))
+    missing_obs <- !complete_obs
+
+    message('These missing locations will inherit population mean:')
+    message(paste(names(travel)[missing_obs], collapse=' '))
+
+  } else {
+    complete_obs <- seq_along(travel)
+  }
+
+  jags_data <- list(
+    travel=travel[complete_obs],
+    total=total[complete_obs]
+  )
+
+  jags_model <- "
+  model {
+
+    # Origin-level probability of travel
+    for (i in 1:length(travel)) {
+
+      travel[i] ~ dbin(tau[i], total[i])
+    }
+
+    # Population-level priors
+    tau_pop ~ dbeta(1+alpha, 1+beta)
+    alpha ~ dgamma(0.01, 0.01)
+    beta ~ dgamma(0.1, 0.01)
+
+    # Origin-level priors
+    for (i in 1:length(travel)) {
+      tau[i] ~ dbeta( 1+alpha, 1+beta)
+    }
+  }"
+
+  out <- fit_jags(jags_data=jags_data,
+                  jags_model=jags_model,
+                  params=c('tau_pop', 'tau'),
+                  n_chain=n_chain,
+                  n_burn=n_burn,
+                  n_samp=n_samp,
+                  n_thin=n_thin,
+                  DIC=DIC,
+                  parallel=parallel)
+
+  sel <- which(coda::varnames(out) == 'tau_pop')
+  pop_mean <- out[,sel]
+  out <- out[,-sel]
+
+  if (na.fix) {
+
+    if (DIC) {
+      sel <- which(coda::varnames(out) %in% c('deviance', 'pD', 'DIC'))
+      DIC_samps <- out[,sel]
+      out <- out[,-sel]
+    }
+
+    coda::varnames(out) <- stringr::str_c('tau', which(complete_obs), sep='_')
+    missing_names <- stringr::str_c('tau', which(missing_obs), sep='_')
+
+    for (i in 1:n_chain) {
+
+      tmp <- pop_mean[[i]]
+
+      out[[i]] <- cbind(out[[i]],
+                        matrix(rep(tmp, times=sum(missing_obs)),
+                               nrow=length(tmp),
+                               dimnames=list(NULL, missing_names)))
+
+      index <- as.numeric(stringr::str_split(colnames(out[[i]]),
+                                             pattern = '_',
+                                             simplify=TRUE)[,2])
+
+      out[[i]] <- coda::as.mcmc(out[[i]][,order(index)])
+      if (DIC) out[[i]] <- coda::as.mcmc(cbind(out[[i]], DIC_samps[[i]]))
+    }
+
+  }
+
+  return(
+    structure(
+      list(
+        model='prob_travel',
+        type=NULL,
+        n_chain=n_chain,
+        n_burn=n_burn,
+        n_samp=n_samp,
+        n_thin=n_thin,
+        DIC=DIC,
+        data=list(travel=travel,
+                  total=total),
+        params=out,
+        summary=summary.mobility.model(out)),
+      class=c('prob_travel', 'mobility.model')
+    )
+  )
+}
+
+
+
+##' Fit mobility model to data
+##'
+##' This function fits a variety of mobility models to a supplied movement matrix (\code{M}) and covariates (\code{D} and \code{N}) using Bayesian MCMC inference.
+##' The function specifies the type of mobility model and serves as a wrapper for the \code{\link{fit_jags}} function.
+##'
+##' @param data a list containing mobility data and covariates. The list object must include EITHER \code{M}, \code{D}, and \code{N}
+##' OR \code{M}, \code{D}, \code{N_orig}, and \code{N_dest}. Details about each item are as follows:
+##' \describe{
+##'   \item{M}{named matrix of trip counts between all \eqn{ij} location pairs}
+##'   \item{D}{named matrix of distances between all \eqn{ij} location pairs}
+##'   \item{N}{named vector of population sizes for all locations (either N or both N_orig and N_dest must be supplied)}
+##'   \item{N_orig}{named vector of population sizes for each origin}
+##'   \item{N_dest}{named vector of population sizes for each destination}
+##' }
+##' @param model character vector indicating which mobility model to fit to the data. Mobility models include: \code{'gravity'},
+##' \code{'radiation'}, and \code{'departure-diffusion'}.
+##' @param type character vector indicating the particular sub-type of mobility model to fit.
+##' \describe{
+##'   \item{Gravity model types include:}{\code{basic}, \code{transport}, \code{power}, \code{exp}, \code{power_norm}, \code{exp_norm}, and \code{Marshall}}
+##'   \item{Radiation model types include:}{\code{basic} and \code{finite}}
+##'   \item{Departure-diffusion model types include:}{\code{power}, \code{exp}, and \code{radiation}}
+##'   }
+##' See model list vignette for more detailed description of each model type.
+##' @param hierarchical Applies only to the \code{'departure-diffusion'} model. A logical argument indicating whether or not to fit \eqn{\tau}
+##' as a single parameter or hierarchically (as \eqn{\tau_{pop}} and \eqn{\tau_i}).
+##' @param n_chain number of MCMC sampling chains
+##' @param n_burn number of iterations to discard before sampling of chains begins (burn in)
+##' @param n_samp number of iterations to sample each chain
+##' @param n_thin interval to thin samples
+##' @param DIC logical indicating whether or not to calculate the Deviance Information Criterion (DIC) (default = \code{FALSE})
+##' @param parallel logical indicating whether or not to run MCMC chains in parallel or sequentially (default = \code{FALSE})
+##'
+##' @return An object of class \code{mobility.model} containing model information, data, and fitted model parameters
+##'
+##' @author John Giles
+##'
+##' @example R/examples/mobility.R
+##'
+##' @family model
+##'
+##' @export
+##'
+
+mobility <- function(
+  data,
+  model,
+  type,
+  hierarchical=FALSE,
+  n_chain=2,
+  n_burn=1000,
+  n_samp=1000,
+  n_thin=1,
+  DIC=FALSE,
+  parallel=FALSE
+) {
+
+  if (!is.list(data)) stop("Argument 'data' must be a list object")
+
+  if( all(c('M', 'D', 'N') %in% names(data)) ) {
+
+    M <- data$M
+    D <- data$D
+    N_orig <- N_dest <- data$N
+
+  } else if ( all(c('M', 'D', 'N_orig', 'N_dest') %in% names(data)) )  {
+
+    for(i in seq_along(data)) assign(names(data)[i], data[[i]])
+
+  } else {
+
+    stop("Argument 'data' must be a list containing EITHER c(M, D, N) OR c(M, D, N_orig, N_dest)")
+
+  }
 
   # Check data formats
   msg <- 'M must be a named numeric matrix'
@@ -322,43 +500,31 @@ fit_gravity <- function(
   if (!(is.matrix(D) & is.numeric(D))) stop(msg)
   if (any(unlist(lapply(dimnames(D), is.null)))) stop(msg)
 
-  if (!is.null(N) & any(!is.null(N_orig),!is.null(N_dest))) stop('Only supply N or both N_orig and N_dest')
-  if (is.null(N) & any(is.null(N_orig), is.null(N_dest))) stop('If N = NULL, both N_orig and N_dest must be supplied')
+  msg <- 'N_orig must be a named numeric vector'
+  if (!(is.vector(N_orig) & is.numeric(N_orig))) stop(msg)
+  if (is.null(names(N_orig))) stop(msg)
 
-  if (!is.null(N)) {
-    msg <- 'N must be a named numeric vector'
-    if (!(is.vector(N) & is.numeric(N))) stop(msg)
-    if (is.null(names(N))) stop(msg)
-  }
-
-  if (!is.null(N_orig)) {
-    msg <- 'N_orig must be a named numeric vector'
-    if (!(is.vector(N_orig) & is.numeric(N_orig))) stop(msg)
-    if (is.null(names(N_orig))) stop(msg)
-  }
-
-  if (!is.null(N_dest)) {
-    msg <- 'N_dest must be a named numeric vector'
-    if (!(is.vector(N_dest) & is.numeric(N_dest))) stop(msg)
-    if (is.null(names(N_dest))) stop(msg)
-  }
-
-  if (all(!is.null(N), is.null(N_orig), is.null(N_dest))) {
-    N_dest <- N_orig <- N
-    rm(N)
-  }
+  msg <- 'N_dest must be a named numeric vector'
+  if (!(is.vector(N_dest) & is.numeric(N_dest))) stop(msg)
+  if (is.null(names(N_dest))) stop(msg)
 
   # check data dimensions
-  check_dims <- sapply(c(dim(M), dim(D), length(N_orig), length(N_dest)),
-                       function(x) identical(x, dim(M)[1]))
+  check_dims <- c(
+    identical(dim(M)[1], dim(D)[1]),
+    identical(dim(M)[1], dim(D)[2]),
+    identical(dim(M)[1], length(N_orig)),
+    identical(dim(M)[2], length(N_dest))
+  )
 
   if (any(!check_dims)) stop('Dimensions of input data do not match')
 
   # check data names
-  check_names <- unlist(lapply(
-    c(dimnames(M), dimnames(D), list(names(N_orig), names(N_dest))),
-    function(x) identical(x, dimnames(M)[[1]])
-  ))
+  check_names <- c(
+    identical(dimnames(M)[[1]], dimnames(D)[[1]]),
+    identical(dimnames(M)[[2]], dimnames(D)[[2]]),
+    identical(dimnames(M)[[1]], names(N_orig)),
+    identical(dimnames(M)[[2]], names(N_dest))
+  )
 
   if (any(!check_names)) stop('Dimension names of input data do not match')
 
@@ -371,6 +537,56 @@ fit_gravity <- function(
     N_dest[] <- as.integer(N_dest)
   }
 
+  message(
+    paste('::Fitting', type, model, 'model for', dim(M)[1], 'origins and', dim(M)[2], 'destinations::', sep=' ')
+  )
+
+  if (model == 'gravity') {
+
+    return(
+      fit_gravity(M, D, N_orig, N_dest, type,
+                  n_chain, n_burn, n_samp, n_thin,
+                  DIC, parallel)
+    )
+
+
+  } else if (model == 'radiation') {
+
+    return(fit_radiation(M, D, N_orig, N_dest, type))
+
+  } else if (model == 'departure-diffusion') {
+
+    return(
+      fit_departure_diffusion(M, D, N_orig, N_dest,
+                              type, hierarchical,
+                              n_chain, n_burn, n_samp, n_thin,
+                              DIC, parallel)
+    )
+
+  } else {
+
+    stop ('Unknown mobility model')
+
+  }
+}
+
+
+# Fit gravity model to movement matrix
+
+fit_gravity <- function(
+  M,
+  D,
+  N_orig=NULL,
+  N_dest=NULL,
+  type,
+  n_chain=2,
+  n_burn=1000,
+  n_samp=1000,
+  n_thin=1,
+  DIC=FALSE,
+  parallel=FALSE
+) {
+
   jags_data <- list(
     M=M,
     D=D,
@@ -379,7 +595,6 @@ fit_gravity <- function(
   )
 
   if (type == 'basic') {
-
 
     jags_model <- "
       model {
@@ -527,7 +742,7 @@ fit_gravity <- function(
 
     params <- c('theta', 'omega', 'delta')
 
-  } else if (type %in% c('Marshall', 'marshall')) {
+  } else if (type == 'Marshall') {
 
     jags_model <- "
       model {
@@ -549,19 +764,11 @@ fit_gravity <- function(
 
     params <- c('tau', 'rho', 'alpha')
 
+  } else {
+
+    stop('Unknown model type')
+
   }
-
-  message(
-    paste('::Fitting gravity model for',
-          dim(M)[1],
-          'origins and',
-          dim(M)[2],
-          'destinations::',
-          sep=' ')
-  )
-
-  t <- Sys.time()
-  message(paste('Model fitting initiated at', t))
 
   mod <- fit_jags(jags_data=jags_data,
                   jags_model=jags_model,
@@ -573,61 +780,113 @@ fit_gravity <- function(
                   DIC=DIC,
                   parallel=parallel)
 
-  t <- difftime(Sys.time(), t)
-  message(paste('Model fitting completed in', round(t, 1), attributes(t)$units))
-
   return(
     structure(
       list(
-        type='gravity',
-        subtype=type,
+        model='gravity',
+        type=type,
         n_chain=n_chain,
         n_burn=n_burn,
         n_samp=n_samp,
         n_thin=n_thin,
         DIC=DIC,
         data=jags_data,
-        model=mod,
+        params=mod,
         summary=summary.mobility.model(mod)),
-      class=c('mobility.model', paste0('gravity.', type))
+      class='mobility.model'
     )
   )
-
 }
 
 
 
-##' Estimate probability of travelling outside origin
-##'
-##' This function fits a hierarchical beta-binomial model that estimates the probability an individual travels outside their home location
-##' within the time period of the survey (tau). The model estimates both the overall population-level probability of travel (tau_pop) and
-##' the origin-level probability of travel (tau_i). Further this method is designed for sparse observations that typically result from
-##' data with high temporal resolution or travel survey data. When data are missing, unobserved routes of travel regress to the population mean.
-##'
-##' @param travel named vector of number of people that reported travelling outside their home location
-##' @param total named vector of the total number of individuals in travel survey for each location
-##' @param n_chain number of MCMC sampling chains
-##' @param n_burn number of iterations to discard before sampling of chains begins (burn in)
-##' @param n_samp number of iterations to sample each chain
-##' @param n_thin interval to thin samples
-##' @param DIC logical indicating whether or not to calculate the Deviance Information Criterion (DIC)
-##' @param parallel logical indicating whether or not to run MCMC chains in parallel or sequentially (default = \code{FALSE})
-##'
-##' @return an \code{\link[coda:mcmc.list]{mcmc.list}} object
-##'
-##' @author John Giles
-##'
-##' @example R/examples/fit_prob_travel.R
-##'
-##' @family model
-##' @family travel probability
-##'
-##' @export
-##'
+# Fit radiation model to movement matrix
 
-fit_prob_travel <- function(
-  travel,
-  total,
+fit_radiation <- function(
+  M,
+  D,
+  N_orig=NULL,
+  N_dest=NULL,
+  type
+) {
+
+  S <- D; S[,] <- NA
+  for (i in 1:nrow(D)) {
+    for (j in 1:ncol(D)) {
+
+      tot <- sum(N_dest[which(D[i,] <= D[i,j])])
+
+      S[i,j] <- ifelse(
+        i == j,
+        tot - N_orig[i],
+        tot - N_orig[i] - N_dest[j]
+      )
+
+    }
+  }
+
+  if (type == 'basic') {
+
+    R <- D; R[,] <- NA
+
+    for (i in 1:nrow(D)) {
+      for (j in 1:ncol(D)) {
+
+        num <- (N_orig[i]*N_dest[j])
+        den <- (N_orig[i]+S[i,j])*(N_orig[i]+N_dest[j]+S[i,j])
+
+        R[i,j] <- sum(M[i,], na.rm=TRUE) * (num/den)
+
+      }
+    }
+
+  } else if (type == 'finite') {
+
+    R <- D; R[,] <- NA
+
+    for (i in 1:nrow(D)) {
+      for (j in 1:ncol(D)) {
+
+        num <- (N_orig[i]*N_dest[j])
+        den <- (N_orig[i]+S[i,j])*(N_orig[i]+N_dest[j]+S[i,j])
+
+        R[i,j] <- ( sum(M[i,], na.rm=TRUE)/(1-(N_orig[i]/sum(M, na.rm=TRUE))) ) * (num/den)
+
+      }
+    }
+
+  } else {
+
+    stop('Unknown model type')
+
+  }
+
+  return(
+    structure(
+      list(
+        model='radiation',
+        type=type,
+        data=list(M=M,
+                  D=D,
+                  N_orig=N_orig,
+                  N_dest=N_dest,
+                  S=S),
+        params=R),
+      class='mobility.model'
+    )
+  )
+}
+
+
+# Fit departure-diffusion model to movement matrix
+
+fit_departure_diffusion <- function(
+  M,
+  D,
+  N_orig=NULL,
+  N_dest=NULL,
+  type,
+  hierarchical=FALSE,
   n_chain=2,
   n_burn=1000,
   n_samp=1000,
@@ -636,109 +895,185 @@ fit_prob_travel <- function(
   parallel=FALSE
 ) {
 
-  # Check data
-  if (!(identical(length(travel), length(total)))) stop('Dimensions of input data must match')
-  if (!(identical(names(travel), names(total)))) stop('Dimension names of input data do not match.')
-  if (is.null(names(travel))) stop('Vectors are not named.')
-
-  # Work around for NAs
-  na.fix <- any(is.na(travel)) | any(is.na(total))
-  if (na.fix) {
-
-    complete_obs <- complete.cases(cbind(travel, total))
-    missing_obs <- !complete_obs
-
-    message('These missing locations will inherit population mean:')
-    message(paste(names(travel)[missing_obs], collapse=' '))
-
-  } else {
-    complete_obs <- seq_along(travel)
-  }
-
   jags_data <- list(
-    travel=travel[complete_obs],
-    total=total[complete_obs]
+    M=M,
+    D=D,
+    N_orig=N_orig,
+    N_dest=N_dest
   )
 
-  jags_model <- "
-  model {
+  params <- c('tau', 'omega', 'theta')
 
-    # Origin-level probability of travel
-    for (i in 1:length(travel)) {
+  if (type == 'power') {
 
-      travel[i] ~ dbin(tau[i], total[i])
+    kernel <- "(N_dest[j]^omega) * (D[i,j]+0.001)^(-gamma)"
+    kernel_param <- 'gamma'
+    kernel_prior <- 'gamma ~ dgamma(2, 2)'
+
+  } else if (type == 'exp') {
+
+    kernel <- "(N_dest[j]^omega) * exp((-D[i,j]+0.001)/delta)"
+    kernel_param <- 'delta'
+    kernel_prior <- 'delta ~ dnorm(mean(D), 1/sd(D)) T(0,)'
+
+  } else if (type == 'radiation') {
+
+    S <- D; S[,] <- NA
+
+    for (i in 1:nrow(D)) {
+      for (j in 1:ncol(D)) {
+
+        tot <- sum(N_dest[which(D[i,] <= D[i,j])])
+
+        S[i,j] <- ifelse(
+          i == j,
+          tot - N_orig[i],
+          tot - N_orig[i] - N_dest[j]
+        )
+
+      }
     }
 
-    # Population-level priors
-    tau_pop ~ dbeta(1+alpha, 1+beta)
-    alpha ~ dgamma(0.01, 0.01)
-    beta ~ dgamma(0.1, 0.01)
+    jags_data <- list(
+      M=M,
+      D=D,
+      N_orig=N_orig,
+      N_dest=N_dest,
+      S=S
+    )
 
-    # Origin-level priors
-    for (i in 1:length(travel)) {
-      tau[i] ~ dbeta( 1+alpha, 1+beta)
-    }
-  }"
+    kernel <- "N_dest[j]/((N_orig[i]+S[i,j])*(N_orig[i]+N_dest[j]+S[i,j]))"
+    kernel_param <- kernel_prior <- NULL
 
-  out <- fit_jags(jags_data=jags_data,
-                  jags_model=jags_model,
-                  params=c('tau_pop', 'tau'),
-                  n_chain=n_chain,
-                  n_burn=n_burn,
-                  n_samp=n_samp,
-                  n_thin=n_thin,
-                  DIC=DIC,
-                  parallel=parallel)
+  } else {
 
-  sel <- which(coda::varnames(out) == 'tau_pop')
-  pop_mean <- out[,sel]
-  out <- out[,-sel]
-
-  if (na.fix) {
-
-    if (DIC) {
-      sel <- which(coda::varnames(out) %in% c('deviance', 'pD', 'DIC'))
-      DIC_samps <- out[,sel]
-      out <- out[,-sel]
-    }
-
-    coda::varnames(out) <- stringr::str_c('tau', which(complete_obs), sep='_')
-    missing_names <- stringr::str_c('tau', which(missing_obs), sep='_')
-
-    for (i in 1:n_chain) {
-
-      tmp <- pop_mean[[i]]
-
-      out[[i]] <- cbind(out[[i]],
-                        matrix(rep(tmp, times=sum(missing_obs)),
-                               nrow=length(tmp),
-                               dimnames=list(NULL, missing_names)))
-
-      index <- as.numeric(stringr::str_split(colnames(out[[i]]),
-                                             pattern = '_',
-                                             simplify=TRUE)[,2])
-
-      out[[i]] <- coda::as.mcmc(out[[i]][,order(index)])
-      if (DIC) out[[i]] <- coda::as.mcmc(cbind(out[[i]], DIC_samps[[i]]))
-    }
+    stop('Unknown model type')
 
   }
+
+  if (hierarchical == FALSE) {
+
+    jags_model <- paste0("
+      model {
+
+        for (i in 1:length(N_orig)) {
+          for (j in 1:length(N_dest)) {
+
+            M[i,j] ~ dpois(lambda[i,j])
+
+            lambda[i,j] <- ifelse(
+              i == j,
+              theta * N_orig[i] * (1 - tau),
+              theta * N_orig[i] * tau * (x[i,j]/sum(x[i,]))
+            )
+
+          }
+        }
+
+
+        for (i in 1:length(N_orig)) {
+          for (j in 1:length(N_dest)) {
+
+            x[i,j] <- ifelse(
+              i == j,
+              0,
+              ", kernel, "
+            )
+          }
+        }
+
+        # Priors
+        tau ~ dbeta(1, 1)
+        theta ~ dlnorm(log(1), log(1e03))
+        omega ~ dgamma(2, 2)
+        ", kernel_prior, "
+
+      }")
+
+    params <- c(params, kernel_param)
+
+  } else if (hierarchical == TRUE) {
+
+    jags_model <- paste0("
+      model {
+
+        for (i in 1:length(N_orig)) {
+          for (j in 1:length(N_dest)) {
+
+            M[i,j] ~ dpois(lambda[i,j])
+
+            lambda[i,j] <- ifelse(
+              i == j,
+              theta * N_orig[i] * (1 - tau[i]),
+              theta * N_orig[i] * tau[i] * (x[i,j]/sum(x[i,]))
+            )
+
+          }
+
+          tau[i] ~ dbeta(1+alpha, 1+beta) # Departure process
+
+        }
+
+
+        for (i in 1:length(N_orig)) {
+          for (j in 1:length(N_dest)) {
+
+            x[i,j] <- ifelse(
+              i == j,
+              0,
+              ", kernel, "
+            )
+          }
+        }
+
+        # Priors
+        tau_pop ~ dbeta(1+alpha, 1+beta)
+        alpha ~ dgamma(0.01, 0.01) # priors 1+alpha and 1+beta allow tau[i] parameters to start with flat dbeta(1,1) distribution
+        beta ~ dgamma(0.01, 0.01)
+        theta ~ dlnorm(log(1), log(1e03))
+        omega ~ dgamma(2, 2)
+        ", kernel_prior, "
+
+      }")
+
+    params <- c('tau_pop', params, kernel_param)
+
+  } else {
+
+    stop("Unknown model type")
+
+  }
+
+  suppressWarnings(
+    mod <- fit_jags(jags_data=jags_data,
+                    jags_model=jags_model,
+                    params=params,
+                    n_chain=n_chain,
+                    n_burn=n_burn,
+                    n_samp=n_samp,
+                    n_thin=n_thin,
+                    DIC=DIC,
+                    parallel=parallel)
+
+  )
 
   return(
     structure(
       list(
-        type='prob_travel',
-        subtype=NULL,
+        model='departure-diffusion',
+        type=type,
+        hierarchical=hierarchical,
         n_chain=n_chain,
         n_burn=n_burn,
         n_samp=n_samp,
         n_thin=n_thin,
         DIC=DIC,
         data=jags_data,
-        model=out,
-        summary=summary.mobility.model(out)),
-      class=c('mobility.model', 'prob_travel')
+        params=mod,
+        summary=summary.mobility.model(mod)),
+      class='mobility.model'
     )
   )
-
 }
+
+

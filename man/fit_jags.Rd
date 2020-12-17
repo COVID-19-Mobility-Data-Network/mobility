@@ -74,10 +74,12 @@ mod <- fit_jags(jags_data=jags_data,
 }
 \seealso{
 Other model: 
-\code{\link{check_mobility}()},
-\code{\link{fit_gravity}()},
+\code{\link{check}()},
+\code{\link{compare}()},
 \code{\link{fit_prob_travel}()},
-\code{\link{summary.mobility.model}()}
+\code{\link{mobility}()},
+\code{\link{predict}()},
+\code{\link{summary}()}
 }
 \author{
 John Giles

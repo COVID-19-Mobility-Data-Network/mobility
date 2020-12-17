@@ -1,8 +1,8 @@
 Package: mobility
 Type: Package
 Title: Tools for analyzing human mobility data
-Version: 0.2.0
-Date: 2020-05-09
+Version: 0.5.0
+Date: 2020-12-17
 Authors@R: c(person("John", "Giles", role=c("aut", "cre"), email="giles@jhu.edu"),
               person("Amy", "Wesolowski", role=c("aut", "ctb"), email="awesolowski@jhu.edu"))
 Maintainer: John Giles <giles@jhu.edu>
@@ -10,6 +10,7 @@ Description: Functions for parsing travel data, fitting models using Bayesian in
 License: GPL-3 + file LICENSE
 URL: https://github.com/COVID-19-Mobility-Data-Network/mobility
 BugReports: https://github.com/COVID-19-Mobility-Data-Network/mobility/issues
+SystemRequirements: JAGS 4.x.y
 RoxygenNote: 7.1.1
 Encoding: UTF-8
 LazyData: true

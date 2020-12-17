@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Example data matrices required by gravity functions — mobility_matrices • mobility</title>
+<title>Example data matrices required by mobility model functions — mobility_matrices • mobility</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,9 @@
 
 
 
-<meta property="og:title" content="Example data matrices required by gravity functions — mobility_matrices" />
-<meta property="og:description" content="This data object is a list containing named matrices required by the sim_gravity and fit_gravity functions.
-The matrices provide hypothetical trip counts representing travel among 10 locations (\(M\)), along with distances (\(D\)) and population sizes (\(N\))." />
+<meta property="og:title" content="Example data matrices required by mobility model functions — mobility_matrices" />
+<meta property="og:description" content="This data object is a list containing named matrices required by the mobility model fitting function.
+The matrices provide simulated trip counts representing travel among 10 locations (\(M\)), along with distances (\(D\)) and population sizes (\(N\))." />
 
 
 
@@ -83,7 +83,7 @@ The matrices provide hypothetical trip counts representing travel among 10 locat
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mobility</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -112,13 +112,13 @@ The matrices provide hypothetical trip counts representing travel among 10 locat
       <a href="../articles/V2_build_matrices.html">Building matrices from longform travel data</a>
     </li>
     <li>
-      <a href="../articles/V3_travel_probability.html">Fitting and simulating travel probability</a>
+      <a href="../articles/V3_fitting_mobility_models.html">Fitting and simulating a mobility model</a>
     </li>
     <li>
-      <a href="../articles/V4_gravity_model.html">Fitting and simulating a gravity model</a>
+      <a href="../articles/V4_fitting_prob_travel.html">Fitting and simulating travel probability</a>
     </li>
     <li>
-      <a href="../articles/V5_mobility_model.html">Fitting and simulating a full mobility model</a>
+      <a href="../articles/V5_list_models.html">A curated list of mobility models</a>
     </li>
   </ul>
 </li>
@@ -143,28 +143,31 @@ The matrices provide hypothetical trip counts representing travel among 10 locat
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Example data matrices required by gravity functions</h1>
+    <h1>Example data matrices required by mobility model functions</h1>
     <small class="dont-index">Source: <a href='https://github.com/COVID-19-Mobility-Data-Network/mobility/blob/master/R/data.R'><code>R/data.R</code></a></small>
     <div class="hidden name"><code>mobility_matrices.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This data object is a list containing named matrices required by the <code><a href='sim_gravity.html'>sim_gravity</a></code> and <code><a href='fit_gravity.html'>fit_gravity</a></code> functions.
-The matrices provide hypothetical trip counts representing travel among 10 locations (\(M\)), along with distances (\(D\)) and population sizes (\(N\)).</p>
+    <p>This data object is a list containing named matrices required by the <code><a href='mobility.html'>mobility</a></code> model fitting function.
+The matrices provide simulated trip counts representing travel among 10 locations (\(M\)), along with distances (\(D\)) and population sizes (\(N\)).</p>
     </div>
 
-    <pre class="usage"><span class='no'>mobility_matrices</span></pre>
+    <pre class="usage"><span class='va'>mobility_matrices</span></pre>
 
 
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
-    <p>a list of 3</p><dl'>
+    <p>a list of 3</p><dl>
   <dt>M</dt><dd><p>numeric matrix containing simulated trip counts</p></dd>
   <dt>D</dt><dd><p>numeric matrix containing distances amopng locations in decimal degrees</p></dd>
   <dt>N</dt><dd><p>numeric vector containing population sizes of each location</p></dd>
   
 </dl>
 
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>John Giles</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -181,7 +184,7 @@ The matrices provide hypothetical trip counts representing travel among 10 locat
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
