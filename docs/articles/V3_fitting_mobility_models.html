@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mobility</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
       </span>
     </div>
 
@@ -169,7 +169,7 @@
 <span class="co">#&gt; Graph information:</span>
 <span class="co">#&gt;    Observed stochastic nodes: 70</span>
 <span class="co">#&gt;    Unobserved stochastic nodes: 33</span>
-<span class="co">#&gt;    Total graph size: 652</span>
+<span class="co">#&gt;    Total graph size: 648</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Initializing model</span>
 <span class="co">#&gt; </span>
@@ -212,28 +212,26 @@
 <span class="co">#&gt;   ..$ N_dest: Named num [1:10] 9868 9511 5561 9596 12741 ...</span>
 <span class="co">#&gt;   .. ..- attr(*, "names")= chr [1:10] "A" "B" "C" "D" ...</span>
 <span class="co">#&gt;  $ params :List of 2</span>
-<span class="co">#&gt;   ..$ : 'mcmc' num [1:500, 1:6] 44244 44249 44244 44250 44242 ...</span>
+<span class="co">#&gt;   ..$ : 'mcmc' num [1:500, 1:6] 44244 44244 44243 44248 44242 ...</span>
 <span class="co">#&gt;   .. ..- attr(*, "dimnames")=List of 2</span>
 <span class="co">#&gt;   .. .. ..$ : NULL</span>
 <span class="co">#&gt;   .. .. ..$ : chr [1:6] "deviance" "gamma" "omega" "pD" ...</span>
 <span class="co">#&gt;   .. ..- attr(*, "mcpar")= num [1:3] 1 500 1</span>
-<span class="co">#&gt;   ..$ : 'mcmc' num [1:500, 1:6] 44248 44246 44247 44260 44254 ...</span>
+<span class="co">#&gt;   ..$ : 'mcmc' num [1:500, 1:6] 44247 44247 44244 44248 44259 ...</span>
 <span class="co">#&gt;   .. ..- attr(*, "dimnames")=List of 2</span>
 <span class="co">#&gt;   .. .. ..$ : NULL</span>
 <span class="co">#&gt;   .. .. ..$ : chr [1:6] "deviance" "gamma" "omega" "pD" ...</span>
 <span class="co">#&gt;   .. ..- attr(*, "mcpar")= num [1:3] 1 500 1</span>
 <span class="co">#&gt;   ..- attr(*, "class")= chr "mcmc.list"</span>
-<span class="co">#&gt;  $ summary:'data.frame': 6 obs. of  10 variables:</span>
-<span class="co">#&gt;   ..$ mean : num [1:6] 1.95e-01 1.10e-03 9.95e-01 4.43e+04 4.42e+04 ...</span>
-<span class="co">#&gt;   ..$ sd   : num [1:6] 0.000631 0.000784 0.003951 3.627973 3.627973 ...</span>
-<span class="co">#&gt;   ..$ Q2.5 : num [1:6] 1.94e-01 1.35e-04 9.87e-01 4.42e+04 4.42e+04 ...</span>
-<span class="co">#&gt;   ..$ Q25  : num [1:6] 1.95e-01 5.38e-04 9.93e-01 4.42e+04 4.42e+04 ...</span>
-<span class="co">#&gt;   ..$ Q75  : num [1:6] 1.96e-01 1.51e-03 9.98e-01 4.43e+04 4.42e+04 ...</span>
-<span class="co">#&gt;   ..$ Q97.5: num [1:6] 1.96e-01 3.26e-03 1.00 4.43e+04 4.43e+04 ...</span>
-<span class="co">#&gt;   ..$ Rhat : num [1:6] 1 1 1.01 1.01 1.01 NA</span>
-<span class="co">#&gt;   ..$ n.eff: num [1:6] 915 589 938 630 630 NA</span>
-<span class="co">#&gt;   ..$ AC5  : num [1:6] 0.01 -0.03 0.03 -0.03 -0.03 NA</span>
-<span class="co">#&gt;   ..$ AC10 : num [1:6] -0.02 -0.04 0.06 -0.01 -0.01 NA</span>
+<span class="co">#&gt;  $ summary:'data.frame': 6 obs. of  8 variables:</span>
+<span class="co">#&gt;   ..$ mean : num [1:6] 1.95e-01 5.41e-04 9.95e-01 4.42e+04 4.42e+04 ...</span>
+<span class="co">#&gt;   ..$ sd   : num [1:6] 0.00063 0.000562 0.003937 2.956432 2.956432 ...</span>
+<span class="co">#&gt;   ..$ Q2.5 : num [1:6] 1.94e-01 1.11e-05 9.88e-01 4.42e+04 4.42e+04 ...</span>
+<span class="co">#&gt;   ..$ Q97.5: num [1:6] 1.96e-01 2.03e-03 1.00 4.43e+04 4.43e+04 ...</span>
+<span class="co">#&gt;   ..$ Rhat : num [1:6] 1 1.02 1.01 1.01 1.01 NA</span>
+<span class="co">#&gt;   ..$ n.eff: num [1:6] 1000 365 1000 500 500 NA</span>
+<span class="co">#&gt;   ..$ AC5  : num [1:6] 0 0.07 0.01 0.03 0.03 NA</span>
+<span class="co">#&gt;   ..$ AC10 : num [1:6] 0 -0.02 -0.05 0.01 0.01 NA</span>
 <span class="co">#&gt;  - attr(*, "class")= chr "mobility.model"</span></pre></div>
 </div>
 <div id="model-summary-and-validation" class="section level2">
@@ -243,27 +241,27 @@
 <div class="sourceCode" id="cb5"><pre class="downlit">
 <span class="fu"><a href="../reference/summary.html">summary</a></span><span class="op">(</span><span class="va">mod</span>, probs<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.025</span>, <span class="fl">0.975</span><span class="op">)</span>, ac_lags<span class="op">=</span><span class="fl">10</span><span class="op">)</span>
 <span class="co">#&gt;                  mean           sd         Q2.5        Q97.5 Rhat n.eff  AC10</span>
-<span class="co">#&gt; gamma    1.951832e-01 0.0006310111 1.939452e-01 1.964260e-01 1.00   915 -0.02</span>
-<span class="co">#&gt; omega    1.100249e-03 0.0007842885 1.347719e-04 3.262481e-03 1.00   589 -0.04</span>
-<span class="co">#&gt; theta    9.951561e-01 0.0039505390 9.870747e-01 1.002688e+00 1.01   938  0.06</span>
-<span class="co">#&gt; DIC      4.425098e+04 3.6279730917 4.424633e+04 4.425949e+04 1.01   630 -0.01</span>
-<span class="co">#&gt; deviance 4.424699e+04 3.6279730917 4.424233e+04 4.425550e+04 1.01   630 -0.01</span>
-<span class="co">#&gt; pD       1.998383e+00           NA           NA           NA   NA    NA    NA</span></pre></div>
+<span class="co">#&gt; gamma    1.952079e-01 0.0006297493 1.939453e-01 1.964455e-01 1.00  1000  0.00</span>
+<span class="co">#&gt; omega    5.411118e-04 0.0005623232 1.109169e-05 2.034041e-03 1.02   365 -0.02</span>
+<span class="co">#&gt; theta    9.952192e-01 0.0039371079 9.875870e-01 1.003231e+00 1.01  1000 -0.05</span>
+<span class="co">#&gt; DIC      4.424894e+04 2.9564323813 4.424532e+04 4.425611e+04 1.01   500  0.01</span>
+<span class="co">#&gt; deviance 4.424491e+04 2.9564323813 4.424129e+04 4.425208e+04 1.01   500  0.01</span>
+<span class="co">#&gt; pD       2.014211e+00           NA           NA           NA   NA    NA    NA</span></pre></div>
 <p>The <code><a href="../reference/check.html">check()</a></code> function provides goodness of fit metrics and summary plots for the fitted model.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit">
 <span class="fu"><a href="../reference/check.html">check</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></pre></div>
 <p><img src="V3_fitting_mobility_models_files/figure-html/check-1.png" width="696"></p>
 <pre><code>#&gt; $DIC
-#&gt; [1] 44250.98
+#&gt; [1] 44248.94
 #&gt; 
 #&gt; $RMSE
-#&gt; [1] 1046.468
+#&gt; [1] 1046.467
 #&gt; 
 #&gt; $MAPE
-#&gt; [1] 5.577702
+#&gt; [1] 5.576899
 #&gt; 
 #&gt; $R2
-#&gt; [1] 0.7121496</code></pre>
+#&gt; [1] 0.7122118</code></pre>
 </div>
 <div id="simulating-a-fitted-mobility-model" class="section level2">
 <h2 class="hasAnchor">
@@ -349,7 +347,7 @@
 <div class="sourceCode" id="cb12"><pre class="downlit">
 <span class="va">M_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predict.html">predict</a></span><span class="op">(</span><span class="va">mod</span>, nsim<span class="op">=</span><span class="fl">5</span>, seed<span class="op">=</span><span class="fl">123</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">M_hat</span><span class="op">)</span>
-<span class="co">#&gt;  num [1:10, 1:10, 1:5] 5836 408 226 457 537 ...</span>
+<span class="co">#&gt;  num [1:10, 1:10, 1:5] 5817 407 226 455 535 ...</span>
 <span class="co">#&gt;  - attr(*, "dimnames")=List of 3</span>
 <span class="co">#&gt;   ..$ : chr [1:10] "A" "B" "C" "D" ...</span>
 <span class="co">#&gt;   ..$ : chr [1:10] "A" "B" "C" "D" ...</span>

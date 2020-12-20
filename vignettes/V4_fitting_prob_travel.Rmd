@@ -69,7 +69,9 @@ This structure allows origin locations to have probabilities $\tau_i$ which are 
 prob_trav <- fit_prob_travel(travel=y, total=m)
 ```
 ```{r, fig.width=5, fig.height=7}
-ggplot(data=prob_trav$summary) +
+prob_trav_smry <- summary(prob_trav, probs=c(0.025, 0.25, 0.75, 0.975))
+
+ggplot(data=prob_trav_smry) +
   geom_point(aes(x=mean, y=names(y)), size=2) +
   ggstance::geom_linerangeh(aes(y=names(y), xmin=Q2.5, xmax=Q97.5)) +
   ggstance::geom_linerangeh(aes(y=names(y), xmin=Q25, xmax=Q75), size=1) +

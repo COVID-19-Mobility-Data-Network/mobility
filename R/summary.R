@@ -28,13 +28,18 @@ summary <- function(object, probs, ac_lags, ...) UseMethod('summary')
 ##' @export
 
 summary.mobility.model <- function(object,
-                                   probs=c(0.025, 0.25, 0.75, 0.975),
+                                   probs=c(0.025, 0.975),
                                    ac_lags=c(5, 10),
                                    ...) {
 
-  if (all(
+  if (object$model == 'radiation') {
+
+    warning('There are no parameters in the radiation model for which to calculate a summary')
+    return(summary(object$params))
+
+  } else if (all(
     !is.null(object$summary),
-    identical(probs, c(0.025, 0.25, 0.75, 0.975)),
+    identical(probs, c(0.025, 0.975)),
     identical(ac_lags, c(5,10)))
   ) {
 
@@ -42,15 +47,12 @@ summary.mobility.model <- function(object,
 
   } else {
 
-    if (!(class(object) %in% c('mobility.model', 'mcmc.list'))) stop('Model object must be of class mobility.model or mcmc.list')
-    if (class(object) == 'mobility.model') object <- object$params
-
-    param_names <- dimnames(object[[1]])[[2]]
+    param_names <- dimnames(object$params[[1]])[[2]]
     param_DIC <- c('DIC', 'deviance', 'pD')
 
     out <- tryCatch({
 
-      tmp <- MCMCvis::MCMCsummary(object,
+      tmp <- MCMCvis::MCMCsummary(object$params,
                                   probs=probs,
                                   func=function(x, lags=ac_lags) {
                                     round(acf(x, lag.max=lags[length(lags)], plot=FALSE)$acf[lags], 2)
@@ -68,13 +70,13 @@ summary.mobility.model <- function(object,
 
     }, error = function(e) {
 
-      message('ERROR: cannot calculate DIC for this model')
+      warning('Could not calculate summary for some parameters')
 
       object <- coda::as.mcmc.list(
         lapply(object$params, function(x) coda::as.mcmc(x[,!(colnames(x) %in% param_DIC)]))
       )
 
-      tmp <- MCMCvis::MCMCsummary(object,
+      tmp <- MCMCvis::MCMCsummary(object$params,
                                   probs=probs,
                                   func=function(x, lags=ac_lags) {
                                     round(acf(x, lag.max=lags[length(lags)], plot=FALSE)$acf[lags], 2)

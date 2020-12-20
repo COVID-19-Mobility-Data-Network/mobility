@@ -82,7 +82,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mobility</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
       </span>
     </div>
 
@@ -213,7 +213,7 @@ using the mean point estimate of parameter values. If <code>nsim &gt; 1</code> t
 #&gt; Graph information:
 #&gt;    Observed stochastic nodes: 70
 #&gt;    Unobserved stochastic nodes: 32
-#&gt;    Total graph size: 421
+#&gt;    Total graph size: 417
 #&gt; 
 #&gt; Initializing model
 #&gt; 
@@ -222,28 +222,28 @@ using the mean point estimate of parameter values. If <code>nsim &gt; 1</code> t
 #&gt; </div><div class='input'><span class='fu'>predict</span><span class='op'>(</span>object<span class='op'>=</span><span class='va'>mod</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;       destination
 #&gt; origin         A         B         C         D         E         F         G
-#&gt;      A 5270.8807  444.0193  240.4966  469.0487  576.6973  339.0423  553.7636
-#&gt;      B  444.0193 4896.4043  279.8118  389.0107  618.7061  409.2028  502.0069
-#&gt;      C  240.4966  279.8118 1673.9046  217.1330  355.6729  226.9853  261.7708
-#&gt;      D  469.0487  389.0107  217.1330 4984.3139  516.5085  300.8317  445.5932
-#&gt;      E  576.6973  618.7061  355.6729  516.5085 8786.8242  540.3811  632.2990
-#&gt;      F  339.0423  409.2028  226.9853  300.8317  540.3811 2997.0053  377.6875
-#&gt;      G  553.7636  502.0069  261.7708  445.5932  632.2990  377.6875 5555.5817
-#&gt;      H  648.5872  605.9502  312.9996  527.2498  742.1405  448.0269  833.4298
-#&gt;      I  303.3514  280.0620  145.0426  245.4179  345.1080  207.8561  402.1367
-#&gt;      J  308.8275  280.1306  157.8007  287.8204  397.4844  222.9353  316.4340
+#&gt;      A 5265.4046  443.3968  240.1566  468.3943  575.8860  338.5657  553.0002
+#&gt;      B  443.3968 4891.3172  279.4241  388.4593  617.8456  408.6413  501.3102
+#&gt;      C  240.1566  279.4241 1672.1655  216.8236  355.1774  226.6721  261.4031
+#&gt;      D  468.3943  388.4593  216.8236 4979.1355  515.7756  300.4047  444.9664
+#&gt;      E  575.8860  617.8456  355.1774  515.7756 8777.6952  539.6385  631.4157
+#&gt;      F  338.5657  408.6413  226.6721  300.4047  539.6385 2993.8916  377.1612
+#&gt;      G  553.0002  501.3102  261.4031  444.9664  631.4157  377.1612 5549.8097
+#&gt;      H  647.6914  605.1104  312.5601  526.5075  741.1022  447.4023  832.3066
+#&gt;      I  302.9328  279.6737  144.8388  245.0724  344.6253  207.5663  401.5971
+#&gt;      J  308.3946  279.7355  157.5772  287.4152  396.9271  222.6213  315.9904
 #&gt;       destination
 #&gt; origin         H         I         J
-#&gt;      A  648.5872  303.3514  308.8275
-#&gt;      B  605.9502  280.0620  280.1306
-#&gt;      C  312.9996  145.0426  157.8007
-#&gt;      D  527.2498  245.4179  287.8204
-#&gt;      E  742.1405  345.1080  397.4844
-#&gt;      F  448.0269  207.8561  222.9353
-#&gt;      G  833.4298  402.1367  316.4340
-#&gt;      H 7886.9921  615.7298  368.4745
-#&gt;      I  615.7298 1699.8913  171.8042
-#&gt;      J  368.4745  171.8042 2353.5465
+#&gt;      A  647.6914  302.9328  308.3946
+#&gt;      B  605.1104  279.6737  279.7355
+#&gt;      C  312.5601  144.8388  157.5772
+#&gt;      D  526.5075  245.0724  287.4152
+#&gt;      E  741.1022  344.6253  396.9271
+#&gt;      F  447.4023  207.5663  222.6213
+#&gt;      G  832.3066  401.5971  315.9904
+#&gt;      H 7878.7980  614.9266  367.9567
+#&gt;      I  614.9266 1698.1252  171.5629
+#&gt;      J  367.9567  171.5629 2351.1013
 #&gt; attr(,"model")
 #&gt; [1] "gravity"
 #&gt; attr(,"type")
@@ -264,11 +264,11 @@ using the mean point estimate of parameter values. If <code>nsim &gt; 1</code> t
 <span class='fu'>predict</span><span class='op'>(</span>object<span class='op'>=</span><span class='va'>mod</span>, newdata<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>D<span class='op'>=</span><span class='va'>D</span>, N<span class='op'>=</span><span class='va'>N</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;       destination
 #&gt; origin         a         b         c          d         e
-#&gt;      a 2516.9019  283.5008 106.23517  215.59818 123.35128
-#&gt;      b  283.5008 2965.6717 126.16701  258.16524 126.26272
-#&gt;      c  106.2352  126.1670 501.54996   89.17408  48.51704
-#&gt;      d  215.5982  258.1652  89.17408 1761.09968  90.28067
-#&gt;      e  123.3513  126.2627  48.51704   90.28067 456.79062
+#&gt;      a 2514.2870  283.1106 106.08746  215.30098 123.18338
+#&gt;      b  283.1106 2962.5905 125.99328  257.81314 126.08975
+#&gt;      c  106.0875  125.9933 501.02888   89.05014  48.45009
+#&gt;      d  215.3010  257.8131  89.05014 1759.27000  90.15599
+#&gt;      e  123.1834  126.0898  48.45009   90.15599 456.31604
 #&gt; attr(,"model")
 #&gt; [1] "gravity"
 #&gt; attr(,"type")

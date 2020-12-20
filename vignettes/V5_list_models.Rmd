@@ -1,6 +1,7 @@
 ---
 title: "A curated list of mobility models"
 output: rmarkdown::html_vignette
+bibliography: references.bib
 header-includes:
    - \usepackage{amsmath}
    - \usepackage{amssymb}
@@ -21,9 +22,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-Mobility models in general describe interactions between separate locations in space, such travel among administrative units. There many types of mobility models (gravity and radiation are common model types) and there are many parameterizations of each model type. The 'mobility' R package provides methods for fitting and simulating different parameterizations of gravity, radiation, and departure-diffusion models. This vignette contains a list of all the mobility models that are currently available in this package.
+Mobility models in general describe interactions between separate locations in space, such travel among administrative units. There many types of mobility models (gravity and radiation are common model types) and there are many parameterizations of each model type [@barbosa_human_2018]. The 'mobility' R package provides methods for fitting and simulating different mobility models including parameterizations of gravity, radiation, and departure-diffusion models. This vignette contains a list of all the mobility models that are currently available in this package.
 
-The models list below can be called by specifying the `model` and `type` arguments of the `mobility()` function. This function fits the specified model to the supplied data matrices using the Bayesian MCMC algorithm JAGS. Each of the models have a likelihood function that assumes a Poisson error structure with mean $\lambda_{ij}$: 
+The models list below can be called by specifying the `model` and `type` arguments of the `mobility()` function. This function performs parameter estimation for the specified model and supplied data matrices. The models are implemented using using Bayesian inference [@gelman_bayesian_2003] and the Markov Chain Monte Carlo (MCMC) algorithm found in the JAGS (Just Another Gibbs Sampler) library [@plummer_jags_2003; @plummer_rjags_2019]. Each of the models have a likelihood function that assumes a Poisson error structure with mean $\lambda_{ij}$: 
 
 $$
 \begin{aligned}
@@ -34,7 +35,7 @@ $$
 Where, where $m_{ij}$ is an element of the data matrix $M$ and gives the observed number of trips from origin $i$ to destination $j$, and the expected mean number of trips $\lambda_{ij}$ is defined by one of the models below.
 
 ## Gravity models
-Gravity models are one of the most common types of spatial diffusion models and are routinely used in the fields of transportation science, economics, ecology, and epidemiology (Viboud et al. 2006; Xia, Bjørnstad, and Grenfell 2004). However, there are many different parameterizations of this model, so we have included a number of different model types in this package. Below are brief descriptions of each model type with example function calls that fit each model to data.
+The application of Newton's gravity equation to explain human mobility was first proposed by Zipf [-@zipf_gravity_1946] and has become one of the most common types of spatial diffusion models. There are many different parameterizations of the gravity model which are routinely used in the fields of transportation science, economics, ecology, and epidemiology. We have included a number of these different model types in this package. Below are brief descriptions of each gravity model type with example function calls that fit each model to data.
 
 ### Basic
 The basic gravity model is the simplest gravity model with only one estimated parameter, $\theta$.
@@ -49,7 +50,13 @@ $$
 \end{aligned}   
 $$
 
-The parameter $\theta$ acts as a proportionality constant that scales the product of the origin and destination population sizes ($N_i$) and ($N_j$) divided by the distance between $i$ and $j$ ($d_{ij}$). The basic gravity model can be called by:
+The parameter $\theta$ acts as a proportionality constant that scales the product of the origin and destination population sizes ($N_i$) and ($N_j$) divided by the distance between $i$ and $j$ ($d_{ij}$). Prior distributions of model parameters are defined as:
+$$
+\begin{aligned}
+        \theta \sim \text{Gamma}(0.001, 0.001)
+\end{aligned} 
+$$
+The basic gravity model can be called by:
 ```{r, eval=FALSE}
 mod <- mobility(data=mobility_matrices, model='gravity', type='basic')
 ```
@@ -68,7 +75,14 @@ $$
         }\Bigg)
 \end{aligned}   
 $$
-Where, $\theta$ is a proportionality constant and the exponent $\gamma$ on $d_{ij}$ allows adjustment of the distance-based kernel function. The transport gravity model can be called by:
+Where, $\theta$ is a proportionality constant and the exponent $\gamma$ on $d_{ij}$ allows adjustment of the distance-based kernel function. Prior distributions of model parameters are defined as:
+$$
+\begin{aligned}
+        \theta &\sim \text{Gamma}(0.001, 0.001)\\
+        \gamma &\sim \text{Gamma}(1, 1)
+\end{aligned} 
+$$
+The transport gravity model can be called by:
 ```{r, eval=FALSE}
 mod <- mobility(data=mobility_matrices, model='gravity', type='transport')
 ```
@@ -85,7 +99,16 @@ $$
         }\Bigg)
 \end{aligned}   
 $$
-Where, $\theta$ is a proportionality constant, the parameters $\omega_1$ and $\omega_2$ serve as weights that modify the contribution of origin and destination population sizes. In the denominator, $d_{ij}^\gamma$, serves as the dispersal kernel function. The power law gravity model can be called by:
+Where, $\theta$ is a proportionality constant, the parameters $\omega_1$ and $\omega_2$ serve as weights that modify the contribution of origin and destination population sizes. In the denominator, $d_{ij}^\gamma$, serves as the dispersal kernel function. Prior distributions of model parameters are defined as:
+$$
+\begin{aligned}
+        \theta &\sim \text{Gamma}(0.001, 0.001)\\
+        \omega_1 &\sim \text{Gamma}(1, 1)\\
+        \omega_2 &\sim \text{Gamma}(1, 1)\\
+        \gamma &\sim \text{Gamma}(1, 1)
+\end{aligned} 
+$$
+The power law gravity model can be called by:
 ```{r, eval=FALSE}
 mod <- mobility(data=mobility_matrices, model='gravity', type='power')
 ```
@@ -102,7 +125,16 @@ $$
         }\Bigg)
 \end{aligned}   
 $$
-Where, $\theta$ is a proportionality constant, the parameters $\omega_1$ and $\omega_2$ serve as weights that modify the contribution of origin and destination population sizes. In the denominator, $e^{d_{ij}/\delta}$, serves as the exponential dispersal kernel function with $\delta$ giving the deterence distance. The exponential gravity model can be called by:
+Where, $\theta$ is a proportionality constant, the parameters $\omega_1$ and $\omega_2$ serve as weights that modify the contribution of origin and destination population sizes. In the denominator, $e^{d_{ij}/\delta}$, serves as the exponential dispersal kernel function with $\delta$ giving the deterence distance. Prior distributions of model parameters are defined as:
+$$
+\begin{aligned}
+        \theta &\sim \text{Gamma}(0.001, 0.001)\\
+        \omega_1 &\sim \text{Gamma}(1, 1)\\
+        \omega_2 &\sim \text{Gamma}(1, 1)\\
+        \delta &\sim \text{Truncnorm}(\mu_D, \sigma_D)
+\end{aligned} 
+$$
+The $\text{Truncnorm}(\mu_D, \sigma_D)$ prior is a normal distribution truncated at zero $(0,\infty)$ where $\mu_D$ and $\sigma_D$ are the observed mean and standard deviation of the distance matrix $D$. The exponential gravity model can be called by:
 ```{r, eval=FALSE}
 mod <- mobility(data=mobility_matrices, model='gravity', type='exp')
 ```
@@ -115,11 +147,19 @@ $$
         \frac{
         N_j^\omega d_{ij}^{-\gamma}
         }{
-        \sum_{\forall j} N_j^\omega d_{ij}^{-\gamma}
+        \sum_j N_j^\omega d_{ij}^{-\gamma}
         } \Bigg)
 \end{aligned}   
 $$
-Here, $\theta$ is a proportionality constant representing the overall number of trips per person taken from the origin population $N_i$, and the exponential parameter $\omega$ scales the attractive force of each $j$ destination population sizes. The kernel function $d_{ij}^{-\gamma}$ serves as a penalty on the proportion of travel from $i$ to $j$ based on distance. The normalized power law gravity model can be called by:
+Here, $\theta$ is a proportionality constant representing the overall number of trips per person taken from the origin population $N_i$, and the exponential parameter $\omega$ scales the attractive force of each $j$ destination population sizes. The kernel function $d_{ij}^{-\gamma}$ serves as a penalty on the proportion of travel from $i$ to $j$ based on distance. Prior distributions of model parameters are defined as:
+$$
+\begin{aligned}
+        \theta &\sim \text{Gamma}(0.001, 0.001)\\
+        \omega &\sim \text{Gamma}(1, 1)\\
+        \gamma &\sim \text{Gamma}(1, 1)
+\end{aligned} 
+$$
+The normalized power law gravity model can be called by:
 ```{r, eval=FALSE}
 mod <- mobility(data=mobility_matrices, model='gravity', type='power_norm')
 ```
@@ -132,75 +172,185 @@ $$
         \frac{
         N_j^\omega e^{-d_{ij}/\delta}
         }{
-        \sum_{\forall j} N_j^\omega e^{-d_{ij}/\delta}
+        \sum_j N_j^\omega e^{-d_{ij}/\delta}
         } \Bigg)
 \end{aligned}   
 $$
-Where, $\theta$ is a proportionality constant representing the overall number of trips per person taken from the origin population $N_i$, and the exponential parameter $\omega$ scales the attractive force of each $j$ destination population sizes. The kernel function $e^{-d_{ij}/\delta}$ serves as the exponential dispersal kernal. The normalized exponential gravity model can be called by:
+Where, $\theta$ is a proportionality constant representing the overall number of trips per person taken from the origin population $N_i$, and the exponential parameter $\omega$ scales the attractive force of each $j$ destination population sizes. The kernel function $e^{-d_{ij}/\delta}$ serves as the exponential dispersal kernal. Prior distributions of model parameters are defined as:
+$$
+\begin{aligned}
+        \theta &\sim \text{Gamma}(0.001, 0.001)\\
+        \omega &\sim \text{Gamma}(1, 1)\\
+        \delta &\sim \text{Truncnorm}(\mu_D, \sigma_D)
+\end{aligned} 
+$$
+The $\text{Truncnorm}(\mu_D, \sigma_D)$ prior is a normal distribution truncated at zero $(0,\infty)$ where $\mu_D$ and $\sigma_D$ are the observed mean and standard deviation of the distance matrix $D$. The normalized exponential gravity model can be called by:
 ```{r, eval=FALSE}
 mod <- mobility(data=mobility_matrices, model='gravity', type='exp_norm')
 ```
 
-### Marshall
-The gravity model described in Marshall et al. (2018) uses a scaled power law and requires estimation of three parameters $\omega$, $\gamma$, and $\alpha$.
+### Scaled power law
+This gravity model is described in Marshall et al. [-@marshall_key_2016] and uses a scaled power law and requires estimation of three parameters $\omega$, $\rho$, and $\alpha$.
 $$
 \begin{aligned}
-\lambda_{ij} &= N_{j}^\omega \Bigg( 1 + \frac{ d_{ij} }{ \gamma } \Bigg)^{-\alpha}
+\lambda_{ij} &= N_{j}^\omega \Bigg( 1 + \frac{ d_{ij} }{ \rho } \Bigg)^{-\alpha}
 \end{aligned}   
 $$
-Where, $\omega$ adjusts the attractive force of each $j$ destination population sizes, $\gamma$ scales the distance from $i$ to $j$, and $\alpha$ determines the power law distance kernel. 
+Where, $\omega$ adjusts the attractive force of each $j$ destination population sizes, $\rho$ scales the distance from $i$ to $j$, and $\alpha$ determines the power law distance kernel. Prior distributions of model parameters are defined as:
+$$
+\begin{aligned}
+        \tau &\sim \text{Gamma}(1, 1)\\
+        \rho &\sim \text{Gamma}(0.001, 0.001)\\
+        \alpha &\sim \text{Gamma}(1, 1)
+\end{aligned} 
+$$
 This scaled power law gravity model can be called by:
 ```{r, eval=FALSE}
-mod <- mobility(data=mobility_matrices, model='gravity', type='Marshall')
+mod <- mobility(data=mobility_matrices, model='gravity', type='scaled_power')
 ```
 
 
 
 
 ## Radiation models
-### Basic
-The radiation model was first introduced by Simini et al. (Simini et al. 2012) and was put forth as an ‘parameter-free’ diffusion model to describe commuting flows in the United States. A basic radiation model can be called with `radiation_basic`. 
+The radiation model was developed as a parameter-free alternative to the parameterized models such the gravity model. As its name suggests the radiation model estimates mobility among locations as the number of travelers or trip counts that radiate from an origin $i$ and are then absorbed by each destination $j$. The process by which absorption occurs is based solely on population distribution. Where the number of trips arriving at a destination $j$ that is distance $r$ from origin $i$ is inversley proportional to the total population that resides within a radius of distance $r$ from the origin $i$.
 
+### Basic
+The radiation model was first introduced by Simini et al. [-@simini_universal_2012] to describe commuting flows in the United States. The model relies on the same data matrices as the gravity models above---mobility matrix $M$, distance matrix $D$, and population size vector(s) $N$---however, and additional matrix $S$ is calculated which gives the total population size surrounding the origin.
 $$
 \begin{aligned}
-        Y = \alpha + \beta X
+        \lambda_{ij} = M_i \frac{N_i N_j}{(N_i + s_{ij})(N_i + N_j + s_{ij})}
 \end{aligned}   
 $$
-
-
-The basic radiation is not actually fit to the data, hence its ‘parameter-free’ label. The terms in the model are...
+Where, $M_i$ gives the total number of trips (or travellers) emanating from origin, $\sum_{j} M_{ij}$, the population sizes of the origin and destination are given by $N_i$ and $N_j$. The population surrounding each origin $s_{ij}$ is calculated as the total population size that resides within the radius $r_{ij}$, where the origin and destination populations are excluded. The basic radiation model can be called by:
+```{r, eval=FALSE}
+mod <- mobility(data=mobility_matrices, model='radiation', type='basic')
+```
 
 ### Finite
+This version of the radiation model was derived by Masucci et al. [-@masucci_gravity_2013] to correct the model's normalization for systems with finite population sizes. This derivation may not be significantly different compared with the basic model in settings with a large overall population size. However, this model type may be better suited to systems comprised of smaller population sizes that are heterogeneously distributed. Its fomrulation is quite similar to the above with the addition of the normalization of $M_i$.
+$$
+\begin{aligned}
+        \lambda_{ij} = \frac{M_i}{1-N_i/N_{\text{tot}}} \frac{N_i N_j}{(N_i + s_{ij})(N_i + N_j + s_{ij})}
+\end{aligned}   
+$$
+The finite radiation model differs from the basic model by the scaling factor $\frac{1}{1-N_i/N_{\text{tot}}}$, where $N_{\text{tot}}$ is the total population size of the system given by $\sum_i N_i$. As in the basic model, $M_i$ gives the total number of trips emanating from origin, $\sum_{j} M_{ij}$, the population sizes of the origin and destination are given by $N_i$ and $N_j$. The population surrounding each origin $s_{ij}$ is calculated as the total population size that resides within the radius $r_{ij}$, where the origin and destination populations are excluded. The finite radiation model can be called by:
+```{r, eval=FALSE}
+mod <- mobility(data=mobility_matrices, model='radiation', type='finite')
+```
 
 
 
 
 ## Departure-diffusion models
-### Power law
-This model comes from here [ref] and is meant to do this and that. This model can be called with the type argument `model_name`. 
+The departure-diffusion framework models diagonal and off-diagonal elements in the mobility matrix ($M$) separately and combines them using conditional probability rules. The model first estimates the probabilty of travel outside the origin location $i$---the departure process---and then the distribution of travel from the origin location $i$ by normalizing connectivity values across all $j$ destinations---the diffusion process.
 
+These two processes are then combined in the departure-diffusion model as $\tau_i$ (the probability of leaving origin $i$) and $\pi_{ij}$ (the probability of going from $i$ to $j$). The values of $\pi_{ij}$ sum to unity along each row, but the diagonal is not included, indicating that this is a relative quantity. That is to say, $\pi_{ij}$ gives the probability of going from $i$ to $j$ given that travel outside origin $i$ occurs. Therefore, we can use basic conditional probability rules [@blitzstein_introduction_2014] to define the travel routes in the diagonal elements (trips made within the origin $i$) as
+$$
+\Pr( \neg \text{depart}_i ) =  1 - \tau_i
+$$
+and the off-diagonal elements (trips made outside origin $i$) as
+$$
+\Pr( \text{depart}_i, \text{diffuse}_{i \rightarrow j}) = \Pr( \text{diffuse}_{i \rightarrow j} \mid \text{depart}_i ) \Pr(\text{depart}_i ) = \pi_{ij} \tau_i.
+$$
+The expected mean number of trips for route $i \rightarrow j$ is then:
+$$
+\lambda_{ij} = 
+\begin{cases}
+\theta N_i (1-\tau_i) \ & \text{if} \ i = j \\
+\theta N_i \tau_i \pi_{ij} \ & \text{if} \ i \ne j.
+\end{cases}\\
+$$
+Where, $\theta$ is a proportionality constant representing the overall number of trips per person in an origin population of size $N_i$, $\tau_i$ is the probability of leaving origin $i$, and $\pi_{ij}$ is the probability of travel to destination $j$ given that travel outside origin $i$ occurs.
+
+Note that the subscript of $\tau_i$ indicates that this parameter is estimated for all $i$ locations. For a more parsimonious model, the `hierarchical` argument in the `mobility()` function may be set to `FALSE`, in which case $\tau$ is estimated as one parameter representing the general probability that travel occurs outside any origin. The expected mean number of trips for route $i \rightarrow j$ becomes:
+$$
+\lambda_{ij} = 
+\begin{cases}
+\theta N_i (1-\tau) \ & \text{if} \ i = j \\
+\theta N_i \tau \pi_{ij} \ & \text{if} \ i \ne j.
+\end{cases}\\
+$$
+
+
+### Estimating the departure process
+The probability of travel outside origin $i$ is estimated hierarchically, where origin locations have the departure probability $\tau_i$ which are driven by data in each location and all unobserved locations regress to the population mean $\tau_\text{pop}$.
 $$
 \begin{aligned}
-        Y = \alpha + \beta X
-\end{aligned}   
+\tau_i &\sim \text{Beta}(1+\alpha, 1+\beta) \\
+\tau_\text{pop} &\sim \text{Beta}(1+\bar{\alpha}, 1+\bar{\beta})
+\end{aligned}
 $$
+Binomial probabilities for each origin $\tau_i$ are drawn from a Beta distributed prior with shape and rate parameters $\alpha$ and $\beta$. The hierarchical structure comes from estimating $\alpha$ and $\beta$ as population-level hyper-priors for the origin-level probabilities $\tau_i$ and allowing $\tau_\text{pop}$ to inherit the overall population-level distribution denoted as $\bar{\alpha}$ and $\bar{\beta}$.
+$$
+\begin{aligned}
+\alpha &\sim \text{Gamma}(0.01, 0.01) \\
+\beta &\sim \text{Gamma}(0.01, 0.01)
+\end{aligned}
+$$  
 
-This model is fitted to the data this way and the parameters mean this and that…
-
-### Exponential
+When `hierarchical = FALSE` the `mobility()` function estimates a non-hierarchical version of the departure-diffusion model where the parameter $\tau$ is given a single uninformative prior distribution: $\tau \sim \text{Beta}(1, 1)$.
 
 
-### Radiation
+### Estimating the diffusion process
+Because the departure and diffusion processes are modelled separately, any form can be used to model spatial diffusion. In the `mobility()` function, there are three different model types which can be used to defined the diffusion process $\pi_{ij}$: the power law gravity, exponential gravity, and radiation models.
 
+#### Power law gravity
+When the power law gravity model is used to defined the diffusion process, the probability of travelling to destination $j$ given travel outside origin $i$ ($\pi_{ij}$) is defined as:
+$$
+\pi_{ij} = \frac{
+N_j^\omega d_{ij}^{-\gamma}
+}{
+\sum\limits_{\forall j \ne i} N_j^\omega d_{ij}^{-\gamma}
+}
+$$
+Where, $\omega$ scales the attractive force of each $j$ destination based on its population size $N_j$. The kernel function $d_{ij}^{-\gamma}$ serves as a penalty on the proportion of travel from $i$ to $j$ based on distance. Prior distributions of diffusion model parameters are defined as:
+$$
+\begin{aligned}
+        \omega &\sim \text{Gamma}(1, 1)\\
+        \gamma &\sim \text{Gamma}(1, 1)
+\end{aligned} 
+$$
+The departure-diffusion model with a power law gravity model as the diffusion process can be called by:
+```{r, eval=FALSE}
+mod <- mobility(data=mobility_matrices, model='departure-diffusion', type='power')
+```
+
+#### Exponential gravity
+When the exponential gravity model is used to defined the diffusion process, the probability of travelling to destination $j$ given travel outside origin $i$ ($\pi_{ij}$) is defined as:
+$$
+\pi_{ij} = \frac{
+N_j^\omega e^{-d_{ij}/\delta}
+}{
+\sum\limits_{\forall j \ne i} N_j^\omega e^{-d_{ij}/\delta}
+}
+$$
+Where, $\omega$ scales the attractive force of each $j$ destination based on its population size $N_j$. The term $e^{d_{ij}/\delta}$ serves as the exponential dispersal kernel function with $\delta$ giving the deterence distance. Prior distributions of diffusion model parameters are defined as:
+$$
+\begin{aligned}
+        \omega &\sim \text{Gamma}(1, 1)\\
+        \delta &\sim \text{Truncnorm}(\mu_D, \sigma_D)
+\end{aligned} 
+$$
+The $\text{Truncnorm}(\mu_D, \sigma_D)$ prior is a normal distribution truncated at zero $(0,\infty)$ where $\mu_D$ and $\sigma_D$ are the observed mean and standard deviation of the distance matrix $D$. The departure-diffusion model with a exponential gravity model as the diffusion process can be called by:
+```{r, eval=FALSE}
+mod <- mobility(data=mobility_matrices, model='departure-diffusion', type='exp')
+```
+
+#### Radiation
+When the radiation model is used to defined the diffusion process, the probability of travelling to destination $j$ given travel outside origin $i$ ($\pi_{ij}$) is defined as:
+$$
+\pi_{ij} = \frac{
+        \frac{N_j}{(N_i + s_{ij})(N_i + N_j + s_{ij})}
+        }{
+        \sum\limits_{\forall j \ne i} \frac{N_j}{(N_i + s_{ij})(N_i + N_j + s_{ij})}
+        }
+$$
+Where, the population sizes of the origin and destination are given by $N_i$ and $N_j$. The $s_{ij}$ term is the total population size that resides within distance $d_{ij}$, excluding the origin and destination populations. The departure-diffusion model with a radiation model as the diffusion process can be called by:
+```{r, eval=FALSE}
+mod <- mobility(data=mobility_matrices, model='departure-diffusion', type='radiation')
+```
 
 
 ## References
-
-  1. Marshall, John M., Sean L. Wu, Hector M. Sanchez C, Samson S. Kiware, Micky Ndhlovu, André Lin Ouédraogo, Mahamoudou B. Touré, Hugh J. Sturrock, Azra C. Ghani, and Neil M. Ferguson. 2018. “Mathematical Models of Human Mobility of Relevance to Malaria Transmission in Africa.” Scientific Reports 8 (1): 1–12.
-  
-  2. Simini, Filippo, Marta C. González, Amos Maritan, and Albert-László Barabási. 2012. “A Universal Model for Mobility and Migration Patterns.” Nature 484 (7392): 96–100.
-  
-  3. Viboud, Cécile, Ottar N. Bjørnstad, David L. Smith, Lone Simonsen, Mark A. Miller, and Bryan T. Grenfell. 2006. “Synchrony, Waves, and Spatial Hierarchies in the Spread of Influenza.” Science 312 (5772): 447–51.
-
-  4. Xia, Yingcun, Ottar N. Bjørnstad, and Bryan T. Grenfell. 2004. “Measles Metapopulation Dynamics: A Gravity Model for Epidemiological Coupling and Dynamics.” The American Naturalist 164 (2): 267–81.
-
+<div id="refs"></div>

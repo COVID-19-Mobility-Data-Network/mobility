@@ -1,7 +1,7 @@
 Package: mobility
 Type: Package
 Title: Tools for analyzing human mobility data
-Version: 0.5.0
+Version: 0.6.0
 Date: 2020-12-17
 Authors@R: c(person("John", "Giles", role=c("aut", "cre"), email="giles@jhu.edu"),
               person("Amy", "Wesolowski", role=c("aut", "ctb"), email="awesolowski@jhu.edu"))

@@ -240,7 +240,7 @@ eqn_mobility <- function(object, D, N_orig, N_dest, params) {
         }
       }
 
-    } else if (object$type == 'Marshall') {
+    } else if (object$type == 'scaled_power') {
 
       for (i in 1:length(N_orig)) {
         for (j in 1:length(N_dest)) {

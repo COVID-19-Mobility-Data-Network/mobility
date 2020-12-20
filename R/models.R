@@ -396,23 +396,23 @@ fit_prob_travel <- function(
 
   }
 
-  return(
-    structure(
-      list(
-        model='prob_travel',
-        type=NULL,
-        n_chain=n_chain,
-        n_burn=n_burn,
-        n_samp=n_samp,
-        n_thin=n_thin,
-        DIC=DIC,
-        data=list(travel=travel,
-                  total=total),
-        params=out,
-        summary=summary.mobility.model(out)),
-      class=c('prob_travel', 'mobility.model')
-    )
+  out <- structure(
+    list(model='prob_travel',
+         type=NULL,
+         n_chain=n_chain,
+         n_burn=n_burn,
+         n_samp=n_samp,
+         n_thin=n_thin,
+         DIC=DIC,
+         data=list(travel=travel,
+                   total=total),
+         params=out),
+    class=c('prob_travel', 'mobility.model')
   )
+
+  out$summary <- summary.mobility.model(out)
+
+  return(out)
 }
 
 
@@ -531,12 +531,6 @@ mobility <- function(
   vals <- c(D, N_orig, N_dest)
   if (any(is.na(vals)) | any(is.nan(vals))) stop('D and N are covariates and cannot contain missing values')
 
-  if (!all(unlist(lapply(list(M, N_orig, N_dest), is.integer)))) {
-    M[,] <- as.integer(M)
-    N_orig[] <- as.integer(N_orig)
-    N_dest[] <- as.integer(N_dest)
-  }
-
   message(
     paste('::Fitting', type, model, 'model for', dim(M)[1], 'origins and', dim(M)[2], 'destinations::', sep=' ')
   )
@@ -608,7 +602,7 @@ fit_gravity <- function(
         }
 
         # Priors
-        theta ~ dlnorm(log(1), log(1e03))
+        theta ~ dgamma(0.001,0.001)
 
       }"
 
@@ -629,8 +623,8 @@ fit_gravity <- function(
         }
 
         # Priors
-        theta ~ dlnorm(log(1), log(1e03))
-        gamma ~ dgamma(2, 2)
+        theta ~ dgamma(0.001,0.001)
+        gamma ~ dgamma(1,1)
 
       }"
 
@@ -650,10 +644,10 @@ fit_gravity <- function(
         }
 
         # Priors
-        theta ~ dlnorm(log(1), log(1e03))
-        omega_1 ~ dgamma(2, 2)
-        omega_2 ~ dgamma(2, 2)
-        gamma ~ dgamma(2, 2)
+        theta ~ dgamma(0.001,0.001)
+        omega_1 ~ dgamma(1,1)
+        omega_2 ~ dgamma(1,1)
+        gamma ~ dgamma(1,1)
 
       }"
 
@@ -673,9 +667,9 @@ fit_gravity <- function(
         }
 
         # Priors
-        theta ~ dlnorm(log(1), log(1e03))
-        omega_1 ~ dgamma(2, 2)
-        omega_2 ~ dgamma(2, 2)
+        theta ~ dgamma(0.001,0.001)
+        omega_1 ~ dgamma(1,1)
+        omega_2 ~ dgamma(1,1)
         delta ~ dnorm(mean(D), 1/sd(D)) T(0,)
 
       }"
@@ -704,9 +698,9 @@ fit_gravity <- function(
         }
 
         # Priors
-        theta ~ dlnorm(log(1), log(1e03))
-        omega ~ dgamma(2, 2)
-        gamma ~ dgamma(2, 2)
+        theta ~ dgamma(0.001,0.001)
+        omega ~ dgamma(1,1)
+        gamma ~ dgamma(1,1)
 
       }"
 
@@ -734,15 +728,15 @@ fit_gravity <- function(
         }
 
         # Priors
-        theta ~ dlnorm(log(1), log(1e03))
-        omega ~ dgamma(2, 2)
+        theta ~ dgamma(0.001,0.001)
+        omega ~ dgamma(1,1)
         delta ~ dnorm(mean(D), 1/sd(D)) T(0,)
 
       }"
 
     params <- c('theta', 'omega', 'delta')
 
-  } else if (type == 'Marshall') {
+  } else if (type == 'scaled_power') {
 
     jags_model <- "
       model {
@@ -756,9 +750,9 @@ fit_gravity <- function(
         }
 
         # Priors
-        tau ~ dgamma(2, 2)
-        rho ~ dlnorm(log(1), log(1e03))
-        alpha ~ dgamma(2, 2)
+        tau ~ dgamma(1, 1)
+        rho ~  dgamma(0.001, 0.001)
+        alpha ~ dgamma(1, 1)
 
       }"
 
@@ -780,22 +774,24 @@ fit_gravity <- function(
                   DIC=DIC,
                   parallel=parallel)
 
-  return(
-    structure(
-      list(
-        model='gravity',
-        type=type,
-        n_chain=n_chain,
-        n_burn=n_burn,
-        n_samp=n_samp,
-        n_thin=n_thin,
-        DIC=DIC,
-        data=jags_data,
-        params=mod,
-        summary=summary.mobility.model(mod)),
-      class='mobility.model'
-    )
+
+  out <- structure(
+    list(model='gravity',
+         type=type,
+         n_chain=n_chain,
+         n_burn=n_burn,
+         n_samp=n_samp,
+         n_thin=n_thin,
+         DIC=DIC,
+         data=jags_data,
+         params=mod),
+    class='mobility.model'
   )
+
+  out$summary <- summary.mobility.model(out)
+
+  return(out)
+
 }
 
 
@@ -832,7 +828,7 @@ fit_radiation <- function(
     for (i in 1:nrow(D)) {
       for (j in 1:ncol(D)) {
 
-        num <- (N_orig[i]*N_dest[j])
+        num <- as.numeric(N_orig[i])*as.numeric(N_dest[j])
         den <- (N_orig[i]+S[i,j])*(N_orig[i]+N_dest[j]+S[i,j])
 
         R[i,j] <- sum(M[i,], na.rm=TRUE) * (num/den)
@@ -847,10 +843,11 @@ fit_radiation <- function(
     for (i in 1:nrow(D)) {
       for (j in 1:ncol(D)) {
 
-        num <- (N_orig[i]*N_dest[j])
+        num <- as.numeric(N_orig[i])*as.numeric(N_dest[j])
         den <- (N_orig[i]+S[i,j])*(N_orig[i]+N_dest[j]+S[i,j])
+        tot_pop <- sum(N_orig, na.rm=TRUE) + sum(N_dest[which(!(N_dest %in% N_orig))], na.rm=TRUE)
 
-        R[i,j] <- ( sum(M[i,], na.rm=TRUE)/(1-(N_orig[i]/sum(M, na.rm=TRUE))) ) * (num/den)
+        R[i,j] <- ( sum(M[i,], na.rm=TRUE)/(1-(N_orig[i]/tot_pop)) ) * (num/den)
 
       }
     }
@@ -908,7 +905,7 @@ fit_departure_diffusion <- function(
 
     kernel <- "(N_dest[j]^omega) * (D[i,j]+0.001)^(-gamma)"
     kernel_param <- 'gamma'
-    kernel_prior <- 'gamma ~ dgamma(2, 2)'
+    kernel_prior <- 'gamma ~ dgamma(1, 1)'
 
   } else if (type == 'exp') {
 
@@ -984,8 +981,8 @@ fit_departure_diffusion <- function(
 
         # Priors
         tau ~ dbeta(1, 1)
-        theta ~ dlnorm(log(1), log(1e03))
-        omega ~ dgamma(2, 2)
+        theta ~ dgamma(0.001,0.001)
+        omega ~ dgamma(1,1)
         ", kernel_prior, "
 
       }")
@@ -1028,10 +1025,10 @@ fit_departure_diffusion <- function(
 
         # Priors
         tau_pop ~ dbeta(1+alpha, 1+beta)
-        alpha ~ dgamma(0.01, 0.01) # priors 1+alpha and 1+beta allow tau[i] parameters to start with flat dbeta(1,1) distribution
-        beta ~ dgamma(0.01, 0.01)
-        theta ~ dlnorm(log(1), log(1e03))
-        omega ~ dgamma(2, 2)
+        alpha ~ dgamma(0.1, 0.1) # priors 1+alpha and 1+beta allow tau[i] parameters to start with flat dbeta(1,1) distribution
+        beta ~ dgamma(0.1, 0.1)
+        theta ~ dgamma(0.001,0.001)
+        omega ~ dgamma(1,1)
         ", kernel_prior, "
 
       }")
@@ -1057,23 +1054,23 @@ fit_departure_diffusion <- function(
 
   )
 
-  return(
-    structure(
-      list(
-        model='departure-diffusion',
-        type=type,
-        hierarchical=hierarchical,
-        n_chain=n_chain,
-        n_burn=n_burn,
-        n_samp=n_samp,
-        n_thin=n_thin,
-        DIC=DIC,
-        data=jags_data,
-        params=mod,
-        summary=summary.mobility.model(mod)),
-      class='mobility.model'
-    )
+  out <- structure(
+    list(model='departure-diffusion',
+         type=type,
+         hierarchical=hierarchical,
+         n_chain=n_chain,
+         n_burn=n_burn,
+         n_samp=n_samp,
+         n_thin=n_thin,
+         DIC=DIC,
+         data=jags_data,
+         params=mod),
+    class='mobility.model'
   )
+
+  out$summary <- summary.mobility.model(out)
+
+  return(out)
 }
 
 

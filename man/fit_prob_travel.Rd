@@ -56,12 +56,11 @@ miss <- sample(1:n_orig, n_missing) # missing observations
 travel[miss] <- total[miss] <- NA
 
 # Estimate probability of travel for each locations (missing locations regress to mean)
-prob_trav <- summary(
-  fit_prob_travel(travel=travel, total=total)
-)
+prob_trav <- fit_prob_travel(travel=travel, total=total)
+prob_trav_smry <- summary(prob_trav, probs=c(0.025, 0.25, 0.75, 0.975))
 
 library(ggplot2)
-ggplot(data=prob_trav) +
+ggplot(data=prob_trav_smry) +
   geom_vline(aes(xintercept=mean[ which(is.na(travel))[1] ]), color='red', linetype=2) +
   geom_point(aes(x=mean, y=orig_id), size=2) +
   ggstance::geom_linerangeh(aes(y=orig_id, xmin=Q2.5, xmax=Q97.5)) +
