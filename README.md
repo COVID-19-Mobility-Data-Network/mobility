@@ -56,43 +56,102 @@ D <- get_distance_matrix(x=xy[,1],
 N <- get_pop_vec(mobility_data)
 ```
 
+Alternatively, you can create mobility data matrices from your own data source. See the `mobility_matrices` data object for an example of data structure.
+```r
+str(mobility_matrices)
+
+List of 3
+ $ M: num [1:10, 1:10] 4559 NA 25 1964 NA ...
+  ..- attr(*, "dimnames")=List of 2
+  .. ..$ origin     : chr [1:10] "A" "B" "C" "D" ...
+  .. ..$ destination: chr [1:10] "A" "B" "C" "D" ...
+ $ D: num [1:10, 1:10] 0 671 1023 521 796 ...
+  ..- attr(*, "dimnames")=List of 2
+  .. ..$ origin     : chr [1:10] "A" "B" "C" "D" ...
+  .. ..$ destination: chr [1:10] "A" "B" "C" "D" ...
+ $ N: Named num [1:10] 9868 9511 5561 9596 12741 ...
+  ..- attr(*, "names")= chr [1:10] "A" "B" "C" "D" ...
+```
+
 ### 3. Estimate mobility model parameters
 ```r
 # Fit a mobility model to data matrices
-mod <- fit_mobility(M, D, N)
+mod <- mobility(data=mobility_matrices, model='gravity', type='power_norm', DIC=TRUE)
 
-# Summary statistics of parameter estimates
-summarize_mobility(mod)
+summary(mod) # Summary statistics of parameter estimates
 
-               Mean          SD       HPD2.5    HPD97.5 Rhat SSeff          AC5
-gamma   1.627564815 0.012987392 1.601657e+00 1.65184147 1.01  1155 -0.007112479
-omega_1 2.155448977 1.905316057 1.135895e-02 5.88730404 1.00   486  0.154469676
-omega_2 0.593836446 0.403373442 2.720367e-05 1.32248529 1.00   704  0.104623413
-theta   2.007748972 2.006350454 2.338955e-03 5.93925457 1.00   384  0.207985294
-tau_1   0.616436441 0.006884550 6.032836e-01 0.62982560 1.00  1264  0.016804072
-tau_2   0.432084468 0.007734690 4.174996e-01 0.44721031 1.00  1159  0.022767959
-tau_3   0.431438676 0.007126530 4.174066e-01 0.44479338 1.00  1261  0.022528656
-tau_4   0.384766345 0.250618523 2.148511e-07 0.84557558 1.00  2000  0.001937946
-tau_5   0.008924998 0.001340494 6.292020e-03 0.01137737 1.00  1243  0.010289810
+                 mean           sd         Q2.5        Q97.5 Rhat n.eff   AC5  AC10
+gamma    1.951844e-01 0.0006248893 1.939529e-01 1.964152e-01 1.00   919  0.02  0.01
+omega    5.695785e-04 0.0005556265 1.924751e-05 2.087491e-03 1.03   378  0.01  0.02
+theta    9.953428e-01 0.0040059916 9.873916e-01 1.003462e+00 1.00  1000  0.01  0.02
+DIC      4.424932e+04 2.8947540122 4.424574e+04 4.425680e+04 1.00   659 -0.05 -0.01
+deviance 4.424504e+04 2.8947540122 4.424146e+04 4.425251e+04 1.00   659 -0.05 -0.01
+pD       2.141799e+00           NA           NA           NA   NA    NA    NA    NA
 
-# Check goodness of fit
-check_mobility(M, D, N, mod)
+check(mod) # Check goodness of fit
+
+$DIC
+[1] 44249.32
+
+$RMSE
+[1] 1046.458
+
+$MAPE
+[1] 5.578757
+
+$R2
+[1] 0.712208
 ```
 <img src='man/figures/model_check.png' width=700>
 
-### 4. Simulate mobility model
+### 4. Predict expected mean mobility values
 ```r
-# Simulate one stochastic realization of mobility matrix using fitted mobility model parameters
-sim_mobility(D, N, mod, n=1)
-             
+# Predict the expected mean number of trips using fitted mobility model parameters
+pred <- predict(mod)
+pred[1:5,1:5]
+
       destination
-origin           A          B          C           D          E
-     A 0.287432109 0.04218981 0.02230203 0.062559887 0.03429974
-     B 0.022199446 0.48642730 0.05553207 0.009403616 0.07279978
-     C 0.005880424 0.02782746 0.86158241 0.003194057 0.02459956
-     D 0.151346825 0.04323522 0.02930595 0.378491474 0.03955175
-     E 0.019122996 0.07713662 0.05201496 0.009114932 0.51987329
+origin         A         B         C         D         E
+     A 5819.4341  424.1779  390.5899  445.6444  410.3822
+     B  405.2726 5559.8336  456.8372  362.2968  439.9313
+     C  224.5727  274.9148 3343.7435  207.3500  259.8844
+     D  453.4775  385.8624  366.9740 5921.5336  382.2572
+     E  532.6940  597.6884  586.7235  487.6157 7556.0780
 ```
+
+### 5. Simulate stochastic realizations of a mobility model
+```r
+sim <- predict(mod, nsim=3, seed=123)
+sim[1:5,1:5,]
+
+, , 1
+
+          A         B         C         D         E
+A 5819.2934  426.1649  392.4692  447.6925  412.3339
+B  407.1690 5559.6542  458.8656  364.0649  441.9293
+C  225.6655  276.1520 3343.6948  208.3886  261.0833
+D  455.5835  387.7662  368.8098 5921.6621  384.1542
+E  535.2219  600.3998  589.3920  490.0069 7555.9685
+
+, , 2
+
+          A         B         C         D         E
+A 5785.3651  422.5080  389.0609  443.8742  408.7853
+B  403.6777 5527.2621  454.9804  360.9001  438.1816
+C  223.7098  273.8168 3324.1344  206.5649  258.8627
+D  451.6861  384.3829  365.5662 5886.9730  380.8022
+E  530.6073  595.2950  584.3594  485.7362 7511.9216
+
+, , 3
+
+          A         B         C         D         E
+A 5833.9490  419.7001  386.1108  441.0524  406.0959
+B  401.0265 5573.7552  452.0747  358.2909  435.6061
+C  222.1749  272.2446 3351.0992  205.0489  257.3595
+D  448.7633  381.5303  362.5781 5935.4389  378.0528
+E  526.9251  591.5347  580.3331  482.1094 7575.6664
+```
+
 
 Please see package vignettes to explore each step in more detail.
 

@@ -410,7 +410,7 @@ fit_prob_travel <- function(
     class=c('prob_travel', 'mobility.model')
   )
 
-  out$summary <- summary.mobility.model(out)
+  out$summary <- mobility::summary.mobility.model(out)
 
   return(out)
 }
@@ -477,7 +477,7 @@ mobility <- function(
 
   if( all(c('M', 'D', 'N') %in% names(data)) ) {
 
-    M <- data$M
+    M <- round(data$M)
     D <- data$D
     N_orig <- N_dest <- data$N
 
@@ -530,6 +530,8 @@ mobility <- function(
 
   vals <- c(D, N_orig, N_dest)
   if (any(is.na(vals)) | any(is.nan(vals))) stop('D and N are covariates and cannot contain missing values')
+
+  if (any(is.nan(M))) M[is.nan(M)] <- NA
 
   message(
     paste('::Fitting', type, model, 'model for', dim(M)[1], 'origins and', dim(M)[2], 'destinations::', sep=' ')
