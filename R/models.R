@@ -410,7 +410,7 @@ fit_prob_travel <- function(
     class=c('prob_travel', 'mobility.model')
   )
 
-  out$summary <- mobility::summary.mobility.model(out)
+  out$summary <- summary.mobility.model(out)
 
   return(out)
 }
