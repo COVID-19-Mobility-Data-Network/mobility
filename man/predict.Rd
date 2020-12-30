@@ -60,6 +60,7 @@ Other model:
 \code{\link{fit_jags}()},
 \code{\link{fit_prob_travel}()},
 \code{\link{mobility}()},
+\code{\link{residuals}()},
 \code{\link{summary}()}
 }
 \author{

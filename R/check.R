@@ -40,7 +40,7 @@ check.mobility.model <- function(object,
 
   if('M' %in% names(object$data) ) {
 
-    M <- c(object$data$M)
+    M <- object$data$M
 
   }  else {
 
@@ -55,22 +55,22 @@ check.mobility.model <- function(object,
   } else {
 
     if (is.null(object$summary)) object$summary <- summary.mobility.model(object$params)
-    M_hat <- c(predict(object))
+    M_hat <- predict(object)
 
   }
 
+  M_res <- residuals(object, type='deviance')
+
   if (plots) {
 
-    sel <- which(!is.na(M))
-    M <- M[sel]
-    M_hat <- M_hat[sel]
+    par(mfrow=c(2,4))
 
-    par(mfrow=c(1,2))
-    dens_M <- density(M)
-    dens_M_hat <- density(M_hat)
+    # Posterior predictive check
+    dens_M <- density(M[!is.na(M)])
+    dens_M_hat <- density(M_hat[!is.na(M_hat)])
     plot(dens_M, lwd=2, col='red',
          xlab='Trip count',
-         main='Posterior predictive check',
+         main='',
          ylim=c(0, max(c(dens_M$y, dens_M_hat$y))))
     lines(dens_M_hat, lwd=2)
 
@@ -83,23 +83,132 @@ check.mobility.model <- function(object,
            seg.len=0.8,
            bty='n')
 
-    err <- M - M_hat
-    qqnorm(err, cex=1.25)
-    qqline(err, lwd=2, col=2)
+    # Residuals-Fitted
+    plot(log(M_hat), M_res, xlab='Log(Fitted)', ylab='Deviance resiuduals')
+    abline(h=0, lty=2, col='red')
+
+    # Residuals distribution
+    hist(M_res, main='', xlab='Deviance residuals', ylab='Frequency', col='lightblue')
+    abline(v=0, lty=2, col='red')
+
+    # Q-Q plot
+    qqnorm(M_res, main='')
+    qqline(M_res, col=2)
+
+    # Log-log plot
+    plot(log(M), log(M_hat), xlab='Log(Observed)', ylab='Log(Fitted)')
+    abline(a=1, b=1, lty=2, col='red')
+
+    # Residuals-covariates
+    plot(object$data$D, M_res, xlab='Distance', ylab='Deviance resiuduals')
+    abline(h=0, lty=2, col='red')
+
+    N_orig <- object$data$N_orig
+    for (i in 1:(ncol(M)-1)) N_orig <- rbind(N_orig, object$data$N_orig)
+    plot(N_orig, M_res, xlab='Origin population size', ylab='Deviance resiuduals')
+    abline(h=0, lty=2, col='red')
+
+    N_dest <- object$data$N_dest
+    for (i in 1:(nrow(M)-1)) N_dest <- rbind(N_dest, object$data$N_dest)
+    plot(N_dest, M_res, xlab='Destination population size', ylab='Deviance resiuduals')
+    abline(h=0, lty=2, col='red')
+
+    mtext(paste("Goodness of fit:", object$type, object$model, 'model', paste0('(n=', sum(!is.na(M)), ')')),
+          outer=TRUE,  cex=1.15, line=-2)
+
   }
 
   sel <- which(!is.na(M))
+  M <- M[sel]
+  M_hat <- M_hat[sel]
+  M_res <- M_res[sel]
 
-  SS_resid <- sum((M[sel] - M_hat[sel])^2)
-  SS_pred <- sum((M_hat[sel] - mean(M[sel]))^2)
-  R2 <- SS_pred/(SS_resid + SS_pred)
+  SS_resid <- sum((M - M_hat)^2)
+  SS_pred <- sum((M_hat - mean(M))^2)
 
   return(
     list(DIC=object$summary['DIC', 'mean'],
-         RMSE=Metrics::rmse(M[sel], M_hat[sel]),
-         MAPE=Metrics::mape(M[sel] + 1e-03, M_hat[sel]),
-         R2=R2)
+         RMSE=Metrics::rmse(M, M_hat),
+         MAPE=Metrics::mape(M + 1e-03, M_hat),
+         R2=SS_pred/(SS_resid + SS_pred))
   )
 }
 
 
+##' Extract model residuals
+##'
+##' Generic fundtion that extracts model residuals from a 'mobility.model' object.
+##'
+##' @param object a \code{mobility.model} object produced by the \code{\link{mobility}} function
+##' @param type the type of residuals to be returned. Available residual types include: \code{'deviance'} (default), \code{'pearson'}, and \code{'raw'}.
+##' @param ... further arguments passed to or from other methods
+##'
+##' @return a matrix containing model residuals
+##'
+##' @details Residual types are calculated as:
+##' \describe{
+##'   \item{raw}{\eqn{y_i - \mu_i}}
+##'   \item{pearson}{\eqn{(y_i - \mu_i)/\sqrt{\mu_i}}}
+##'   \item{deviance}{\eqn{sign(y_i - \mu_i) * \sqrt(2(log(y_i/\mu_i) - (y_i - \mu_i)))}}
+##' }
+##' Where, \eqn{y_i} is the observed data and \eqn{\mu_i} is the value predicted by the model using the mean of parameter posterior distributions
+##'
+##' @author John Giles
+##'
+##' @example R/examples/residuals.R
+##'
+##' @family model
+##'
+##' @export
+
+residuals <- function(object, type, ...) UseMethod('residuals')
+
+##' @export
+
+residuals.mobility.model <- function(object,
+                                     type='deviance',
+                                     ...) {
+
+  if (!(class(object) == 'mobility.model')) stop("Object must be class 'mobility.model'")
+
+  if('M' %in% names(object$data) ) {
+
+    M <- object$data$M
+
+  }  else {
+
+    stop("Check slot 'data' of mobility.model object")
+
+  }
+
+  if (object$model == 'radiation') {
+
+    M_hat <- object$params
+
+  } else {
+
+    if (is.null(object$summary)) object$summary <- summary.mobility.model(object$params)
+    M_hat <- predict(object)
+
+  }
+
+  if (type == 'raw') {
+
+    res <- M - M_hat
+
+  } else if (type == 'pearson') {
+
+    res <- (M - M_hat)/sqrt(M_hat)
+
+  } else if (type == 'deviance') {
+
+    res <- sign(M-M_hat) * sqrt( 2 * (M * log(M/M_hat) - (M-M_hat)) )
+
+  } else {
+
+    stop('Unknown residual type')
+  }
+
+  attr(res, 'residuals') <- type
+  return(res)
+}

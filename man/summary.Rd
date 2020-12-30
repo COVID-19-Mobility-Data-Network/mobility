@@ -36,7 +36,8 @@ Other model:
 \code{\link{fit_jags}()},
 \code{\link{fit_prob_travel}()},
 \code{\link{mobility}()},
-\code{\link{predict}()}
+\code{\link{predict}()},
+\code{\link{residuals}()}
 }
 \author{
 John Giles

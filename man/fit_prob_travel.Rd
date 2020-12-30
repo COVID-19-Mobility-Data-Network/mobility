@@ -81,6 +81,7 @@ Other model:
 \code{\link{fit_jags}()},
 \code{\link{mobility}()},
 \code{\link{predict}()},
+\code{\link{residuals}()},
 \code{\link{summary}()}
 
 Other travel probability: 

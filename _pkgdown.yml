@@ -14,11 +14,12 @@ reference:
   desc: "Fitting, summarizing, and checking mobility model objects"
 - contents:
   - mobility
+  - starts_with("fit_")
   - summary
   - check
   - predict
   - compare
-  - starts_with("fit_")
+  - residuals
 - title: "Utility"
   desc: "Helper functions to synthesis data objects"
 - contents:

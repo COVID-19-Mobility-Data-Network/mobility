@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mobility</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.3</span>
       </span>
     </div>
 
@@ -107,7 +107,7 @@
 
     
     
-<p>Mobility models in general describe interactions between separate locations in space, such travel among administrative units. There many types of mobility models (gravity and radiation are common model types) and there are many parameterizations of each model type <span class="citation">(Barbosa et al. 2018)</span>. The ‘mobility’ R package provides methods for fitting and simulating different mobility models including parameterizations of gravity, radiation, and departure-diffusion models. This vignette contains a list of all the mobility models that are currently available in this package.</p>
+<p>Mobility models in general describe interactions between separate locations in space, such as travel among administrative units. There many types of mobility models (gravity and radiation are common model types) and there are many parameterizations of each model type <span class="citation">(Barbosa et al. 2018)</span>. The ‘mobility’ R package provides methods for fitting and simulating different mobility models including parameterizations of gravity, radiation, and departure-diffusion models. This vignette contains a list of all the mobility models that are currently available in this package.</p>
 <p>The models list below can be called by specifying the <code>model</code> and <code>type</code> arguments of the <code><a href="../reference/mobility.html">mobility()</a></code> function. This function performs parameter estimation for the specified model and supplied data matrices. The models are implemented using using Bayesian inference <span class="citation">(Gelman et al. 2003)</span> and the Markov Chain Monte Carlo (MCMC) algorithm found in the JAGS (Just Another Gibbs Sampler) library <span class="citation">(Plummer 2003, 2019)</span>. Each of the models have a likelihood function that assumes a Poisson error structure with mean <span class="math inline">\(\lambda_{ij}\)</span>:</p>
 <p><span class="math display">\[
 \begin{aligned}

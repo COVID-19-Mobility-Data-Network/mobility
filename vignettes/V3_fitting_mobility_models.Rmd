@@ -62,7 +62,7 @@ ggplot(data=melt(mobility_matrices$M)) +
 
 
 ## Fit a mobility model to the data
-Several different mobility models can be fitted to the data using the `mobility()` function. This function uses the distance among locations ($D$) and population sizes ($N$) as covariates in the specified model equation, which is fitted to the movement matrix ($M$) with a Poisson likelihood link function. Fitting a gravity model can be specified using the `model = 'gravity'` argument. The `mobility()` function contains several variants of the gravity model which can be specified by the `type` argument. 
+Several different mobility models can be fitted to the data using the `mobility()` function. For a full list of available models, see the 'Curated list of mobility models' vignette. This function uses the distance among locations ($D$) and population sizes ($N$) as covariates in the specified model equation, which is fitted to the movement matrix ($M$) with a Poisson likelihood link function. Fitting a gravity model can be specified using the `model = 'gravity'` argument. The `mobility()` function contains several variants of the gravity model which can be specified by the `type` argument. 
 ```{r fit}
 mod <- mobility(data=mobility_matrices,
                 model='gravity',
@@ -103,7 +103,7 @@ summary(mod, probs=c(0.025, 0.975), ac_lags=10)
 ```
 
 The `check()` function provides goodness of fit metrics and summary plots for the fitted model.
-```{r check, fig.height=4, fig.width=7.25}
+```{r check, fig.height=4.25, fig.width=7.5}
 check(mod)
 ```
 

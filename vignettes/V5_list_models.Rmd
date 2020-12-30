@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-Mobility models in general describe interactions between separate locations in space, such travel among administrative units. There many types of mobility models (gravity and radiation are common model types) and there are many parameterizations of each model type [@barbosa_human_2018]. The 'mobility' R package provides methods for fitting and simulating different mobility models including parameterizations of gravity, radiation, and departure-diffusion models. This vignette contains a list of all the mobility models that are currently available in this package.
+Mobility models in general describe interactions between separate locations in space, such as travel among administrative units. There many types of mobility models (gravity and radiation are common model types) and there are many parameterizations of each model type [@barbosa_human_2018]. The 'mobility' R package provides methods for fitting and simulating different mobility models including parameterizations of gravity, radiation, and departure-diffusion models. This vignette contains a list of all the mobility models that are currently available in this package.
 
 The models list below can be called by specifying the `model` and `type` arguments of the `mobility()` function. This function performs parameter estimation for the specified model and supplied data matrices. The models are implemented using using Bayesian inference [@gelman_bayesian_2003] and the Markov Chain Monte Carlo (MCMC) algorithm found in the JAGS (Just Another Gibbs Sampler) library [@plummer_jags_2003; @plummer_rjags_2019]. Each of the models have a likelihood function that assumes a Poisson error structure with mean $\lambda_{ij}$: 
 

@@ -119,8 +119,9 @@ predict.mobility.model <- function(object,
 
   if (object$model == 'radiation') {
 
+    if (!is.null(newdata)) warning('Radiation models cannot be predicted using only covariates.')
+    if (nsim > 1) warning('Radiation models cannot be used to simulate multiple realizations because they are parameter free.')
     out <- object$params
-    if (nsim > 1) message('Both basic and finite radiation models cannot simulate multiple realizations because they are parameter free.')
 
   } else {
 

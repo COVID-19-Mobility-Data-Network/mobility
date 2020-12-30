@@ -79,6 +79,7 @@ Other model:
 \code{\link{fit_prob_travel}()},
 \code{\link{mobility}()},
 \code{\link{predict}()},
+\code{\link{residuals}()},
 \code{\link{summary}()}
 }
 \author{

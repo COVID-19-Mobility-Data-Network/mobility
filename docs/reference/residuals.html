@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Calculate summary statistics for 'mobility.model' class — summary • mobility</title>
+<title>Extract model residuals — residuals • mobility</title>
 
 
 <!-- jquery -->
@@ -39,12 +39,8 @@
 
 
 
-<meta property="og:title" content="Calculate summary statistics for 'mobility.model' class — summary" />
-<meta property="og:description" content="This is a wrapper function of MCMCsummary that calculates summary statistics for each
-parameter in a mobility.model object. Summary statistics are calculated for all parameters across
-each chain along with convergance diagnosics like the Gelman-Rubin convergence diagnostic and (Rhat) and samples
-auto-correlation foreach parameter. If the model object contains deviance and penalty parameters, then Deviance Information
-Criterion (DIC) is calculated and appended to the summary." />
+<meta property="og:title" content="Extract model residuals — residuals" />
+<meta property="og:description" content="Generic fundtion that extracts model residuals from a 'mobility.model' object." />
 
 
 
@@ -146,35 +142,27 @@ Criterion (DIC) is calculated and appended to the summary." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Calculate summary statistics for 'mobility.model' class</h1>
-    <small class="dont-index">Source: <a href='https://github.com/COVID-19-Mobility-Data-Network/mobility/blob/master/R/summary.R'><code>R/summary.R</code></a></small>
-    <div class="hidden name"><code>summary.Rd</code></div>
+    <h1>Extract model residuals</h1>
+    <small class="dont-index">Source: <a href='https://github.com/COVID-19-Mobility-Data-Network/mobility/blob/master/R/check.R'><code>R/check.R</code></a></small>
+    <div class="hidden name"><code>residuals.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This is a wrapper function of <code><a href='https://rdrr.io/pkg/MCMCvis/man/MCMCsummary.html'>MCMCsummary</a></code> that calculates summary statistics for each
-parameter in a <code>mobility.model</code> object. Summary statistics are calculated for all parameters across
-each chain along with convergance diagnosics like the Gelman-Rubin convergence diagnostic and (Rhat) and samples
-auto-correlation foreach parameter. If the model object contains deviance and penalty parameters, then Deviance Information
-Criterion (DIC) is calculated and appended to the summary.</p>
+    <p>Generic fundtion that extracts model residuals from a 'mobility.model' object.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>summary</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>probs</span>, <span class='va'>ac_lags</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>residuals</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>type</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>a <code>mobility.model</code> object (can also accept a <code><a href='https://rdrr.io/pkg/coda/man/mcmc.list.html'>mcmc.list</a></code> object)</p></td>
+      <td><p>a <code>mobility.model</code> object produced by the <code><a href='mobility.html'>mobility</a></code> function</p></td>
     </tr>
     <tr>
-      <th>probs</th>
-      <td><p>numeric vector giving the quantiles to calculate for each parameter (default = <code><a href='https://rdrr.io/r/base/c.html'>c(0.025, 0.5, 0.975)</a></code>)</p></td>
-    </tr>
-    <tr>
-      <th>ac_lags</th>
-      <td><p>numeric vector of lags over which to calculate autocorrelation of samples within chains (default = <code><a href='https://rdrr.io/r/base/c.html'>c(2,5,10)</a></code>)</p></td>
+      <th>type</th>
+      <td><p>the type of residuals to be returned. Available residual types include: <code>'deviance'</code> (default), <code>'pearson'</code>, and <code>'raw'</code>.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -184,7 +172,15 @@ Criterion (DIC) is calculated and appended to the summary.</p>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a dataframe with summary statistics</p>
+    <p>a matrix containing model residuals</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Residual types are calculated as:</p><dl>
+  <dt>raw</dt><dd><p>\(y_i - \mu_i\)</p></dd>
+  <dt>pearson</dt><dd><p>\((y_i - \mu_i)/\sqrt{\mu_i}\)</p></dd>
+  <dt>deviance</dt><dd><p>\(sign(y_i - \mu_i) * \sqrt(2(log(y_i/\mu_i) - (y_i - \mu_i)))\)</p></dd>
+
+</dl><p>Where, \(y_i\) is the observed data and \(\mu_i\) is the value predicted by the model using the mean of parameter posterior distributions</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>Other model: 
@@ -194,7 +190,7 @@ Criterion (DIC) is calculated and appended to the summary.</p>
 <code><a href='fit_prob_travel.html'>fit_prob_travel</a>()</code>,
 <code><a href='mobility.html'>mobility</a>()</code>,
 <code><a href='predict.html'>predict</a>()</code>,
-<code><a href='residuals.html'>residuals</a>()</code></p></div>
+<code><a href='summary.html'>summary</a>()</code></p></div>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>John Giles</p>
@@ -213,19 +209,38 @@ Criterion (DIC) is calculated and appended to the summary.</p>
 #&gt; 
 #&gt; NOTE: Stopping adaptation
 #&gt; 
-#&gt; </div><div class='input'><span class='fu'>summary</span><span class='op'>(</span><span class='va'>mod</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;                  mean           sd         Q2.5        Q97.5 Rhat n.eff   AC5
-#&gt; gamma    1.816717e-01 6.538159e-04 1.804779e-01 1.829593e-01 1.01  1157  0.01
-#&gt; theta    1.541322e-05 6.486526e-08 1.528394e-05 1.553602e-05 1.00  1579 -0.02
-#&gt; DIC      4.931158e+04 2.099038e+00 4.930949e+04 4.931750e+04 1.01  1180  0.01
-#&gt; deviance 4.930726e+04 2.099038e+00 4.930517e+04 4.931318e+04 1.01  1180  0.01
-#&gt; pD       2.159479e+00           NA           NA           NA   NA    NA    NA
-#&gt;           AC10
-#&gt; gamma     0.00
-#&gt; theta     0.01
-#&gt; DIC      -0.01
-#&gt; deviance -0.01
-#&gt; pD          NA</div></pre>
+#&gt; </div><div class='input'>
+<span class='fu'>residuals</span><span class='op'>(</span><span class='va'>mod</span>, type<span class='op'>=</span><span class='st'>'pearson'</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;       destination
+#&gt; origin          A           B          C           D          E          F
+#&gt;      A  -9.732584  -3.4381789  -8.269817   0.9058579  -9.829610  -3.726410
+#&gt;      B         NA  58.9370234 -13.186432 -18.6946645 -22.040351         NA
+#&gt;      C -13.883801          NA         NA -14.3174955 -16.564532 -11.003991
+#&gt;      D  69.105205   7.5872000         NA -37.7960654   6.438467   6.034657
+#&gt;      E         NA   0.2475687   1.051786 -16.6343181  -1.882608         NA
+#&gt;      F -16.552372  -6.6604894  -6.952351          NA -10.229745         NA
+#&gt;      G -15.096137 -16.8964345         NA          NA -21.944310 -15.867733
+#&gt;      H -19.398651 -20.1679247         NA          NA -24.431484 -18.267999
+#&gt;      I -15.394044 -15.3481401 -11.702550 -14.8243964 -17.809959 -13.227203
+#&gt;      J  23.210544          NA   3.618435  11.9494995  23.895536         NA
+#&gt;       destination
+#&gt; origin          G         H          I          J
+#&gt;      A  32.318485  24.72746  26.548013  -3.496079
+#&gt;      B -19.218903 -20.94031 -14.212011 -16.067636
+#&gt;      C -14.498018        NA -10.954726 -11.915701
+#&gt;      D  32.474832        NA         NA  26.223967
+#&gt;      E  -7.458483        NA  -3.804435         NA
+#&gt;      F         NA        NA         NA -12.909869
+#&gt;      G  21.536699  13.47316         NA         NA
+#&gt;      H   3.594369 -41.98368 239.703657 -17.670405
+#&gt;      I  -7.115595        NA         NA         NA
+#&gt;      J  26.102911  16.37153         NA         NA
+#&gt; attr(,"model")
+#&gt; [1] "gravity"
+#&gt; attr(,"type")
+#&gt; [1] "transport"
+#&gt; attr(,"residuals")
+#&gt; [1] "pearson"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
