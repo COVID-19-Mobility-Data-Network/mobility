@@ -1,4 +1,5 @@
 mod <- mobility(data=mobility_matrices, model='gravity', type='transport')
+mod <- mobility(data=mobility_matrices, model='departure-diffusion', type='power', hierarchical = T)
 predict(object=mod)
 
 n <- 5
