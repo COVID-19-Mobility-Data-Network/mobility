@@ -180,5 +180,5 @@ devtools::install_github('COVID-19-Mobility-Data-Network/mobility')
 
 
 ## Troubleshooting
-For general questions, contact John Giles (giles@jhu.edu) and/or Amy Wesolowski (awesolowski@jhu.edu). For technical questions, contact package maintainer John Giles (giles@jhu.edu). To report bugs or problems with code or documentation, please go to the [Issues](https://github.com/COVID-19-Mobility-Data-Network/mobility/issues) page associated with this GitHub page and click *new issue*.
+For general questions, contact John Giles (jrgiles@uw.edu) and/or Amy Wesolowski (awesolowski@jhu.edu). For technical questions, contact package maintainer John Giles (jrgiles@uw.edu). To report bugs or problems with code or documentation, please go to the [Issues](https://github.com/COVID-19-Mobility-Data-Network/mobility/issues) page associated with this GitHub page and click *new issue*.
 

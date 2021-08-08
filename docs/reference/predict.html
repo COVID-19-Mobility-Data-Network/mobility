@@ -82,7 +82,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mobility</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.4</span>
       </span>
     </div>
 
@@ -90,7 +90,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -125,7 +125,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/COVID-19-Mobility-Data-Network/mobility/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -207,7 +207,9 @@ using the mean point estimate of parameter values. If <code>nsim &gt; 1</code> t
     <p>John Giles</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>mod</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mobility.html'>mobility</a></span><span class='op'>(</span>data<span class='op'>=</span><span class='va'>mobility_matrices</span>, model<span class='op'>=</span><span class='st'>'gravity'</span>, type<span class='op'>=</span><span class='st'>'transport'</span><span class='op'>)</span>
+    <pre class="examples"><div class='input'><span class='va'>mod</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mobility.html'>mobility</a></span><span class='op'>(</span>data<span class='op'>=</span><span class='va'>mobility_matrices</span>,
+                model<span class='op'>=</span><span class='st'>'gravity'</span>,
+                type<span class='op'>=</span><span class='st'>'transport'</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>::Fitting transport gravity model for 10 origins and 10 destinations::</span></div><div class='output co'>#&gt; Compiling model graph
 #&gt;    Resolving undeclared variables
 #&gt;    Allocating nodes
@@ -220,35 +222,55 @@ using the mean point estimate of parameter values. If <code>nsim &gt; 1</code> t
 #&gt; 
 #&gt; NOTE: Stopping adaptation
 #&gt; 
-#&gt; </div><div class='input'><span class='fu'>predict</span><span class='op'>(</span>object<span class='op'>=</span><span class='va'>mod</span><span class='op'>)</span>
+#&gt; </div><div class='input'>
+<span class='va'>mod</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mobility.html'>mobility</a></span><span class='op'>(</span>data<span class='op'>=</span><span class='va'>mobility_matrices</span>,
+                model<span class='op'>=</span><span class='st'>'departure-diffusion'</span>,
+                type<span class='op'>=</span><span class='st'>'power'</span>,
+                hierarchical<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>::Fitting power departure-diffusion model for 10 origins and 10 destinations::</span></div><div class='output co'>#&gt; Compiling model graph
+#&gt;    Resolving undeclared variables
+#&gt;    Allocating nodes
+#&gt; Graph information:
+#&gt;    Observed stochastic nodes: 70
+#&gt;    Unobserved stochastic nodes: 46
+#&gt;    Total graph size: 994
+#&gt; 
+#&gt; Initializing model
+#&gt; 
+#&gt; NOTE: Stopping adaptation
+#&gt; 
+#&gt; </div><div class='input'>
+<span class='fu'>predict</span><span class='op'>(</span>object<span class='op'>=</span><span class='va'>mod</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;       destination
-#&gt; origin         A         B         C         D         E         F         G
-#&gt;      A 5265.4046  443.3968  240.1566  468.3943  575.8860  338.5657  553.0002
-#&gt;      B  443.3968 4891.3172  279.4241  388.4593  617.8456  408.6413  501.3102
-#&gt;      C  240.1566  279.4241 1672.1655  216.8236  355.1774  226.6721  261.4031
-#&gt;      D  468.3943  388.4593  216.8236 4979.1355  515.7756  300.4047  444.9664
-#&gt;      E  575.8860  617.8456  355.1774  515.7756 8777.6952  539.6385  631.4157
-#&gt;      F  338.5657  408.6413  226.6721  300.4047  539.6385 2993.8916  377.1612
-#&gt;      G  553.0002  501.3102  261.4031  444.9664  631.4157  377.1612 5549.8097
-#&gt;      H  647.6914  605.1104  312.5601  526.5075  741.1022  447.4023  832.3066
-#&gt;      I  302.9328  279.6737  144.8388  245.0724  344.6253  207.5663  401.5971
-#&gt;      J  308.3946  279.7355  157.5772  287.4152  396.9271  222.6213  315.9904
+#&gt; origin          A          B           C           D          E          F
+#&gt;      A 4612.33342  348.37077  125.368853  509.947769  336.41805  238.15704
+#&gt;      B   31.78730 8974.50837   51.627433   13.305170   71.53423  132.24174
+#&gt;      C   13.52665   61.04770 5283.612608    7.233958   49.45510   68.34040
+#&gt;      D 1926.71267  550.93429  253.318307 2270.236594  636.69850  417.66652
+#&gt;      E  267.36113  623.04722  364.275050  133.924965 8604.64752 1273.56705
+#&gt;      F   44.56248  271.18309  118.517585   20.684467  299.85325 6408.55208
+#&gt;      G  200.69147  118.50892   31.293662   41.993366   89.10860   71.80827
+#&gt;      H  150.10473  113.30474   27.701293   34.133658   67.80793   59.57853
+#&gt;      I   33.00185   22.61175    5.647168    7.216220   14.22255   12.26176
+#&gt;      J  731.95688  434.33209  215.208769  507.052971  862.45931  415.97965
 #&gt;       destination
-#&gt; origin         H         I         J
-#&gt;      A  647.6914  302.9328  308.3946
-#&gt;      B  605.1104  279.6737  279.7355
-#&gt;      C  312.5601  144.8388  157.5772
-#&gt;      D  526.5075  245.0724  287.4152
-#&gt;      E  741.1022  344.6253  396.9271
-#&gt;      F  447.4023  207.5663  222.6213
-#&gt;      G  832.3066  401.5971  315.9904
-#&gt;      H 7878.7980  614.9266  367.9567
-#&gt;      I  614.9266 1698.1252  171.5629
-#&gt;      J  367.9567  171.5629 2351.1013
+#&gt; origin          G          H          I           J
+#&gt;      A 1320.30306 1307.65149  785.70147  272.417172
+#&gt;      B   71.13898   90.06532   49.12078   14.749687
+#&gt;      C   22.21272   26.03744   14.50610    8.641907
+#&gt;      D 1043.79846 1123.49652  649.11292  713.006632
+#&gt;      E  465.88992  469.45837  269.10124  255.097714
+#&gt;      F   88.39448   97.11658   54.62331   28.968566
+#&gt;      G 7283.78274 1262.68985  977.93772   41.552495
+#&gt;      H  953.55064 4125.38938 6495.92529   29.643308
+#&gt;      I  270.23193 2376.94654 2849.07131    6.354144
+#&gt;      J  734.50175  693.86556  406.46893 1584.602553
 #&gt; attr(,"model")
-#&gt; [1] "gravity"
+#&gt; [1] "departure-diffusion"
 #&gt; attr(,"type")
-#&gt; [1] "transport"</div><div class='input'>
+#&gt; [1] "power"
+#&gt; attr(,"hierarchical")
+#&gt; [1] TRUE</div><div class='input'>
 <span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>5</span>
 <span class='va'>ids</span> <span class='op'>&lt;-</span> <span class='va'>letters</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='va'>n</span><span class='op'>]</span>
 
@@ -264,16 +286,18 @@ using the mean point estimate of parameter values. If <code>nsim &gt; 1</code> t
 <span class='co'># Predict mobility model using new data</span>
 <span class='fu'>predict</span><span class='op'>(</span>object<span class='op'>=</span><span class='va'>mod</span>, newdata<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>D<span class='op'>=</span><span class='va'>D</span>, N<span class='op'>=</span><span class='va'>N</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;       destination
-#&gt; origin         a         b         c          d         e
-#&gt;      a 2514.2870  283.1106 106.08746  215.30098 123.18338
-#&gt;      b  283.1106 2962.5905 125.99328  257.81314 126.08975
-#&gt;      c  106.0875  125.9933 501.02888   89.05014  48.45009
-#&gt;      d  215.3010  257.8131  89.05014 1759.27000  90.15599
-#&gt;      e  123.1834  126.0898  48.45009   90.15599 456.31604
+#&gt; origin          a          b          c         d          e
+#&gt;      a 3459.71747  626.90386 1712.31675 390.48386 1204.07873
+#&gt;      b   33.88195 2872.29560   45.18656  71.13985   18.00077
+#&gt;      c   74.68437   36.46594 5419.47965  25.02005  141.80039
+#&gt;      d  342.24054 1153.64941  502.77192 687.26941  215.73305
+#&gt;      e  247.35776   68.42177  667.88622  50.56604 2159.09725
 #&gt; attr(,"model")
-#&gt; [1] "gravity"
+#&gt; [1] "departure-diffusion"
 #&gt; attr(,"type")
-#&gt; [1] "transport"</div></pre>
+#&gt; [1] "power"
+#&gt; attr(,"hierarchical")
+#&gt; [1] TRUE</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

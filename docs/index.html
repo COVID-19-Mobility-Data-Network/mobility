@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mobility</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.4</span>
       </span>
     </div>
 
@@ -45,7 +45,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -80,7 +80,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/COVID-19-Mobility-Data-Network/mobility/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -130,19 +130,19 @@
 <h3 class="hasAnchor">
 <a href="#1-generalized-long-form-mobility-data-format" class="anchor"></a>1. Generalized long-form mobility data format</h3>
 <p>There are many sources of travel data that researchers wish to fit models to. So, we have designed a generalized data frame template to standardize travel data from various sources into a longform format that is compatible with the modeling and simulation tools in this package. This data template can be populated by starting with the <code>travel_data_template</code> object and adding rows.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/COVID-19-Mobility-Data-Network/mobility">mobility</a></span><span class="op">)</span>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/COVID-19-Mobility-Data-Network/mobility">mobility</a></span><span class="op">)</span>
 <span class="va">mobility_data</span> <span class="op">&lt;-</span> <span class="va">travel_data_template</span>
 <span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">5</span> <span class="co"># Add some observations</span>
 <span class="va">mobility_data</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span>,<span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span>
-<span class="co"># add data mobility data to rows</span></pre></div>
+<span class="co"># add data mobility data to rows</span></code></pre></div>
 </div>
 <div id="2-build-sparse-data-matrices-for-modeling" class="section level3">
 <h3 class="hasAnchor">
 <a href="#2-build-sparse-data-matrices-for-modeling" class="anchor"></a>2. Build sparse data matrices for modeling</h3>
 <p>Utility functions take mobility data from the generalized long-form format and build data matrices that are used to fit models.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="va">mobility_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">mobility_data</span>, <span class="fu"><a href="reference/get_unique_ids.html">get_unique_ids</a></span><span class="op">(</span><span class="va">mobility_data</span>, adm_start<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mobility_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">mobility_data</span>, <span class="fu"><a href="reference/get_unique_ids.html">get_unique_ids</a></span><span class="op">(</span><span class="va">mobility_data</span>, adm_start<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>
 
 <span class="co"># Sparse matrix containing trip counts</span>
 <span class="va">M</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_mob_matrix.html">get_mob_matrix</a></span><span class="op">(</span>orig<span class="op">=</span><span class="va">mobility_data</span><span class="op">$</span><span class="va">orig_id</span>,
@@ -156,100 +156,100 @@
                          id<span class="op">=</span><span class="va">xy</span><span class="op">[</span>,<span class="fl">3</span><span class="op">]</span><span class="op">)</span>
                          
 <span class="co"># Unique population sizes for all locations</span>
-<span class="va">N</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_pop_vec.html">get_pop_vec</a></span><span class="op">(</span><span class="va">mobility_data</span><span class="op">)</span></pre></div>
+<span class="va">N</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_pop_vec.html">get_pop_vec</a></span><span class="op">(</span><span class="va">mobility_data</span><span class="op">)</span></code></pre></div>
 <p>Alternatively, you can create mobility data matrices from your own data source. See the <code>mobility_matrices</code> data object for an example of data structure.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">str</span>(mobility_matrices)</span>
-<span id="cb3-2"><a href="#cb3-2"></a></span>
-<span id="cb3-3"><a href="#cb3-3"></a>List of <span class="dv">3</span></span>
-<span id="cb3-4"><a href="#cb3-4"></a> <span class="op">$</span><span class="st"> </span>M<span class="op">:</span><span class="st"> </span>num [<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>] <span class="dv">4559</span> <span class="ot">NA</span> <span class="dv">25</span> <span class="dv">1964</span> <span class="ot">NA</span> ...</span>
-<span id="cb3-5"><a href="#cb3-5"></a>  ..<span class="op">-</span><span class="st"> </span><span class="kw">attr</span>(<span class="op">*</span>, <span class="st">"dimnames"</span>)=List of <span class="dv">2</span></span>
-<span id="cb3-6"><a href="#cb3-6"></a>  .. ..<span class="op">$</span><span class="st"> </span>origin     <span class="op">:</span><span class="st"> </span>chr [<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>] <span class="st">"A"</span> <span class="st">"B"</span> <span class="st">"C"</span> <span class="st">"D"</span> ...</span>
-<span id="cb3-7"><a href="#cb3-7"></a>  .. ..<span class="op">$</span><span class="st"> </span>destination<span class="op">:</span><span class="st"> </span>chr [<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>] <span class="st">"A"</span> <span class="st">"B"</span> <span class="st">"C"</span> <span class="st">"D"</span> ...</span>
-<span id="cb3-8"><a href="#cb3-8"></a> <span class="op">$</span><span class="st"> </span>D<span class="op">:</span><span class="st"> </span>num [<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>] <span class="dv">0</span> <span class="dv">671</span> <span class="dv">1023</span> <span class="dv">521</span> <span class="dv">796</span> ...</span>
-<span id="cb3-9"><a href="#cb3-9"></a>  ..<span class="op">-</span><span class="st"> </span><span class="kw">attr</span>(<span class="op">*</span>, <span class="st">"dimnames"</span>)=List of <span class="dv">2</span></span>
-<span id="cb3-10"><a href="#cb3-10"></a>  .. ..<span class="op">$</span><span class="st"> </span>origin     <span class="op">:</span><span class="st"> </span>chr [<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>] <span class="st">"A"</span> <span class="st">"B"</span> <span class="st">"C"</span> <span class="st">"D"</span> ...</span>
-<span id="cb3-11"><a href="#cb3-11"></a>  .. ..<span class="op">$</span><span class="st"> </span>destination<span class="op">:</span><span class="st"> </span>chr [<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>] <span class="st">"A"</span> <span class="st">"B"</span> <span class="st">"C"</span> <span class="st">"D"</span> ...</span>
-<span id="cb3-12"><a href="#cb3-12"></a> <span class="op">$</span><span class="st"> </span>N<span class="op">:</span><span class="st"> </span>Named num [<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>] <span class="dv">9868</span> <span class="dv">9511</span> <span class="dv">5561</span> <span class="dv">9596</span> <span class="dv">12741</span> ...</span>
-<span id="cb3-13"><a href="#cb3-13"></a>  ..<span class="op">-</span><span class="st"> </span><span class="kw">attr</span>(<span class="op">*</span>, <span class="st">"names"</span>)=<span class="st"> </span>chr [<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>] <span class="st">"A"</span> <span class="st">"B"</span> <span class="st">"C"</span> <span class="st">"D"</span> ...</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(mobility_matrices)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>List of <span class="dv">3</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a> <span class="sc">$</span> M<span class="sc">:</span> num [<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>] <span class="dv">4559</span> <span class="cn">NA</span> <span class="dv">25</span> <span class="dv">1964</span> <span class="cn">NA</span> ...</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  ..<span class="sc">-</span> <span class="fu">attr</span>(<span class="sc">*</span>, <span class="st">"dimnames"</span>)<span class="ot">=</span>List of <span class="dv">2</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  .. ..<span class="sc">$</span> origin     <span class="sc">:</span> chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>] <span class="st">"A"</span> <span class="st">"B"</span> <span class="st">"C"</span> <span class="st">"D"</span> ...</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  .. ..<span class="sc">$</span> destination<span class="sc">:</span> chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>] <span class="st">"A"</span> <span class="st">"B"</span> <span class="st">"C"</span> <span class="st">"D"</span> ...</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a> <span class="sc">$</span> D<span class="sc">:</span> num [<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>] <span class="dv">0</span> <span class="dv">671</span> <span class="dv">1023</span> <span class="dv">521</span> <span class="dv">796</span> ...</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  ..<span class="sc">-</span> <span class="fu">attr</span>(<span class="sc">*</span>, <span class="st">"dimnames"</span>)<span class="ot">=</span>List of <span class="dv">2</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  .. ..<span class="sc">$</span> origin     <span class="sc">:</span> chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>] <span class="st">"A"</span> <span class="st">"B"</span> <span class="st">"C"</span> <span class="st">"D"</span> ...</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  .. ..<span class="sc">$</span> destination<span class="sc">:</span> chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>] <span class="st">"A"</span> <span class="st">"B"</span> <span class="st">"C"</span> <span class="st">"D"</span> ...</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a> <span class="sc">$</span> N<span class="sc">:</span> Named num [<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>] <span class="dv">9868</span> <span class="dv">9511</span> <span class="dv">5561</span> <span class="dv">9596</span> <span class="dv">12741</span> ...</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  ..<span class="sc">-</span> <span class="fu">attr</span>(<span class="sc">*</span>, <span class="st">"names"</span>)<span class="ot">=</span> chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>] <span class="st">"A"</span> <span class="st">"B"</span> <span class="st">"C"</span> <span class="st">"D"</span> ...</span></code></pre></div>
 </div>
 <div id="3-estimate-mobility-model-parameters" class="section level3">
 <h3 class="hasAnchor">
 <a href="#3-estimate-mobility-model-parameters" class="anchor"></a>3. Estimate mobility model parameters</h3>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># Fit a mobility model to data matrices</span></span>
-<span id="cb4-2"><a href="#cb4-2"></a>mod &lt;-<span class="st"> </span><span class="kw">mobility</span>(<span class="dt">data=</span>mobility_matrices, <span class="dt">model=</span><span class="st">'gravity'</span>, <span class="dt">type=</span><span class="st">'power_norm'</span>, <span class="dt">DIC=</span><span class="ot">TRUE</span>)</span>
-<span id="cb4-3"><a href="#cb4-3"></a></span>
-<span id="cb4-4"><a href="#cb4-4"></a><span class="kw">summary</span>(mod) <span class="co"># Summary statistics of parameter estimates</span></span>
-<span id="cb4-5"><a href="#cb4-5"></a></span>
-<span id="cb4-6"><a href="#cb4-6"></a>                 mean           sd         Q2<span class="fl">.5</span>        Q97<span class="fl">.5</span> Rhat n.eff   AC5  AC10</span>
-<span id="cb4-7"><a href="#cb4-7"></a>gamma    <span class="fl">1.951844e-01</span> <span class="fl">0.0006248893</span> <span class="fl">1.939529e-01</span> <span class="fl">1.964152e-01</span> <span class="fl">1.00</span>   <span class="dv">919</span>  <span class="fl">0.02</span>  <span class="fl">0.01</span></span>
-<span id="cb4-8"><a href="#cb4-8"></a>omega    <span class="fl">5.695785e-04</span> <span class="fl">0.0005556265</span> <span class="fl">1.924751e-05</span> <span class="fl">2.087491e-03</span> <span class="fl">1.03</span>   <span class="dv">378</span>  <span class="fl">0.01</span>  <span class="fl">0.02</span></span>
-<span id="cb4-9"><a href="#cb4-9"></a>theta    <span class="fl">9.953428e-01</span> <span class="fl">0.0040059916</span> <span class="fl">9.873916e-01</span> <span class="fl">1.003462e+00</span> <span class="fl">1.00</span>  <span class="dv">1000</span>  <span class="fl">0.01</span>  <span class="fl">0.02</span></span>
-<span id="cb4-10"><a href="#cb4-10"></a>DIC      <span class="fl">4.424932e+04</span> <span class="fl">2.8947540122</span> <span class="fl">4.424574e+04</span> <span class="fl">4.425680e+04</span> <span class="fl">1.00</span>   <span class="dv">659</span> <span class="fl">-0.05</span> <span class="fl">-0.01</span></span>
-<span id="cb4-11"><a href="#cb4-11"></a>deviance <span class="fl">4.424504e+04</span> <span class="fl">2.8947540122</span> <span class="fl">4.424146e+04</span> <span class="fl">4.425251e+04</span> <span class="fl">1.00</span>   <span class="dv">659</span> <span class="fl">-0.05</span> <span class="fl">-0.01</span></span>
-<span id="cb4-12"><a href="#cb4-12"></a>pD       <span class="fl">2.141799e+00</span>           <span class="ot">NA</span>           <span class="ot">NA</span>           <span class="ot">NA</span>   <span class="ot">NA</span>    <span class="ot">NA</span>    <span class="ot">NA</span>    <span class="ot">NA</span></span>
-<span id="cb4-13"><a href="#cb4-13"></a></span>
-<span id="cb4-14"><a href="#cb4-14"></a><span class="kw">check</span>(mod) <span class="co"># Check goodness of fit</span></span>
-<span id="cb4-15"><a href="#cb4-15"></a></span>
-<span id="cb4-16"><a href="#cb4-16"></a><span class="op">$</span>DIC</span>
-<span id="cb4-17"><a href="#cb4-17"></a>[<span class="dv">1</span>] <span class="fl">44249.32</span></span>
-<span id="cb4-18"><a href="#cb4-18"></a></span>
-<span id="cb4-19"><a href="#cb4-19"></a><span class="op">$</span>RMSE</span>
-<span id="cb4-20"><a href="#cb4-20"></a>[<span class="dv">1</span>] <span class="fl">1046.458</span></span>
-<span id="cb4-21"><a href="#cb4-21"></a></span>
-<span id="cb4-22"><a href="#cb4-22"></a><span class="op">$</span>MAPE</span>
-<span id="cb4-23"><a href="#cb4-23"></a>[<span class="dv">1</span>] <span class="fl">5.578757</span></span>
-<span id="cb4-24"><a href="#cb4-24"></a></span>
-<span id="cb4-25"><a href="#cb4-25"></a><span class="op">$</span>R2</span>
-<span id="cb4-26"><a href="#cb4-26"></a>[<span class="dv">1</span>] <span class="fl">0.712208</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit a mobility model to data matrices</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">mobility</span>(<span class="at">data=</span>mobility_matrices, <span class="at">model=</span><span class="st">'gravity'</span>, <span class="at">type=</span><span class="st">'power_norm'</span>, <span class="at">DIC=</span><span class="cn">TRUE</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod) <span class="co"># Summary statistics of parameter estimates</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>                 mean           sd         Q2<span class="fl">.5</span>        Q97<span class="fl">.5</span> Rhat n.eff   AC5  AC10</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>gamma    <span class="fl">1.951844e-01</span> <span class="fl">0.0006248893</span> <span class="fl">1.939529e-01</span> <span class="fl">1.964152e-01</span> <span class="fl">1.00</span>   <span class="dv">919</span>  <span class="fl">0.02</span>  <span class="fl">0.01</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>omega    <span class="fl">5.695785e-04</span> <span class="fl">0.0005556265</span> <span class="fl">1.924751e-05</span> <span class="fl">2.087491e-03</span> <span class="fl">1.03</span>   <span class="dv">378</span>  <span class="fl">0.01</span>  <span class="fl">0.02</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>theta    <span class="fl">9.953428e-01</span> <span class="fl">0.0040059916</span> <span class="fl">9.873916e-01</span> <span class="fl">1.003462e+00</span> <span class="fl">1.00</span>  <span class="dv">1000</span>  <span class="fl">0.01</span>  <span class="fl">0.02</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>DIC      <span class="fl">4.424932e+04</span> <span class="fl">2.8947540122</span> <span class="fl">4.424574e+04</span> <span class="fl">4.425680e+04</span> <span class="fl">1.00</span>   <span class="dv">659</span> <span class="sc">-</span><span class="fl">0.05</span> <span class="sc">-</span><span class="fl">0.01</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>deviance <span class="fl">4.424504e+04</span> <span class="fl">2.8947540122</span> <span class="fl">4.424146e+04</span> <span class="fl">4.425251e+04</span> <span class="fl">1.00</span>   <span class="dv">659</span> <span class="sc">-</span><span class="fl">0.05</span> <span class="sc">-</span><span class="fl">0.01</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>pD       <span class="fl">2.141799e+00</span>           <span class="cn">NA</span>           <span class="cn">NA</span>           <span class="cn">NA</span>   <span class="cn">NA</span>    <span class="cn">NA</span>    <span class="cn">NA</span>    <span class="cn">NA</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="fu">check</span>(mod) <span class="co"># Check goodness of fit</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="sc">$</span>DIC</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>[<span class="dv">1</span>] <span class="fl">44249.32</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="sc">$</span>RMSE</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>[<span class="dv">1</span>] <span class="fl">1046.458</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="sc">$</span>MAPE</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>[<span class="dv">1</span>] <span class="fl">5.578757</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="sc">$</span>R2</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>[<span class="dv">1</span>] <span class="fl">0.712208</span></span></code></pre></div>
 <p><img src="reference/figures/model_check.png" width="700"></p>
 </div>
 <div id="4-predict-expected-mean-mobility-values" class="section level3">
 <h3 class="hasAnchor">
 <a href="#4-predict-expected-mean-mobility-values" class="anchor"></a>4. Predict expected mean mobility values</h3>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># Predict the expected mean number of trips using fitted mobility model parameters</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a>pred &lt;-<span class="st"> </span><span class="kw">predict</span>(mod)</span>
-<span id="cb5-3"><a href="#cb5-3"></a>pred[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</span>
-<span id="cb5-4"><a href="#cb5-4"></a></span>
-<span id="cb5-5"><a href="#cb5-5"></a>      destination</span>
-<span id="cb5-6"><a href="#cb5-6"></a>origin         A         B         C         D         E</span>
-<span id="cb5-7"><a href="#cb5-7"></a>     A <span class="fl">5819.4341</span>  <span class="fl">424.1779</span>  <span class="fl">390.5899</span>  <span class="fl">445.6444</span>  <span class="fl">410.3822</span></span>
-<span id="cb5-8"><a href="#cb5-8"></a>     B  <span class="fl">405.2726</span> <span class="fl">5559.8336</span>  <span class="fl">456.8372</span>  <span class="fl">362.2968</span>  <span class="fl">439.9313</span></span>
-<span id="cb5-9"><a href="#cb5-9"></a>     C  <span class="fl">224.5727</span>  <span class="fl">274.9148</span> <span class="fl">3343.7435</span>  <span class="fl">207.3500</span>  <span class="fl">259.8844</span></span>
-<span id="cb5-10"><a href="#cb5-10"></a>     D  <span class="fl">453.4775</span>  <span class="fl">385.8624</span>  <span class="fl">366.9740</span> <span class="fl">5921.5336</span>  <span class="fl">382.2572</span></span>
-<span id="cb5-11"><a href="#cb5-11"></a>     E  <span class="fl">532.6940</span>  <span class="fl">597.6884</span>  <span class="fl">586.7235</span>  <span class="fl">487.6157</span> <span class="fl">7556.0780</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Predict the expected mean number of trips using fitted mobility model parameters</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(mod)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>pred[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>      destination</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>origin         A         B         C         D         E</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>     A <span class="fl">5819.4341</span>  <span class="fl">424.1779</span>  <span class="fl">390.5899</span>  <span class="fl">445.6444</span>  <span class="fl">410.3822</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>     B  <span class="fl">405.2726</span> <span class="fl">5559.8336</span>  <span class="fl">456.8372</span>  <span class="fl">362.2968</span>  <span class="fl">439.9313</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>     C  <span class="fl">224.5727</span>  <span class="fl">274.9148</span> <span class="fl">3343.7435</span>  <span class="fl">207.3500</span>  <span class="fl">259.8844</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>     D  <span class="fl">453.4775</span>  <span class="fl">385.8624</span>  <span class="fl">366.9740</span> <span class="fl">5921.5336</span>  <span class="fl">382.2572</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>     E  <span class="fl">532.6940</span>  <span class="fl">597.6884</span>  <span class="fl">586.7235</span>  <span class="fl">487.6157</span> <span class="fl">7556.0780</span></span></code></pre></div>
 </div>
 <div id="5-simulate-stochastic-realizations-of-a-mobility-model" class="section level3">
 <h3 class="hasAnchor">
 <a href="#5-simulate-stochastic-realizations-of-a-mobility-model" class="anchor"></a>5. Simulate stochastic realizations of a mobility model</h3>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>sim &lt;-<span class="st"> </span><span class="kw">predict</span>(mod, <span class="dt">nsim=</span><span class="dv">3</span>, <span class="dt">seed=</span><span class="dv">123</span>)</span>
-<span id="cb6-2"><a href="#cb6-2"></a>sim[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>,]</span>
-<span id="cb6-3"><a href="#cb6-3"></a></span>
-<span id="cb6-4"><a href="#cb6-4"></a>, , <span class="dv">1</span></span>
-<span id="cb6-5"><a href="#cb6-5"></a></span>
-<span id="cb6-6"><a href="#cb6-6"></a>          A         B         C         D         E</span>
-<span id="cb6-7"><a href="#cb6-7"></a>A <span class="fl">5819.2934</span>  <span class="fl">426.1649</span>  <span class="fl">392.4692</span>  <span class="fl">447.6925</span>  <span class="fl">412.3339</span></span>
-<span id="cb6-8"><a href="#cb6-8"></a>B  <span class="fl">407.1690</span> <span class="fl">5559.6542</span>  <span class="fl">458.8656</span>  <span class="fl">364.0649</span>  <span class="fl">441.9293</span></span>
-<span id="cb6-9"><a href="#cb6-9"></a>C  <span class="fl">225.6655</span>  <span class="fl">276.1520</span> <span class="fl">3343.6948</span>  <span class="fl">208.3886</span>  <span class="fl">261.0833</span></span>
-<span id="cb6-10"><a href="#cb6-10"></a>D  <span class="fl">455.5835</span>  <span class="fl">387.7662</span>  <span class="fl">368.8098</span> <span class="fl">5921.6621</span>  <span class="fl">384.1542</span></span>
-<span id="cb6-11"><a href="#cb6-11"></a>E  <span class="fl">535.2219</span>  <span class="fl">600.3998</span>  <span class="fl">589.3920</span>  <span class="fl">490.0069</span> <span class="fl">7555.9685</span></span>
-<span id="cb6-12"><a href="#cb6-12"></a></span>
-<span id="cb6-13"><a href="#cb6-13"></a>, , <span class="dv">2</span></span>
-<span id="cb6-14"><a href="#cb6-14"></a></span>
-<span id="cb6-15"><a href="#cb6-15"></a>          A         B         C         D         E</span>
-<span id="cb6-16"><a href="#cb6-16"></a>A <span class="fl">5785.3651</span>  <span class="fl">422.5080</span>  <span class="fl">389.0609</span>  <span class="fl">443.8742</span>  <span class="fl">408.7853</span></span>
-<span id="cb6-17"><a href="#cb6-17"></a>B  <span class="fl">403.6777</span> <span class="fl">5527.2621</span>  <span class="fl">454.9804</span>  <span class="fl">360.9001</span>  <span class="fl">438.1816</span></span>
-<span id="cb6-18"><a href="#cb6-18"></a>C  <span class="fl">223.7098</span>  <span class="fl">273.8168</span> <span class="fl">3324.1344</span>  <span class="fl">206.5649</span>  <span class="fl">258.8627</span></span>
-<span id="cb6-19"><a href="#cb6-19"></a>D  <span class="fl">451.6861</span>  <span class="fl">384.3829</span>  <span class="fl">365.5662</span> <span class="fl">5886.9730</span>  <span class="fl">380.8022</span></span>
-<span id="cb6-20"><a href="#cb6-20"></a>E  <span class="fl">530.6073</span>  <span class="fl">595.2950</span>  <span class="fl">584.3594</span>  <span class="fl">485.7362</span> <span class="fl">7511.9216</span></span>
-<span id="cb6-21"><a href="#cb6-21"></a></span>
-<span id="cb6-22"><a href="#cb6-22"></a>, , <span class="dv">3</span></span>
-<span id="cb6-23"><a href="#cb6-23"></a></span>
-<span id="cb6-24"><a href="#cb6-24"></a>          A         B         C         D         E</span>
-<span id="cb6-25"><a href="#cb6-25"></a>A <span class="fl">5833.9490</span>  <span class="fl">419.7001</span>  <span class="fl">386.1108</span>  <span class="fl">441.0524</span>  <span class="fl">406.0959</span></span>
-<span id="cb6-26"><a href="#cb6-26"></a>B  <span class="fl">401.0265</span> <span class="fl">5573.7552</span>  <span class="fl">452.0747</span>  <span class="fl">358.2909</span>  <span class="fl">435.6061</span></span>
-<span id="cb6-27"><a href="#cb6-27"></a>C  <span class="fl">222.1749</span>  <span class="fl">272.2446</span> <span class="fl">3351.0992</span>  <span class="fl">205.0489</span>  <span class="fl">257.3595</span></span>
-<span id="cb6-28"><a href="#cb6-28"></a>D  <span class="fl">448.7633</span>  <span class="fl">381.5303</span>  <span class="fl">362.5781</span> <span class="fl">5935.4389</span>  <span class="fl">378.0528</span></span>
-<span id="cb6-29"><a href="#cb6-29"></a>E  <span class="fl">526.9251</span>  <span class="fl">591.5347</span>  <span class="fl">580.3331</span>  <span class="fl">482.1094</span> <span class="fl">7575.6664</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">&lt;-</span> <span class="fu">predict</span>(mod, <span class="at">nsim=</span><span class="dv">3</span>, <span class="at">seed=</span><span class="dv">123</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>sim[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,]</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>, , <span class="dv">1</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>          A         B         C         D         E</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>A <span class="fl">5819.2934</span>  <span class="fl">426.1649</span>  <span class="fl">392.4692</span>  <span class="fl">447.6925</span>  <span class="fl">412.3339</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>B  <span class="fl">407.1690</span> <span class="fl">5559.6542</span>  <span class="fl">458.8656</span>  <span class="fl">364.0649</span>  <span class="fl">441.9293</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>C  <span class="fl">225.6655</span>  <span class="fl">276.1520</span> <span class="fl">3343.6948</span>  <span class="fl">208.3886</span>  <span class="fl">261.0833</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>D  <span class="fl">455.5835</span>  <span class="fl">387.7662</span>  <span class="fl">368.8098</span> <span class="fl">5921.6621</span>  <span class="fl">384.1542</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>E  <span class="fl">535.2219</span>  <span class="fl">600.3998</span>  <span class="fl">589.3920</span>  <span class="fl">490.0069</span> <span class="fl">7555.9685</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>, , <span class="dv">2</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>          A         B         C         D         E</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>A <span class="fl">5785.3651</span>  <span class="fl">422.5080</span>  <span class="fl">389.0609</span>  <span class="fl">443.8742</span>  <span class="fl">408.7853</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>B  <span class="fl">403.6777</span> <span class="fl">5527.2621</span>  <span class="fl">454.9804</span>  <span class="fl">360.9001</span>  <span class="fl">438.1816</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>C  <span class="fl">223.7098</span>  <span class="fl">273.8168</span> <span class="fl">3324.1344</span>  <span class="fl">206.5649</span>  <span class="fl">258.8627</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>D  <span class="fl">451.6861</span>  <span class="fl">384.3829</span>  <span class="fl">365.5662</span> <span class="fl">5886.9730</span>  <span class="fl">380.8022</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>E  <span class="fl">530.6073</span>  <span class="fl">595.2950</span>  <span class="fl">584.3594</span>  <span class="fl">485.7362</span> <span class="fl">7511.9216</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>, , <span class="dv">3</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>          A         B         C         D         E</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>A <span class="fl">5833.9490</span>  <span class="fl">419.7001</span>  <span class="fl">386.1108</span>  <span class="fl">441.0524</span>  <span class="fl">406.0959</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>B  <span class="fl">401.0265</span> <span class="fl">5573.7552</span>  <span class="fl">452.0747</span>  <span class="fl">358.2909</span>  <span class="fl">435.6061</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>C  <span class="fl">222.1749</span>  <span class="fl">272.2446</span> <span class="fl">3351.0992</span>  <span class="fl">205.0489</span>  <span class="fl">257.3595</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>D  <span class="fl">448.7633</span>  <span class="fl">381.5303</span>  <span class="fl">362.5781</span> <span class="fl">5935.4389</span>  <span class="fl">378.0528</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>E  <span class="fl">526.9251</span>  <span class="fl">591.5347</span>  <span class="fl">580.3331</span>  <span class="fl">482.1094</span> <span class="fl">7575.6664</span></span></code></pre></div>
 <p>Please see package vignettes to explore each step in more detail.</p>
 </div>
 </div>
@@ -275,15 +275,15 @@ Loading module: bugs: ok
 <h4 class="hasAnchor">
 <a href="#step-2-install-mobility-from-github" class="anchor"></a>Step 2: Install <code>mobility</code> from Github</h4>
 <p>Use the <code>devtools</code> package to install the development version of <code>mobility</code> from the COVID-19-Mobility-Data-Network GitHub repository. The source code and its dependencies should be backwards compatible with previous R versions, but we recommend R version &gt;= 3.6.2.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">'devtools'</span><span class="op">)</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">'COVID-19-Mobility-Data-Network/mobility'</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">'devtools'</span><span class="op">)</span>
+<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">'COVID-19-Mobility-Data-Network/mobility'</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
 <div id="troubleshooting" class="section level2">
 <h2 class="hasAnchor">
 <a href="#troubleshooting" class="anchor"></a>Troubleshooting</h2>
-<p>For general questions, contact John Giles (<a href="mailto:giles@jhu.edu" class="email">giles@jhu.edu</a>) and/or Amy Wesolowski (<a href="mailto:awesolowski@jhu.edu" class="email">awesolowski@jhu.edu</a>). For technical questions, contact package maintainer John Giles (<a href="mailto:giles@jhu.edu" class="email">giles@jhu.edu</a>). To report bugs or problems with code or documentation, please go to the <a href="https://github.com/COVID-19-Mobility-Data-Network/mobility/issues">Issues</a> page associated with this GitHub page and click <em>new issue</em>.</p>
+<p>For general questions, contact John Giles (<a href="mailto:jrgiles@uw.edu" class="email">jrgiles@uw.edu</a>) and/or Amy Wesolowski (<a href="mailto:awesolowski@jhu.edu" class="email">awesolowski@jhu.edu</a>). For technical questions, contact package maintainer John Giles (<a href="mailto:jrgiles@uw.edu" class="email">jrgiles@uw.edu</a>). To report bugs or problems with code or documentation, please go to the <a href="https://github.com/COVID-19-Mobility-Data-Network/mobility/issues">Issues</a> page associated with this GitHub page and click <em>new issue</em>.</p>
 </div>
 </div>
 

@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mobility</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.4</span>
       </span>
     </div>
 
@@ -45,7 +45,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -80,7 +80,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/COVID-19-Mobility-Data-Network/mobility/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -94,7 +94,7 @@
 
       
 
-      </header><script src="V3_fitting_mobility_models_files/header-attrs-2.4/header-attrs.js"></script><script src="V3_fitting_mobility_models_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="V3_fitting_mobility_models_files/header-attrs-2.10/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Fitting and simulating a mobility model</h1>
@@ -114,8 +114,8 @@
 <h2 class="hasAnchor">
 <a href="#build-data-matrices" class="anchor"></a>Build data matrices</h2>
 <p>Before we can fit a mobility model, we must build data matrices from the longform travel data. The utility functions <code><a href="../reference/get_mob_matrix.html">get_mob_matrix()</a></code>, <code><a href="../reference/get_distance_matrix.html">get_distance_matrix()</a></code>, and <code><a href="../reference/get_pop_vec.html">get_pop_vec()</a></code> can be used to generate data matrices representing travel volume among locations (<span class="math inline">\(M\)</span>), along with distances (<span class="math inline">\(D\)</span>) and population sizes (<span class="math inline">\(N\)</span>). The <code>mobiliy_matrices()</code> data object included with this package provides a list of simulated data matrices and is formatted for the <code>data</code> argument of the <code><a href="../reference/mobility.html">mobility()</a></code> function, which requires a list of numerical matrices/vectors with matching dimensions and names.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="fu">mobility</span><span class="fu">::</span><span class="va"><a href="../reference/mobility_matrices.html">mobility_matrices</a></span><span class="op">)</span>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="fu">mobility</span><span class="fu">::</span><span class="va"><a href="../reference/mobility_matrices.html">mobility_matrices</a></span><span class="op">)</span>
 <span class="co">#&gt; List of 3</span>
 <span class="co">#&gt;  $ M: num [1:10, 1:10] 4559 NA 25 1964 NA ...</span>
 <span class="co">#&gt;   ..- attr(*, "dimnames")=List of 2</span>
@@ -126,10 +126,10 @@
 <span class="co">#&gt;   .. ..$ origin     : chr [1:10] "A" "B" "C" "D" ...</span>
 <span class="co">#&gt;   .. ..$ destination: chr [1:10] "A" "B" "C" "D" ...</span>
 <span class="co">#&gt;  $ N: Named num [1:10] 9868 9511 5561 9596 12741 ...</span>
-<span class="co">#&gt;   ..- attr(*, "names")= chr [1:10] "A" "B" "C" "D" ...</span></pre></div>
+<span class="co">#&gt;   ..- attr(*, "names")= chr [1:10] "A" "B" "C" "D" ...</span></code></pre></div>
 <p>By design, we have added additional stochasticity around trip counts in the movement matrix (<span class="math inline">\(M\)</span>) and randomly sampled 80% of observed routes to simulate missing observations, which are shown as grey cells in the plot below.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="fu">melt</span><span class="op">(</span><span class="va">mobility_matrices</span><span class="op">$</span><span class="va">M</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="fu">melt</span><span class="op">(</span><span class="va">mobility_matrices</span><span class="op">$</span><span class="va">M</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html">geom_tile</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">destination</span><span class="op">)</span>,
                 y<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">origin</span><span class="op">)</span>,
                 fill<span class="op">=</span><span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
@@ -139,22 +139,22 @@
                      axis.title.x<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size<span class="op">=</span><span class="fl">12</span>, margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fl">15</span><span class="op">)</span><span class="op">)</span>,
                      axis.title.y<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size<span class="op">=</span><span class="fl">12</span>, margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin</a></span><span class="op">(</span>r <span class="op">=</span> <span class="fl">15</span><span class="op">)</span><span class="op">)</span>,
                      legend.position<span class="op">=</span><span class="st">'bottom'</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">viridis</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/viridis/man/scale_viridis.html">scale_fill_viridis</a></span><span class="op">(</span>option<span class="op">=</span><span class="st">'inferno'</span>, direction<span class="op">=</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">viridis</span><span class="fu">::</span><span class="fu"><a href="https://sjmgarnier.github.io/viridis/reference/scale_viridis.html">scale_fill_viridis</a></span><span class="op">(</span>option<span class="op">=</span><span class="st">'inferno'</span>, direction<span class="op">=</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html">guides</a></span><span class="op">(</span>fill<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_colourbar.html">guide_colorbar</a></span><span class="op">(</span>title<span class="op">=</span><span class="st">'Observed number of trips'</span>,
                              title.position<span class="op">=</span><span class="st">'top'</span>,
                              label.theme<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size<span class="op">=</span><span class="fl">9</span><span class="op">)</span>,
                              barwidth<span class="op">=</span><span class="fl">20</span>,
                              barheight<span class="op">=</span><span class="fl">0.5</span>,
                              frame.colour<span class="op">=</span><span class="st">'black'</span>,
-                             ticks<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></pre></div>
+                             ticks<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="V3_fitting_mobility_models_files/figure-html/data_plot-1.png" width="624"></p>
 </div>
 <div id="fit-a-mobility-model-to-the-data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#fit-a-mobility-model-to-the-data" class="anchor"></a>Fit a mobility model to the data</h2>
 <p>Several different mobility models can be fitted to the data using the <code><a href="../reference/mobility.html">mobility()</a></code> function. For a full list of available models, see the ‘Curated list of mobility models’ vignette. This function uses the distance among locations (<span class="math inline">\(D\)</span>) and population sizes (<span class="math inline">\(N\)</span>) as covariates in the specified model equation, which is fitted to the movement matrix (<span class="math inline">\(M\)</span>) with a Poisson likelihood link function. Fitting a gravity model can be specified using the <code>model = 'gravity'</code> argument. The <code><a href="../reference/mobility.html">mobility()</a></code> function contains several variants of the gravity model which can be specified by the <code>type</code> argument.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mobility.html">mobility</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">mobility_matrices</span>,
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mobility.html">mobility</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">mobility_matrices</span>,
                 model<span class="op">=</span><span class="st">'gravity'</span>,
                 type<span class="op">=</span><span class="st">'power_norm'</span>,
                 n_chain<span class="op">=</span><span class="fl">2</span>,
@@ -173,7 +173,7 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Initializing model</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; NOTE: Stopping adaptation</span></pre></div>
+<span class="co">#&gt; NOTE: Stopping adaptation</span></code></pre></div>
 <p>In this example, specifying <code>type = 'power_norm'</code> will fit a normalized gravity model, which uses a power law dispersal kernel and normalizes the connectivity of all routes emanating from origin <span class="math inline">\(i\)</span>: <span class="math display">\[
 \begin{aligned}
         m_{ij} &amp;\sim \text{Poisson}\big(\lambda_{ij}\big)\\
@@ -188,8 +188,8 @@
 \]</span> Here, <span class="math inline">\(\theta\)</span> is a proportionality constant representing the overall number of trips per person taken from the origin population <span class="math inline">\(N_i\)</span>, and the exponential parameter <span class="math inline">\(\omega\)</span> scales the attractive force of each <span class="math inline">\(j\)</span> destination population sizes. The kernel function <span class="math inline">\(d_{ij}^{-\gamma}\)</span> serves as a penalty on the proportion of travel from <span class="math inline">\(i\)</span> to <span class="math inline">\(j\)</span> based on distance. The function estimates the posterior distribution of these model parameters using a Poisson likelihood and Bayesian MCMC inference. The additional arguments determine the parameters for the MCMC algorithm. Here, the function will use 2 sampling chains, discards the first 1000 samples as ‘burin in’, and then take 1000 samples thinning by 2 to give 500 total samples per chain. The <code>DIC=TRUE</code> argument tells the function to calculate the Deviance Information Criterion (DIC) of the fitted model.</p>
 <p>Fitting a mobility model to a large number of locations (e.g. <span class="math inline">\(\gt 100\)</span>) or drawing a large number of samples from posterior distributions (e.g. 10000) may take several minutes. If computation is cumbersome, then the model can run sampling chains in parallel instead of sequentially by specifying <code>parallel = TRUE</code>.</p>
 <p>The fitting function <code><a href="../reference/mobility.html">mobility()</a></code> returns results as a <code>mobility.model</code> that contains information on the type of model, the data used, and the estimated model parameters.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span>
 <span class="co">#&gt; List of 10</span>
 <span class="co">#&gt;  $ model  : chr "gravity"</span>
 <span class="co">#&gt;  $ type   : chr "power_norm"</span>
@@ -212,65 +212,65 @@
 <span class="co">#&gt;   ..$ N_dest: Named num [1:10] 9868 9511 5561 9596 12741 ...</span>
 <span class="co">#&gt;   .. ..- attr(*, "names")= chr [1:10] "A" "B" "C" "D" ...</span>
 <span class="co">#&gt;  $ params :List of 2</span>
-<span class="co">#&gt;   ..$ : 'mcmc' num [1:500, 1:6] 44246 44245 44242 44244 44243 ...</span>
+<span class="co">#&gt;   ..$ : 'mcmc' num [1:500, 1:6] 44244 44243 44252 44253 44244 ...</span>
 <span class="co">#&gt;   .. ..- attr(*, "dimnames")=List of 2</span>
 <span class="co">#&gt;   .. .. ..$ : NULL</span>
 <span class="co">#&gt;   .. .. ..$ : chr [1:6] "deviance" "gamma" "omega" "pD" ...</span>
 <span class="co">#&gt;   .. ..- attr(*, "mcpar")= num [1:3] 1 500 1</span>
-<span class="co">#&gt;   ..$ : 'mcmc' num [1:500, 1:6] 44248 44250 44243 44243 44243 ...</span>
+<span class="co">#&gt;   ..$ : 'mcmc' num [1:500, 1:6] 44242 44241 44249 44244 44244 ...</span>
 <span class="co">#&gt;   .. ..- attr(*, "dimnames")=List of 2</span>
 <span class="co">#&gt;   .. .. ..$ : NULL</span>
 <span class="co">#&gt;   .. .. ..$ : chr [1:6] "deviance" "gamma" "omega" "pD" ...</span>
 <span class="co">#&gt;   .. ..- attr(*, "mcpar")= num [1:3] 1 500 1</span>
 <span class="co">#&gt;   ..- attr(*, "class")= chr "mcmc.list"</span>
 <span class="co">#&gt;  $ summary:'data.frame': 6 obs. of  8 variables:</span>
-<span class="co">#&gt;   ..$ mean : num [1:6] 1.95e-01 4.90e-04 9.95e-01 4.42e+04 4.42e+04 ...</span>
-<span class="co">#&gt;   ..$ sd   : num [1:6] 0.000643 0.0005 0.003936 2.704927 2.704927 ...</span>
-<span class="co">#&gt;   ..$ Q2.5 : num [1:6] 1.94e-01 9.24e-06 9.88e-01 4.42e+04 4.42e+04 ...</span>
-<span class="co">#&gt;   ..$ Q97.5: num [1:6] 1.96e-01 1.84e-03 1.00 4.43e+04 4.43e+04 ...</span>
-<span class="co">#&gt;   ..$ Rhat : num [1:6] 1 1.05 1 1 1 NA</span>
-<span class="co">#&gt;   ..$ n.eff: num [1:6] 1024 398 1000 696 696 ...</span>
-<span class="co">#&gt;   ..$ AC5  : num [1:6] 0 0.07 -0.02 0.04 0.04 NA</span>
-<span class="co">#&gt;   ..$ AC10 : num [1:6] -0.02 0 0 -0.04 -0.04 NA</span>
-<span class="co">#&gt;  - attr(*, "class")= chr "mobility.model"</span></pre></div>
+<span class="co">#&gt;   ..$ mean : num [1:6] 1.95e-01 5.03e-04 9.95e-01 4.42e+04 4.42e+04 ...</span>
+<span class="co">#&gt;   ..$ sd   : num [1:6] 0.00063 0.000487 0.003906 2.747703 2.747703 ...</span>
+<span class="co">#&gt;   ..$ Q2.5 : num [1:6] 1.94e-01 1.76e-05 9.88e-01 4.42e+04 4.42e+04 ...</span>
+<span class="co">#&gt;   ..$ Q97.5: num [1:6] 1.96e-01 1.77e-03 1.00 4.43e+04 4.43e+04 ...</span>
+<span class="co">#&gt;   ..$ Rhat : num [1:6] 1 1.02 1 1.03 1.03 NA</span>
+<span class="co">#&gt;   ..$ n.eff: num [1:6] 950 362 1191 515 515 ...</span>
+<span class="co">#&gt;   ..$ AC5  : num [1:6] -0.03 0 -0.01 0.01 0.01 NA</span>
+<span class="co">#&gt;   ..$ AC10 : num [1:6] -0.01 -0.03 0 -0.05 -0.05 NA</span>
+<span class="co">#&gt;  - attr(*, "class")= chr "mobility.model"</span></code></pre></div>
 </div>
 <div id="model-summary-and-validation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#model-summary-and-validation" class="anchor"></a>Model summary and validation</h2>
 <p>To calculate summary statistics of estimated parameter values, you can supply a fitted <code>mobility.model</code> object to the <code><a href="../reference/summary.html">summary()</a></code> function. This function is a wrapper for the <code><a href="https://rdrr.io/pkg/MCMCvis/man/MCMCsummary.html">MCMCvis::MCMCsummary()</a></code> function that calculates summary statistics for each parameter across each chain along with convergance diagnosics like the Gelman-Rubin convergence diagnostic and (<span class="math inline">\(\hat{R}\)</span>) and samples auto-correlation foreach parameter.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="fu"><a href="../reference/summary.html">summary</a></span><span class="op">(</span><span class="va">mod</span>, probs<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.025</span>, <span class="fl">0.975</span><span class="op">)</span>, ac_lags<span class="op">=</span><span class="fl">10</span><span class="op">)</span>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/summary.html">summary</a></span><span class="op">(</span><span class="va">mod</span>, probs<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.025</span>, <span class="fl">0.975</span><span class="op">)</span>, ac_lags<span class="op">=</span><span class="fl">10</span><span class="op">)</span>
 <span class="co">#&gt;                  mean           sd         Q2.5        Q97.5 Rhat n.eff  AC10</span>
-<span class="co">#&gt; gamma    1.951680e-01 0.0006432484 1.938837e-01 1.964153e-01 1.00  1024 -0.02</span>
-<span class="co">#&gt; omega    4.895567e-04 0.0005002480 9.244732e-06 1.839183e-03 1.05   398  0.00</span>
-<span class="co">#&gt; theta    9.952746e-01 0.0039356902 9.879823e-01 1.003760e+00 1.00  1000  0.00</span>
-<span class="co">#&gt; DIC      4.424869e+04 2.7049267451 4.424531e+04 4.425592e+04 1.00   696 -0.04</span>
-<span class="co">#&gt; deviance 4.424476e+04 2.7049267451 4.424139e+04 4.425200e+04 1.00   696 -0.04</span>
-<span class="co">#&gt; pD       1.960786e+00           NA           NA           NA   NA    NA    NA</span></pre></div>
+<span class="co">#&gt; gamma    1.951988e-01 0.0006300775 1.940187e-01 1.963926e-01 1.00   950 -0.01</span>
+<span class="co">#&gt; omega    5.029541e-04 0.0004865031 1.756726e-05 1.765038e-03 1.02   362 -0.03</span>
+<span class="co">#&gt; theta    9.953324e-01 0.0039059010 9.877945e-01 1.002989e+00 1.00  1191  0.00</span>
+<span class="co">#&gt; DIC      4.424849e+04 2.7477026787 4.424511e+04 4.425520e+04 1.03   515 -0.05</span>
+<span class="co">#&gt; deviance 4.424476e+04 2.7477026787 4.424137e+04 4.425146e+04 1.03   515 -0.05</span>
+<span class="co">#&gt; pD       1.868732e+00           NA           NA           NA   NA    NA    NA</span></code></pre></div>
 <p>The <code><a href="../reference/check.html">check()</a></code> function provides goodness of fit metrics and summary plots for the fitted model.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="fu"><a href="../reference/check.html">check</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/check.html">check</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></code></pre></div>
 <p><img src="V3_fitting_mobility_models_files/figure-html/check-1.png" width="720"></p>
 <pre><code>#&gt; $DIC
-#&gt; [1] 44248.69
+#&gt; [1] 44248.49
 #&gt; 
 #&gt; $RMSE
-#&gt; [1] 1046.432
+#&gt; [1] 1046.467
 #&gt; 
 #&gt; $MAPE
-#&gt; [1] 5.579126
+#&gt; [1] 5.578006
 #&gt; 
 #&gt; $R2
-#&gt; [1] 0.7121447</code></pre>
+#&gt; [1] 0.7122337</code></pre>
 </div>
 <div id="simulating-a-fitted-mobility-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#simulating-a-fitted-mobility-model" class="anchor"></a>Simulating a fitted mobility model</h2>
 <p>Once we have verified that our model fits the data adequately, we can simulate connectivity values among locations in our data using the estimated parameter values in the <code>'mobility.model'</code> object using the <code><a href="../reference/predict.html">predict()</a></code> function.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit">
-<span class="va">M_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predict.html">predict</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></pre></div>
-<div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="va">breaks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">1000</span>, <span class="fl">2000</span>, <span class="fl">4000</span><span class="op">)</span>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">M_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predict.html">predict</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">breaks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">1000</span>, <span class="fl">2000</span>, <span class="fl">4000</span><span class="op">)</span>
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="fu">melt</span><span class="op">(</span><span class="va">M_hat</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html">geom_tile</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">destination</span><span class="op">)</span>,
                 y<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">origin</span><span class="op">)</span>,
@@ -281,7 +281,7 @@
                      axis.title.x<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size<span class="op">=</span><span class="fl">12</span>, margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fl">15</span><span class="op">)</span><span class="op">)</span>,
                      axis.title.y<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size<span class="op">=</span><span class="fl">12</span>, margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin</a></span><span class="op">(</span>r <span class="op">=</span> <span class="fl">15</span><span class="op">)</span><span class="op">)</span>,
                      legend.position<span class="op">=</span><span class="st">'bottom'</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">viridis</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/viridis/man/scale_viridis.html">scale_fill_viridis</a></span><span class="op">(</span>option<span class="op">=</span><span class="st">'inferno'</span>, 
+  <span class="fu">viridis</span><span class="fu">::</span><span class="fu"><a href="https://sjmgarnier.github.io/viridis/reference/scale_viridis.html">scale_fill_viridis</a></span><span class="op">(</span>option<span class="op">=</span><span class="st">'inferno'</span>, 
                               direction<span class="op">=</span><span class="fl">1</span>,
                               breaks<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">breaks</span><span class="op">)</span>,
                               labels<span class="op">=</span><span class="va">breaks</span><span class="op">)</span> <span class="op">+</span>
@@ -291,15 +291,15 @@
                              barwidth<span class="op">=</span><span class="fl">20</span>,
                              barheight<span class="op">=</span><span class="fl">0.5</span>,
                              frame.colour<span class="op">=</span><span class="st">'black'</span>,
-                             ticks<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></pre></div>
+                             ticks<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="V3_fitting_mobility_models_files/figure-html/sim_plot-1.png" width="624"></p>
 </div>
 <div id="predicting-a-fitted-mobility-model-onto-new-data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#predicting-a-fitted-mobility-model-onto-new-data" class="anchor"></a>Predicting a fitted mobility model onto new data</h2>
 <p>As shown above, the <code><a href="../reference/predict.html">predict()</a></code> function can be used to simulate the volume of travel among locations in the input data, and to infer travel for routes that are originally unobserved. If a new data set is supplied using the <code>'newdata'</code> argument, then the <code><a href="../reference/predict.html">predict()</a></code> function will predict travel volume given the new distance matrix (<span class="math inline">\(D\)</span>) and population size vector (<span class="math inline">\(N\)</span>) based on the fitted <code>mobility.model</code> object, allowing the fitted model to be projected onto data of a different geographic scale.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit">
-<span class="co"># Simulate some new data</span>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Simulate some new data</span>
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
 <span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">20</span>
 <span class="va">ids</span> <span class="op">&lt;-</span> <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">]</span>
@@ -314,9 +314,9 @@
 <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">ids</span>
 
 <span class="co"># Predict mobility model using new data</span>
-<span class="va">M_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predict.html">predict</a></span><span class="op">(</span>object<span class="op">=</span><span class="va">mod</span>, newdata<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>D<span class="op">=</span><span class="va">D</span>, N<span class="op">=</span><span class="va">N</span><span class="op">)</span><span class="op">)</span></pre></div>
-<div class="sourceCode" id="cb11"><pre class="downlit">
-<span class="va">breaks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">1000</span>, <span class="fl">2000</span>, <span class="fl">4000</span><span class="op">)</span>
+<span class="va">M_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predict.html">predict</a></span><span class="op">(</span>object<span class="op">=</span><span class="va">mod</span>, newdata<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>D<span class="op">=</span><span class="va">D</span>, N<span class="op">=</span><span class="va">N</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">breaks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">1000</span>, <span class="fl">2000</span>, <span class="fl">4000</span><span class="op">)</span>
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="fu">melt</span><span class="op">(</span><span class="va">M_hat</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html">geom_tile</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">destination</span><span class="op">)</span>,
                 y<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">origin</span><span class="op">)</span>,
@@ -327,7 +327,7 @@
                      axis.title.x<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size<span class="op">=</span><span class="fl">12</span>, margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fl">15</span><span class="op">)</span><span class="op">)</span>,
                      axis.title.y<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size<span class="op">=</span><span class="fl">12</span>, margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin</a></span><span class="op">(</span>r <span class="op">=</span> <span class="fl">15</span><span class="op">)</span><span class="op">)</span>,
                      legend.position<span class="op">=</span><span class="st">'bottom'</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">viridis</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/viridis/man/scale_viridis.html">scale_fill_viridis</a></span><span class="op">(</span>option<span class="op">=</span><span class="st">'inferno'</span>, 
+  <span class="fu">viridis</span><span class="fu">::</span><span class="fu"><a href="https://sjmgarnier.github.io/viridis/reference/scale_viridis.html">scale_fill_viridis</a></span><span class="op">(</span>option<span class="op">=</span><span class="st">'inferno'</span>, 
                               direction<span class="op">=</span><span class="fl">1</span>,
                               breaks<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">breaks</span><span class="op">)</span>,
                               labels<span class="op">=</span><span class="va">breaks</span><span class="op">)</span> <span class="op">+</span>
@@ -337,17 +337,17 @@
                              barwidth<span class="op">=</span><span class="fl">20</span>,
                              barheight<span class="op">=</span><span class="fl">0.5</span>,
                              frame.colour<span class="op">=</span><span class="st">'black'</span>,
-                             ticks<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></pre></div>
+                             ticks<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="V3_fitting_mobility_models_files/figure-html/pred_plot-1.png" width="624"></p>
 </div>
 <div id="stochastic-simulation-of-a-mobility-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#stochastic-simulation-of-a-mobility-model" class="anchor"></a>Stochastic simulation of a mobility model</h2>
 <p>As the default, the number of simulations is set to <code>nsim = 1</code> so that the <code><a href="../reference/predict.html">predict()</a></code> function simulates the mean point estimate of the provided mobility model using the mean of the posterior distribution of each estimated parameter. When <code>nsim &gt; 1</code>, the function performs stochastic simulation of the given model using the mean and standard deviation of the posterior parameter distributions. The <code>seed</code> argument can also be defined for reproducible simulation results.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit">
-<span class="va">M_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predict.html">predict</a></span><span class="op">(</span><span class="va">mod</span>, nsim<span class="op">=</span><span class="fl">5</span>, seed<span class="op">=</span><span class="fl">123</span><span class="op">)</span>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">M_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predict.html">predict</a></span><span class="op">(</span><span class="va">mod</span>, nsim<span class="op">=</span><span class="fl">5</span>, seed<span class="op">=</span><span class="fl">123</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">M_hat</span><span class="op">)</span>
-<span class="co">#&gt;  num [1:10, 1:10, 1:5] 5816 407 226 455 535 ...</span>
+<span class="co">#&gt;  num [1:10, 1:10, 1:5] 5817 407 226 455 535 ...</span>
 <span class="co">#&gt;  - attr(*, "dimnames")=List of 3</span>
 <span class="co">#&gt;   ..$ : chr [1:10] "A" "B" "C" "D" ...</span>
 <span class="co">#&gt;   ..$ : chr [1:10] "A" "B" "C" "D" ...</span>
@@ -358,7 +358,7 @@
 <span class="co">#&gt;   ..- attr(*, "kind")=List of 3</span>
 <span class="co">#&gt;   .. ..$ : chr "Mersenne-Twister"</span>
 <span class="co">#&gt;   .. ..$ : chr "Inversion"</span>
-<span class="co">#&gt;   .. ..$ : chr "Rejection"</span></pre></div>
+<span class="co">#&gt;   .. ..$ : chr "Rejection"</span></code></pre></div>
 </div>
   </div>
 

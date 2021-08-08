@@ -85,7 +85,7 @@ using other data assume that the same method for defining population size is use
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mobility</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.4</span>
       </span>
     </div>
 
@@ -93,7 +93,7 @@ using other data assume that the same method for defining population size is use
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -128,7 +128,7 @@ using other data assume that the same method for defining population size is use
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/COVID-19-Mobility-Data-Network/mobility/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -242,21 +242,21 @@ using other data assume that the same method for defining population size is use
 
 <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>trip</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;   date_start  date_stop date_span indiv_id indiv_age indiv_sex indiv_type
-#&gt; 1 2020-01-01 2020-01-31   30 days       10         6         1       &lt;NA&gt;
-#&gt; 2 2020-01-01 2020-01-31   30 days       49        60         0       &lt;NA&gt;
-#&gt; 3 2020-01-01 2020-01-31   30 days       14        78         0       &lt;NA&gt;
+#&gt; 1 2020-01-01 2020-01-31   30 days       13        17         1       &lt;NA&gt;
+#&gt; 2 2020-01-01 2020-01-31   30 days       10         9         1       &lt;NA&gt;
+#&gt; 3 2020-01-01 2020-01-31   30 days        5        39         1       &lt;NA&gt;
 #&gt;   orig_adm0 orig_adm1 orig_adm2 orig_adm3 orig_adm4 orig_adm5    orig_type
 #&gt; 1         A         A         A         A      &lt;NA&gt;      &lt;NA&gt; Sub-district
 #&gt; 2         A         A         A         B      &lt;NA&gt;      &lt;NA&gt; Sub-district
 #&gt; 3         A         A         A         C      &lt;NA&gt;      &lt;NA&gt; Sub-district
 #&gt;      orig_x   orig_y orig_pop dest_adm0 dest_adm1 dest_adm2 dest_adm3 dest_adm4
-#&gt; 1  99.48698 15.64485    10000         A         A         B         D      &lt;NA&gt;
-#&gt; 2 101.19980 19.76428    10187         A         A         B         E      &lt;NA&gt;
-#&gt; 3 100.30449 20.22459    10215         A         A         B         F      &lt;NA&gt;
+#&gt; 1 100.30449 20.22459    10215         A         A         B         D      &lt;NA&gt;
+#&gt; 2  89.11212 20.01577    10070         A         A         B         E      &lt;NA&gt;
+#&gt; 3  99.41070 23.75549    10076         A         A         B         F      &lt;NA&gt;
 #&gt;   dest_adm5    dest_type    dest_x   dest_y dest_pop trips
-#&gt; 1      &lt;NA&gt; Sub-district 103.54857 22.02400     5022     7
-#&gt; 2      &lt;NA&gt; Sub-district 103.83492 18.16190     5025    13
-#&gt; 3      &lt;NA&gt; Sub-district  98.45894 21.12676     5079    11</div><div class='input'>
+#&gt; 1      &lt;NA&gt; Sub-district  98.45894 21.12676     5079    11
+#&gt; 2      &lt;NA&gt; Sub-district 105.06001 20.64497     4933     2
+#&gt; 3      &lt;NA&gt; Sub-district  95.40474 20.73335     5073     9</div><div class='input'>
 
 
 <span class='co'>#-----------------------</span>
@@ -291,31 +291,31 @@ using other data assume that the same method for defining population size is use
 
 <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>stay</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;   date_start  date_stop date_span indiv_id indiv_age indiv_sex indiv_type
-#&gt; 1 2020-01-01 2020-01-31   30 days      155        36         0       &lt;NA&gt;
-#&gt; 2 2020-01-01 2020-01-31   30 days      179        46         1       &lt;NA&gt;
-#&gt; 3 2020-01-01 2020-01-31   30 days      121        17         1       &lt;NA&gt;
+#&gt; 1 2020-01-01 2020-01-31   30 days      107        44         0       &lt;NA&gt;
+#&gt; 2 2020-01-01 2020-01-31   30 days      102        76         1       &lt;NA&gt;
+#&gt; 3 2020-01-01 2020-01-31   30 days      168        68         0       &lt;NA&gt;
 #&gt;   orig_adm0 orig_adm1 orig_adm2 orig_adm3 orig_adm4 orig_adm5    orig_type
 #&gt; 1         A         A         A         A      &lt;NA&gt;      &lt;NA&gt; Sub-district
 #&gt; 2         A         A         A         B      &lt;NA&gt;      &lt;NA&gt; Sub-district
 #&gt; 3         A         A         A         C      &lt;NA&gt;      &lt;NA&gt; Sub-district
 #&gt;      orig_x   orig_y orig_pop dest_adm0 dest_adm1 dest_adm2 dest_adm3 dest_adm4
-#&gt; 1 108.02204 21.75355     9964         A         A         A         A      &lt;NA&gt;
-#&gt; 2  92.42488 21.24826    10046         A         A         A         B      &lt;NA&gt;
-#&gt; 3  92.91988 24.22455    10098         A         A         A         C      &lt;NA&gt;
+#&gt; 1  94.45019 19.53901    10098         A         A         A         A      &lt;NA&gt;
+#&gt; 2 100.74703 20.78421     9928         A         A         A         B      &lt;NA&gt;
+#&gt; 3  98.06929 20.93987     9959         A         A         A         C      &lt;NA&gt;
 #&gt;   dest_adm5    dest_type    dest_x   dest_y dest_pop trips
-#&gt; 1      &lt;NA&gt; Sub-district 108.02204 21.75355     9964    NA
-#&gt; 2      &lt;NA&gt; Sub-district  92.42488 21.24826    10046    NA
-#&gt; 3      &lt;NA&gt; Sub-district  92.91988 24.22455    10098    NA</div><div class='input'>
+#&gt; 1      &lt;NA&gt; Sub-district  94.45019 19.53901    10098    NA
+#&gt; 2      &lt;NA&gt; Sub-district 100.74703 20.78421     9928    NA
+#&gt; 3      &lt;NA&gt; Sub-district  98.06929 20.93987     9959    NA</div><div class='input'>
 <span class='co'># Combine</span>
 <span class='va'>survey_data</span> <span class='op'>&lt;-</span> <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate-joins.html'>full_join</a></span><span class='op'>(</span><span class='va'>trip</span>, <span class='va'>stay</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>Joining, by = c("date_start", "date_stop", "date_span", "indiv_id", "indiv_age", "indiv_sex", "indiv_type", "orig_adm0", "orig_adm1", "orig_adm2", "orig_adm3", "orig_adm4", "orig_adm5", "orig_type", "orig_x", "orig_y", "orig_pop", "dest_adm0", "dest_adm1", "dest_adm2", "dest_adm3", "dest_adm4", "dest_adm5", "dest_type", "dest_x", "dest_y", "dest_pop", "trips")</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>survey_data</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;   date_start  date_stop date_span indiv_id indiv_age indiv_sex indiv_type
-#&gt; 1 2020-01-01 2020-01-31   30 days       10         6         1       &lt;NA&gt;
-#&gt; 2 2020-01-01 2020-01-31   30 days       49        60         0       &lt;NA&gt;
-#&gt; 3 2020-01-01 2020-01-31   30 days       14        78         0       &lt;NA&gt;
-#&gt; 4 2020-01-01 2020-01-31   30 days      155        36         0       &lt;NA&gt;
-#&gt; 5 2020-01-01 2020-01-31   30 days      179        46         1       &lt;NA&gt;
-#&gt; 6 2020-01-01 2020-01-31   30 days      121        17         1       &lt;NA&gt;
+#&gt; 1 2020-01-01 2020-01-31   30 days       13        17         1       &lt;NA&gt;
+#&gt; 2 2020-01-01 2020-01-31   30 days       10         9         1       &lt;NA&gt;
+#&gt; 3 2020-01-01 2020-01-31   30 days        5        39         1       &lt;NA&gt;
+#&gt; 4 2020-01-01 2020-01-31   30 days      107        44         0       &lt;NA&gt;
+#&gt; 5 2020-01-01 2020-01-31   30 days      102        76         1       &lt;NA&gt;
+#&gt; 6 2020-01-01 2020-01-31   30 days      168        68         0       &lt;NA&gt;
 #&gt;   orig_adm0 orig_adm1 orig_adm2 orig_adm3 orig_adm4 orig_adm5    orig_type
 #&gt; 1         A         A         A         A      &lt;NA&gt;      &lt;NA&gt; Sub-district
 #&gt; 2         A         A         A         B      &lt;NA&gt;      &lt;NA&gt; Sub-district
@@ -324,19 +324,19 @@ using other data assume that the same method for defining population size is use
 #&gt; 5         A         A         A         B      &lt;NA&gt;      &lt;NA&gt; Sub-district
 #&gt; 6         A         A         A         C      &lt;NA&gt;      &lt;NA&gt; Sub-district
 #&gt;      orig_x   orig_y orig_pop dest_adm0 dest_adm1 dest_adm2 dest_adm3 dest_adm4
-#&gt; 1  99.48698 15.64485    10000         A         A         B         D      &lt;NA&gt;
-#&gt; 2 101.19980 19.76428    10187         A         A         B         E      &lt;NA&gt;
-#&gt; 3 100.30449 20.22459    10215         A         A         B         F      &lt;NA&gt;
-#&gt; 4 108.02204 21.75355     9964         A         A         A         A      &lt;NA&gt;
-#&gt; 5  92.42488 21.24826    10046         A         A         A         B      &lt;NA&gt;
-#&gt; 6  92.91988 24.22455    10098         A         A         A         C      &lt;NA&gt;
+#&gt; 1 100.30449 20.22459    10215         A         A         B         D      &lt;NA&gt;
+#&gt; 2  89.11212 20.01577    10070         A         A         B         E      &lt;NA&gt;
+#&gt; 3  99.41070 23.75549    10076         A         A         B         F      &lt;NA&gt;
+#&gt; 4  94.45019 19.53901    10098         A         A         A         A      &lt;NA&gt;
+#&gt; 5 100.74703 20.78421     9928         A         A         A         B      &lt;NA&gt;
+#&gt; 6  98.06929 20.93987     9959         A         A         A         C      &lt;NA&gt;
 #&gt;   dest_adm5    dest_type    dest_x   dest_y dest_pop trips
-#&gt; 1      &lt;NA&gt; Sub-district 103.54857 22.02400     5022     7
-#&gt; 2      &lt;NA&gt; Sub-district 103.83492 18.16190     5025    13
-#&gt; 3      &lt;NA&gt; Sub-district  98.45894 21.12676     5079    11
-#&gt; 4      &lt;NA&gt; Sub-district 108.02204 21.75355     9964    NA
-#&gt; 5      &lt;NA&gt; Sub-district  92.42488 21.24826    10046    NA
-#&gt; 6      &lt;NA&gt; Sub-district  92.91988 24.22455    10098    NA</div><div class='input'>
+#&gt; 1      &lt;NA&gt; Sub-district  98.45894 21.12676     5079    11
+#&gt; 2      &lt;NA&gt; Sub-district 105.06001 20.64497     4933     2
+#&gt; 3      &lt;NA&gt; Sub-district  95.40474 20.73335     5073     9
+#&gt; 4      &lt;NA&gt; Sub-district  94.45019 19.53901    10098    NA
+#&gt; 5      &lt;NA&gt; Sub-district 100.74703 20.78421     9928    NA
+#&gt; 6      &lt;NA&gt; Sub-district  98.06929 20.93987     9959    NA</div><div class='input'>
 
 
 <span class='co'>#----------------------------------------</span>
@@ -378,12 +378,12 @@ using other data assume that the same method for defining population size is use
 #&gt; 5         A         A         E      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;  District
 #&gt; 6         A         A         F      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;  District
 #&gt;      orig_x   orig_y orig_pop dest_adm0 dest_adm1 dest_adm2 dest_adm3 dest_adm4
-#&gt; 1  96.43136 19.86523   100144      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;
-#&gt; 2 106.34845 20.56020   100194      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;
-#&gt; 3 103.54533 20.66062    99944      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;
-#&gt; 4 105.23461 20.56950   100062      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;
-#&gt; 5  93.94760 20.85719   100205      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;
-#&gt; 6 101.90075 19.75807   100108      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;
+#&gt; 1 105.23461 20.56950    99961      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;
+#&gt; 2  93.94760 20.85719   100205      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;
+#&gt; 3 101.90075 19.75807   100108      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;
+#&gt; 4  99.66307 20.91648   100467      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;
+#&gt; 5 101.40050 21.23307   100022      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;
+#&gt; 6 101.65154 19.64990   100672      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;
 #&gt;   dest_adm5 dest_type dest_x dest_y dest_pop trips
 #&gt; 1      &lt;NA&gt;      &lt;NA&gt;     NA     NA       NA    NA
 #&gt; 2      &lt;NA&gt;      &lt;NA&gt;     NA     NA       NA    NA

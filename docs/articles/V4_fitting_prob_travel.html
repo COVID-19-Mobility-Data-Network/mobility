@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mobility</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.4</span>
       </span>
     </div>
 
@@ -45,7 +45,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -80,7 +80,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/COVID-19-Mobility-Data-Network/mobility/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -94,7 +94,7 @@
 
       
 
-      </header><script src="V4_fitting_prob_travel_files/header-attrs-2.4/header-attrs.js"></script><script src="V4_fitting_prob_travel_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="V4_fitting_prob_travel_files/header-attrs-2.10/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Fitting and simulating travel probability</h1>
@@ -111,8 +111,8 @@
 <h3 class="hasAnchor">
 <a href="#build-data-vectors" class="anchor"></a>Build data vectors</h3>
 <p>The travel probability model requires two pieces of information: the number of trips for the time interval that travel outside the origin location (<span class="math inline">\(y_i\)</span>) and the total number of trips observed for that origin (<span class="math inline">\(m_i\)</span>). Both vectors must be the same length but they can have missing values (<code>NA</code>) that represent an unobserved origin location. The <code><a href="../reference/get_stay_data.html">get_stay_data()</a></code> function can be used to build trips for each location that are aggregated to a desired spatial scale (e.g. admin level 1 or admin level 2).</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="va">stay_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_stay_data.html">get_stay_data</a></span><span class="op">(</span><span class="va">travel_data_sim</span>, agg_adm<span class="op">=</span><span class="fl">2</span><span class="op">)</span>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">stay_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_stay_data.html">get_stay_data</a></span><span class="op">(</span><span class="va">travel_data_sim</span>, agg_adm<span class="op">=</span><span class="fl">2</span><span class="op">)</span>
 <span class="co">#&gt; Added missing unique location names.</span>
 <span class="co">#&gt; Using total trip count method</span>
 <span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html">setNames</a></span><span class="op">(</span><span class="va">stay_data</span><span class="op">$</span><span class="va">travel</span>, <span class="va">stay_data</span><span class="op">$</span><span class="va">orig_id</span><span class="op">)</span>
@@ -131,7 +131,7 @@
 <span class="co">#&gt; A_B_C A_B_D A_B_E A_B_G A_B_H A_B_I A_B_J A_B_K A_B_N A_B_O A_B_Q A_B_R A_B_S </span>
 <span class="co">#&gt;  1150   384  1941   531   322    NA   896  1421   577    NA  1593  1217   703 </span>
 <span class="co">#&gt; A_B_T A_B_V A_B_Y A_B_Z </span>
-<span class="co">#&gt;  1035  1254    NA  1218</span></pre></div>
+<span class="co">#&gt;  1035  1254    NA  1218</span></code></pre></div>
 </div>
 <div id="estimate-probability-of-travel-for-each-location" class="section level3">
 <h3 class="hasAnchor">
@@ -150,8 +150,8 @@ y_i \sim \text{Binom}(\tau_i, \sum_{\forall j} m_{ij})
 \end{aligned}
 \]</span></p>
 <p>This structure allows origin locations to have probabilities <span class="math inline">\(\tau_i\)</span> which are driven by data in each location and all unobserved locations regress to the population mean <span class="math inline">\(\tau_\text{pop}\)</span>.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="va">prob_trav</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_prob_travel.html">fit_prob_travel</a></span><span class="op">(</span>travel<span class="op">=</span><span class="va">y</span>, total<span class="op">=</span><span class="va">m</span><span class="op">)</span>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">prob_trav</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_prob_travel.html">fit_prob_travel</a></span><span class="op">(</span>travel<span class="op">=</span><span class="va">y</span>, total<span class="op">=</span><span class="va">m</span><span class="op">)</span>
 <span class="co">#&gt; These missing locations will inherit population mean:</span>
 <span class="co">#&gt; A_B_I A_B_O A_B_Y</span>
 <span class="co">#&gt; Compiling model graph</span>
@@ -164,9 +164,9 @@ y_i \sim \text{Binom}(\tau_i, \sum_{\forall j} m_{ij})
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Initializing model</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; NOTE: Stopping adaptation</span></pre></div>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="va">prob_trav_smry</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/summary.html">summary</a></span><span class="op">(</span><span class="va">prob_trav</span>, probs<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.025</span>, <span class="fl">0.25</span>, <span class="fl">0.75</span>, <span class="fl">0.975</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; NOTE: Stopping adaptation</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">prob_trav_smry</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/summary.html">summary</a></span><span class="op">(</span><span class="va">prob_trav</span>, probs<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.025</span>, <span class="fl">0.25</span>, <span class="fl">0.75</span>, <span class="fl">0.975</span><span class="op">)</span><span class="op">)</span>
 
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">prob_trav_smry</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">mean</span>, y<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span><span class="op">)</span>, size<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span>
@@ -179,7 +179,7 @@ y_i \sim \text{Binom}(\tau_i, \sum_{\forall j} m_{ij})
                      axis.title.x<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size<span class="op">=</span><span class="fl">12</span>, margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fl">15</span><span class="op">)</span><span class="op">)</span>,
                      axis.title.y<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size<span class="op">=</span><span class="fl">12</span>, margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin</a></span><span class="op">(</span>r <span class="op">=</span> <span class="fl">15</span><span class="op">)</span><span class="op">)</span>,
                      panel.border <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_rect</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"black"</span>, fill<span class="op">=</span><span class="cn">NA</span>, size<span class="op">=</span><span class="fl">1</span><span class="op">)</span>,
-                     legend.position<span class="op">=</span><span class="st">'right'</span><span class="op">)</span></pre></div>
+                     legend.position<span class="op">=</span><span class="st">'right'</span><span class="op">)</span></code></pre></div>
 <p><img src="V4_fitting_prob_travel_files/figure-html/unnamed-chunk-1-1.png" width="480"></p>
 </div>
 <div id="simulate-values-of-travel-probability-for-each-location" class="section level3">
@@ -187,8 +187,8 @@ y_i \sim \text{Binom}(\tau_i, \sum_{\forall j} m_{ij})
 <a href="#simulate-values-of-travel-probability-for-each-location" class="anchor"></a>Simulate values of travel probability for each location</h3>
 <p>There can be relatively large confidence intervals around the travel probability estimated for locations without data. Since these locations inherit the population-level mean, uncertainty will likely be higher than locations with data. If we wanted to then use this model in a simulation, we may want to include this uncertainty in the model.</p>
 <p>The <code><a href="../reference/predict.html">predict()</a></code> function can be used to simulate the fitted values of travel probability for each location. The function takes posterior estimates of the mean (<span class="math inline">\(\mu\)</span>) and standard deviation (<span class="math inline">\(\sigma\)</span>) for each origin <span class="math inline">\(i\)</span>, and then derives the shape and rate parameters for the Beta distribution. Simulated values are random draws from this Beta distribution.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="co"># Simulate n realizations of travel probability for each location</span>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Simulate n realizations of travel probability for each location</span>
 <span class="fu"><a href="../reference/predict.html">predict</a></span><span class="op">(</span>object<span class="op">=</span><span class="va">prob_trav</span>, nsim<span class="op">=</span><span class="fl">5</span>, seed<span class="op">=</span><span class="fl">123</span><span class="op">)</span>
 <span class="co">#&gt;               [,1]        [,2]        [,3]        [,4]       [,5]</span>
 <span class="co">#&gt; A_B_C 0.0167501135 0.018151160 0.028854062 0.019497433 0.01977168</span>
@@ -220,7 +220,7 @@ y_i \sim \text{Binom}(\tau_i, \sum_{\forall j} m_{ij})
 <span class="co">#&gt; [1] "Inversion"</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; attr(,"seed")attr(,"kind")[[3]]</span>
-<span class="co">#&gt; [1] "Rejection"</span></pre></div>
+<span class="co">#&gt; [1] "Rejection"</span></code></pre></div>
 </div>
   </div>
 

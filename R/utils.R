@@ -363,9 +363,9 @@ get_distance_matrix <- function(x,   # x coord
   xy <- cbind(x, y)
 
   suppressMessages(
-    out <- spatstat::pairdist(
-      spatstat::as.ppp(xy,
-                       spatstat::bounding.box.xy(xy),
+    out <- spatstat.geom::pairdist(
+      spatstat.geom::as.ppp(xy,
+                       spatstat.geom::bounding.box.xy(xy),
                        check=FALSE)
     )
   )
@@ -406,11 +406,11 @@ get_crossdist <- function(xy1,
   if (!is.null(xy1) | !is.null(xy2)) colnames(xy1) <- colnames(xy2) <- rep(NA, ncol(xy1))
 
   suppressWarnings(
-    window <- spatstat::bounding.box.xy(rbind(xy1, xy2))
+    window <- spatstat.geom::bounding.box.xy(rbind(xy1, xy2))
   )
 
-  out <-  spatstat::crossdist(spatstat::as.ppp(xy1, window, check=FALSE),
-                              spatstat::as.ppp(xy2, window, check=FALSE))
+  out <-  spatstat.geom::crossdist(spatstat.geom::as.ppp(xy1, window, check=FALSE),
+                              spatstat.geom::as.ppp(xy2, window, check=FALSE))
 
   dimnames(out) <- list(origin=id1, destination=id2)
 

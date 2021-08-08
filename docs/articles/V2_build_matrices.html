@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mobility</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.4</span>
       </span>
     </div>
 
@@ -45,7 +45,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -80,7 +80,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/COVID-19-Mobility-Data-Network/mobility/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -94,7 +94,7 @@
 
       
 
-      </header><script src="V2_build_matrices_files/header-attrs-2.4/header-attrs.js"></script><script src="V2_build_matrices_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="V2_build_matrices_files/header-attrs-2.10/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Building matrices from longform travel data</h1>
@@ -112,8 +112,8 @@
 <h3 class="hasAnchor">
 <a href="#unique-ids" class="anchor"></a>Unique IDs</h3>
 <p>The first step is to add unique IDs to the travel data. If the data have all unique names at the lowest admin level then hierarchical IDs are not needed. However, if the data include repeated admin names, then higher admin levels must be included to make unique IDs.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="va">travel_data</span> <span class="op">&lt;-</span> <span class="va">travel_data_sim</span>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">travel_data</span> <span class="op">&lt;-</span> <span class="va">travel_data_sim</span>
 
 <span class="co"># Add unique identifiers using Country, State, and County</span>
 <span class="va">example_ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_unique_ids.html">get_unique_ids</a></span><span class="op">(</span><span class="va">travel_data</span>, adm_start<span class="op">=</span><span class="fl">0</span>, adm_stop<span class="op">=</span><span class="fl">2</span><span class="op">)</span>
@@ -135,19 +135,19 @@
 <span class="co">#&gt; 3       N       L</span>
 <span class="co">#&gt; 4       C       O</span>
 <span class="co">#&gt; 5       R       M</span>
-<span class="co">#&gt; 6       V       G</span></pre></div>
+<span class="co">#&gt; 6       V       G</span></code></pre></div>
 </div>
 <div id="build-mobility-matrix" class="section level3">
 <h3 class="hasAnchor">
 <a href="#build-mobility-matrix" class="anchor"></a>Build mobility matrix</h3>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="co"># Add unique identifiers using County</span>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Add unique identifiers using County</span>
 <span class="va">travel_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">travel_data</span>, <span class="fu"><a href="../reference/get_unique_ids.html">get_unique_ids</a></span><span class="op">(</span><span class="va">travel_data</span>, adm_start<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>
 
 <span class="co"># Build mobility matrix from the longform data</span>
 <span class="va">M</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_mob_matrix.html">get_mob_matrix</a></span><span class="op">(</span>orig<span class="op">=</span><span class="va">travel_data</span><span class="op">$</span><span class="va">orig_id</span>,
                     dest<span class="op">=</span><span class="va">travel_data</span><span class="op">$</span><span class="va">dest_id</span>,
-                    value<span class="op">=</span><span class="va">travel_data</span><span class="op">$</span><span class="va">trips</span><span class="op">)</span></pre></div>
+                    value<span class="op">=</span><span class="va">travel_data</span><span class="op">$</span><span class="va">trips</span><span class="op">)</span></code></pre></div>
 <p><img src="V2_build_matrices_files/figure-html/plot%20M-1.png" width="672"></p>
 <p>Many times there are missing observations in travel data. This is especially the case when the travel data span a short time period which increase the likelihood that travel along some routes will not be observed. It can be difficult to see these missing routes of travel in longform data, but when you make a matrix with each row <span class="math inline">\(i\)</span> representing and origin and each column <span class="math inline">\(j\)</span> representing a destination, the missing data are readily apparent (shown as grey cells in the simulated matrix above).</p>
 </div>
@@ -155,8 +155,8 @@
 <h3 class="hasAnchor">
 <a href="#build-distance-matrix" class="anchor"></a>Build distance matrix</h3>
 <p>Mobility models require that distances be provided for all routes even if these observations are missing in the mobility matrix (<span class="math inline">\(M\)</span>). A distance matrix for all unique routes can be built by getting all unique coordinates in the travel data using the <code><a href="../reference/get_unique_coords.html">get_unique_coords()</a></code> function and then calculating the distances among all locations with <code><a href="../reference/get_distance_matrix.html">get_distance_matrix()</a></code>. Note that there is no requirement for the units of the distance matrix. However, we recommend the scale used is sensible for the spatial scale of the study area.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="va">xy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_unique_coords.html">get_unique_coords</a></span><span class="op">(</span><span class="va">travel_data</span><span class="op">)</span>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">xy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_unique_coords.html">get_unique_coords</a></span><span class="op">(</span><span class="va">travel_data</span><span class="op">)</span>
 
 <span class="va">D</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_distance_matrix.html">get_distance_matrix</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">xy</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>,
                          y<span class="op">=</span><span class="va">xy</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span>,
@@ -170,25 +170,25 @@
 <span class="co">#&gt;      B 236.2261   0.00000  85.84357 346.2563  99.05488</span>
 <span class="co">#&gt;      C 151.0632  85.84357   0.00000 396.3398  26.41282</span>
 <span class="co">#&gt;      D 493.0824 346.25626 396.33982   0.0000 385.29829</span>
-<span class="co">#&gt;      E 139.0243  99.05488  26.41282 385.2983   0.00000</span></pre></div>
+<span class="co">#&gt;      E 139.0243  99.05488  26.41282 385.2983   0.00000</span></code></pre></div>
 </div>
 <div id="population-size-vector" class="section level3">
 <h3 class="hasAnchor">
 <a href="#population-size-vector" class="anchor"></a>Population size vector</h3>
 <p>Fitting mobility modelsalso require a vector of population size for each location that is the same length the number of rows and columns in the mobility matrix (<span class="math inline">\(M\)</span>) and distance matrix (<span class="math inline">\(D\)</span>).</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="va">N</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_pop_vec.html">get_pop_vec</a></span><span class="op">(</span><span class="va">travel_data</span><span class="op">)</span>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">N</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_pop_vec.html">get_pop_vec</a></span><span class="op">(</span><span class="va">travel_data</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>
 <span class="co">#&gt;    A    B    C    D    E    F </span>
-<span class="co">#&gt; 5065 8179 3961 5540 1337 5776</span></pre></div>
+<span class="co">#&gt; 5065 8179 3961 5540 1337 5776</span></code></pre></div>
 <p>Note that since the distance matrix (<span class="math inline">\(N\)</span>) and population vector (<span class="math inline">\(N\)</span>) are covariates used by models, they cannot have missing values and must all have matching dimensions. Code below checks that all data dimensions match.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="co"># check</span>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># check</span>
 <span class="fu"><a href="https://rdrr.io/r/base/all.html">all</a></span><span class="op">(</span>
      <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">D</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span>, FUN <span class="op">=</span> <span class="va">identical</span>, <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">M</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>,
      <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/dimnames.html">dimnames</a></span><span class="op">(</span><span class="va">D</span><span class="op">)</span><span class="op">$</span><span class="va">origin</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span>, FUN <span class="op">=</span> <span class="va">identical</span>, <span class="fu"><a href="https://rdrr.io/r/base/dimnames.html">dimnames</a></span><span class="op">(</span><span class="va">M</span><span class="op">)</span><span class="op">$</span><span class="va">origin</span><span class="op">)</span>
 <span class="op">)</span>
-<span class="co">#&gt; [1] TRUE</span></pre></div>
+<span class="co">#&gt; [1] TRUE</span></code></pre></div>
 </div>
   </div>
 

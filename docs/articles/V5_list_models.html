@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mobility</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.4</span>
       </span>
     </div>
 
@@ -45,7 +45,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -80,7 +80,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/COVID-19-Mobility-Data-Network/mobility/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -94,7 +94,7 @@
 
       
 
-      </header><script src="V5_list_models_files/header-attrs-2.4/header-attrs.js"></script><script src="V5_list_models_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="V5_list_models_files/header-attrs-2.10/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>A curated list of mobility models</h1>
@@ -137,8 +137,8 @@
         \theta \sim \text{Gamma}(0.001, 0.001)
 \end{aligned} 
 \]</span> The basic gravity model can be called by:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mobility.html">mobility</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">mobility_matrices</span>, model<span class="op">=</span><span class="st">'gravity'</span>, type<span class="op">=</span><span class="st">'basic'</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mobility.html">mobility</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">mobility_matrices</span>, model<span class="op">=</span><span class="st">'gravity'</span>, type<span class="op">=</span><span class="st">'basic'</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="transport" class="section level3">
 <h3 class="hasAnchor">
@@ -158,8 +158,8 @@
         \gamma &amp;\sim \text{Gamma}(1, 1)
 \end{aligned} 
 \]</span> The transport gravity model can be called by:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mobility.html">mobility</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">mobility_matrices</span>, model<span class="op">=</span><span class="st">'gravity'</span>, type<span class="op">=</span><span class="st">'transport'</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mobility.html">mobility</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">mobility_matrices</span>, model<span class="op">=</span><span class="st">'gravity'</span>, type<span class="op">=</span><span class="st">'transport'</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="power-law" class="section level3">
 <h3 class="hasAnchor">
@@ -181,8 +181,8 @@
         \gamma &amp;\sim \text{Gamma}(1, 1)
 \end{aligned} 
 \]</span> The power law gravity model can be called by:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mobility.html">mobility</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">mobility_matrices</span>, model<span class="op">=</span><span class="st">'gravity'</span>, type<span class="op">=</span><span class="st">'power'</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mobility.html">mobility</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">mobility_matrices</span>, model<span class="op">=</span><span class="st">'gravity'</span>, type<span class="op">=</span><span class="st">'power'</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="exponential" class="section level3">
 <h3 class="hasAnchor">
@@ -204,8 +204,8 @@
         \delta &amp;\sim \text{Truncnorm}(\mu_D, \sigma_D)
 \end{aligned} 
 \]</span> The <span class="math inline">\(\text{Truncnorm}(\mu_D, \sigma_D)\)</span> prior is a normal distribution truncated at zero <span class="math inline">\((0,\infty)\)</span> where <span class="math inline">\(\mu_D\)</span> and <span class="math inline">\(\sigma_D\)</span> are the observed mean and standard deviation of the distance matrix <span class="math inline">\(D\)</span>. The exponential gravity model can be called by:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mobility.html">mobility</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">mobility_matrices</span>, model<span class="op">=</span><span class="st">'gravity'</span>, type<span class="op">=</span><span class="st">'exp'</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mobility.html">mobility</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">mobility_matrices</span>, model<span class="op">=</span><span class="st">'gravity'</span>, type<span class="op">=</span><span class="st">'exp'</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="normalized-power-law" class="section level3">
 <h3 class="hasAnchor">
@@ -226,8 +226,8 @@
         \gamma &amp;\sim \text{Gamma}(1, 1)
 \end{aligned} 
 \]</span> The normalized power law gravity model can be called by:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mobility.html">mobility</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">mobility_matrices</span>, model<span class="op">=</span><span class="st">'gravity'</span>, type<span class="op">=</span><span class="st">'power_norm'</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mobility.html">mobility</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">mobility_matrices</span>, model<span class="op">=</span><span class="st">'gravity'</span>, type<span class="op">=</span><span class="st">'power_norm'</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="normalized-exponential" class="section level3">
 <h3 class="hasAnchor">
@@ -248,13 +248,13 @@
         \delta &amp;\sim \text{Truncnorm}(\mu_D, \sigma_D)
 \end{aligned} 
 \]</span> The <span class="math inline">\(\text{Truncnorm}(\mu_D, \sigma_D)\)</span> prior is a normal distribution truncated at zero <span class="math inline">\((0,\infty)\)</span> where <span class="math inline">\(\mu_D\)</span> and <span class="math inline">\(\sigma_D\)</span> are the observed mean and standard deviation of the distance matrix <span class="math inline">\(D\)</span>. The normalized exponential gravity model can be called by:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mobility.html">mobility</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">mobility_matrices</span>, model<span class="op">=</span><span class="st">'gravity'</span>, type<span class="op">=</span><span class="st">'exp_norm'</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mobility.html">mobility</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">mobility_matrices</span>, model<span class="op">=</span><span class="st">'gravity'</span>, type<span class="op">=</span><span class="st">'exp_norm'</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="scaled-power-law" class="section level3">
 <h3 class="hasAnchor">
 <a href="#scaled-power-law" class="anchor"></a>Scaled power law</h3>
-<p>This gravity model is described in Marshall et al. <span class="citation">(2016)</span> and uses a scaled power law and requires estimation of three parameters <span class="math inline">\(\omega\)</span>, <span class="math inline">\(\rho\)</span>, and <span class="math inline">\(\alpha\)</span>. <span class="math display">\[
+<p>This gravity model is described in Marshall et al. <span class="citation">(2016)</span> and uses a scaled power law and requires estimation of three parameters <span class="math inline">\(\omega\)</span>, <span class="math inline">\(\rho\)</span>, and <span class="math inline">\(\alpha\)</span>. <span class="math display">\[
 \begin{aligned}
 \lambda_{ij} &amp;= N_{j}^\omega \Bigg( 1 + \frac{ d_{ij} }{ \rho } \Bigg)^{-\alpha}
 \end{aligned}   
@@ -265,8 +265,8 @@
         \alpha &amp;\sim \text{Gamma}(1, 1)
 \end{aligned} 
 \]</span> This scaled power law gravity model can be called by:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mobility.html">mobility</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">mobility_matrices</span>, model<span class="op">=</span><span class="st">'gravity'</span>, type<span class="op">=</span><span class="st">'scaled_power'</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mobility.html">mobility</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">mobility_matrices</span>, model<span class="op">=</span><span class="st">'gravity'</span>, type<span class="op">=</span><span class="st">'scaled_power'</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
 <div id="radiation-models" class="section level2">
@@ -276,24 +276,24 @@
 <div id="basic-1" class="section level3">
 <h3 class="hasAnchor">
 <a href="#basic-1" class="anchor"></a>Basic</h3>
-<p>The radiation model was first introduced by Simini et al. <span class="citation">(2012)</span> to describe commuting flows in the United States. The model relies on the same data matrices as the gravity models above—mobility matrix <span class="math inline">\(M\)</span>, distance matrix <span class="math inline">\(D\)</span>, and population size vector(s) <span class="math inline">\(N\)</span>—however, and additional matrix <span class="math inline">\(S\)</span> is calculated which gives the total population size surrounding the origin. <span class="math display">\[
+<p>The radiation model was first introduced by Simini et al. <span class="citation">(2012)</span> to describe commuting flows in the United States. The model relies on the same data matrices as the gravity models above—mobility matrix <span class="math inline">\(M\)</span>, distance matrix <span class="math inline">\(D\)</span>, and population size vector(s) <span class="math inline">\(N\)</span>—however, and additional matrix <span class="math inline">\(S\)</span> is calculated which gives the total population size surrounding the origin. <span class="math display">\[
 \begin{aligned}
         \lambda_{ij} = M_i \frac{N_i N_j}{(N_i + s_{ij})(N_i + N_j + s_{ij})}
 \end{aligned}   
 \]</span> Where, <span class="math inline">\(M_i\)</span> gives the total number of trips (or travellers) emanating from origin, <span class="math inline">\(\sum_{j} M_{ij}\)</span>, the population sizes of the origin and destination are given by <span class="math inline">\(N_i\)</span> and <span class="math inline">\(N_j\)</span>. The population surrounding each origin <span class="math inline">\(s_{ij}\)</span> is calculated as the total population size that resides within the radius <span class="math inline">\(r_{ij}\)</span>, where the origin and destination populations are excluded. The basic radiation model can be called by:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit">
-<span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mobility.html">mobility</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">mobility_matrices</span>, model<span class="op">=</span><span class="st">'radiation'</span>, type<span class="op">=</span><span class="st">'basic'</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mobility.html">mobility</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">mobility_matrices</span>, model<span class="op">=</span><span class="st">'radiation'</span>, type<span class="op">=</span><span class="st">'basic'</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="finite" class="section level3">
 <h3 class="hasAnchor">
 <a href="#finite" class="anchor"></a>Finite</h3>
-<p>This version of the radiation model was derived by Masucci et al. <span class="citation">(2013)</span> to correct the model’s normalization for systems with finite population sizes. This derivation may not be significantly different compared with the basic model in settings with a large overall population size. However, this model type may be better suited to systems comprised of smaller population sizes that are heterogeneously distributed. Its fomrulation is quite similar to the above with the addition of the normalization of <span class="math inline">\(M_i\)</span>. <span class="math display">\[
+<p>This version of the radiation model was derived by Masucci et al. <span class="citation">(2013)</span> to correct the model’s normalization for systems with finite population sizes. This derivation may not be significantly different compared with the basic model in settings with a large overall population size. However, this model type may be better suited to systems comprised of smaller population sizes that are heterogeneously distributed. Its fomrulation is quite similar to the above with the addition of the normalization of <span class="math inline">\(M_i\)</span>. <span class="math display">\[
 \begin{aligned}
         \lambda_{ij} = \frac{M_i}{1-N_i/N_{\text{tot}}} \frac{N_i N_j}{(N_i + s_{ij})(N_i + N_j + s_{ij})}
 \end{aligned}   
 \]</span> The finite radiation model differs from the basic model by the scaling factor <span class="math inline">\(\frac{1}{1-N_i/N_{\text{tot}}}\)</span>, where <span class="math inline">\(N_{\text{tot}}\)</span> is the total population size of the system given by <span class="math inline">\(\sum_i N_i\)</span>. As in the basic model, <span class="math inline">\(M_i\)</span> gives the total number of trips emanating from origin, <span class="math inline">\(\sum_{j} M_{ij}\)</span>, the population sizes of the origin and destination are given by <span class="math inline">\(N_i\)</span> and <span class="math inline">\(N_j\)</span>. The population surrounding each origin <span class="math inline">\(s_{ij}\)</span> is calculated as the total population size that resides within the radius <span class="math inline">\(r_{ij}\)</span>, where the origin and destination populations are excluded. The finite radiation model can be called by:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mobility.html">mobility</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">mobility_matrices</span>, model<span class="op">=</span><span class="st">'radiation'</span>, type<span class="op">=</span><span class="st">'finite'</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mobility.html">mobility</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">mobility_matrices</span>, model<span class="op">=</span><span class="st">'radiation'</span>, type<span class="op">=</span><span class="st">'finite'</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
 <div id="departure-diffusion-models" class="section level2">
@@ -353,8 +353,8 @@ N_j^\omega d_{ij}^{-\gamma}
         \gamma &amp;\sim \text{Gamma}(1, 1)
 \end{aligned} 
 \]</span> The departure-diffusion model with a power law gravity model as the diffusion process can be called by:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit">
-<span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mobility.html">mobility</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">mobility_matrices</span>, model<span class="op">=</span><span class="st">'departure-diffusion'</span>, type<span class="op">=</span><span class="st">'power'</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mobility.html">mobility</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">mobility_matrices</span>, model<span class="op">=</span><span class="st">'departure-diffusion'</span>, type<span class="op">=</span><span class="st">'power'</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="exponential-gravity" class="section level4">
 <h4 class="hasAnchor">
@@ -371,8 +371,8 @@ N_j^\omega e^{-d_{ij}/\delta}
         \delta &amp;\sim \text{Truncnorm}(\mu_D, \sigma_D)
 \end{aligned} 
 \]</span> The <span class="math inline">\(\text{Truncnorm}(\mu_D, \sigma_D)\)</span> prior is a normal distribution truncated at zero <span class="math inline">\((0,\infty)\)</span> where <span class="math inline">\(\mu_D\)</span> and <span class="math inline">\(\sigma_D\)</span> are the observed mean and standard deviation of the distance matrix <span class="math inline">\(D\)</span>. The departure-diffusion model with a exponential gravity model as the diffusion process can be called by:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit">
-<span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mobility.html">mobility</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">mobility_matrices</span>, model<span class="op">=</span><span class="st">'departure-diffusion'</span>, type<span class="op">=</span><span class="st">'exp'</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mobility.html">mobility</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">mobility_matrices</span>, model<span class="op">=</span><span class="st">'departure-diffusion'</span>, type<span class="op">=</span><span class="st">'exp'</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="radiation" class="section level4">
 <h4 class="hasAnchor">
@@ -384,41 +384,41 @@ N_j^\omega e^{-d_{ij}/\delta}
         \sum\limits_{\forall j \ne i} \frac{N_j}{(N_i + s_{ij})(N_i + N_j + s_{ij})}
         }
 \]</span> Where, the population sizes of the origin and destination are given by <span class="math inline">\(N_i\)</span> and <span class="math inline">\(N_j\)</span>. The <span class="math inline">\(s_{ij}\)</span> term is the total population size that resides within distance <span class="math inline">\(d_{ij}\)</span>, excluding the origin and destination populations. The departure-diffusion model with a radiation model as the diffusion process can be called by:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit">
-<span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mobility.html">mobility</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">mobility_matrices</span>, model<span class="op">=</span><span class="st">'departure-diffusion'</span>, type<span class="op">=</span><span class="st">'radiation'</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mobility.html">mobility</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">mobility_matrices</span>, model<span class="op">=</span><span class="st">'departure-diffusion'</span>, type<span class="op">=</span><span class="st">'radiation'</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
 </div>
 <div id="references" class="section level2">
 <h2 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h2>
-<div id="refs" class="references hanging-indent">
-<div id="ref-barbosa_human_2018">
-<p>Barbosa, Hugo, Marc Barthelemy, Gourab Ghoshal, Charlotte R. James, Maxime Lenormand, Thomas Louail, Ronaldo Menezes, José J. Ramasco, Filippo Simini, and Marcello Tomasini. 2018. “Human Mobility: Models and Applications.” <em>Physics Reports</em>, Human mobility: Models and applications, 734 (March): 1–74. <a href="https://doi.org/10.1016/j.physrep.2018.01.001">https://doi.org/10.1016/j.physrep.2018.01.001</a>.</p>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-barbosa_human_2018" class="csl-entry">
+Barbosa, Hugo, Marc Barthelemy, Gourab Ghoshal, Charlotte R. James, Maxime Lenormand, Thomas Louail, Ronaldo Menezes, José J. Ramasco, Filippo Simini, and Marcello Tomasini. 2018. <span>“Human Mobility: Models and Applications.”</span> <em>Physics Reports</em>, Human mobility: Models and applications, 734 (March): 1–74. <a href="https://doi.org/10.1016/j.physrep.2018.01.001">https://doi.org/10.1016/j.physrep.2018.01.001</a>.
 </div>
-<div id="ref-blitzstein_introduction_2014">
-<p>Blitzstein, Joseph, and Jessica Hwang. 2014. <em>Introduction to Probability, First Edition</em>. Chapman; Hall/CRC.</p>
+<div id="ref-blitzstein_introduction_2014" class="csl-entry">
+Blitzstein, Joseph, and Jessica Hwang. 2014. <em>Introduction to Probability, First Edition</em>. Chapman; Hall/<span>CRC</span>.
 </div>
-<div id="ref-gelman_bayesian_2003">
-<p>Gelman, Andrew, John Carlin, Hal Stern, and Donald Rubin. 2003. <em>Bayesian Data Analysis, Second Edition (Chapman &amp; Hall/CRC Texts in Statistical Science)</em>. Chapman; Hall/CRC.</p>
+<div id="ref-gelman_bayesian_2003" class="csl-entry">
+Gelman, Andrew, John Carlin, Hal Stern, and Donald Rubin. 2003. <em>Bayesian Data Analysis, Second Edition (Chapman &amp; Hall/<span>CRC</span> Texts in Statistical Science)</em>. Chapman; Hall/<span>CRC</span>.
 </div>
-<div id="ref-marshall_key_2016">
-<p>Marshall, John M., Mahamoudou Touré, André Lin Ouédraogo, Micky Ndhlovu, Samson S. Kiware, Ashley Rezai, Emmy Nkhama, et al. 2016. “Key Traveller Groups of Relevance to Spatial Malaria Transmission: A Survey of Movement Patterns in Four Sub-Saharan African Countries.” <em>Malaria Journal</em> 15 (1): 200. <a href="https://doi.org/10.1186/s12936-016-1252-3">https://doi.org/10.1186/s12936-016-1252-3</a>.</p>
+<div id="ref-marshall_key_2016" class="csl-entry">
+Marshall, John M., Mahamoudou Touré, André Lin Ouédraogo, Micky Ndhlovu, Samson S. Kiware, Ashley Rezai, Emmy Nkhama, et al. 2016. <span>“Key Traveller Groups of Relevance to Spatial Malaria Transmission: A Survey of Movement Patterns in Four Sub-Saharan African Countries.”</span> <em>Malaria Journal</em> 15 (1): 200. <a href="https://doi.org/10.1186/s12936-016-1252-3">https://doi.org/10.1186/s12936-016-1252-3</a>.
 </div>
-<div id="ref-masucci_gravity_2013">
-<p>Masucci, A. Paolo, Joan Serras, Anders Johansson, and Michael Batty. 2013. “Gravity Versus Radiation Models: On the Importance of Scale and Heterogeneity in Commuting Flows.” <em>Physical Review E</em> 88 (2): 022812. <a href="https://doi.org/10.1103/PhysRevE.88.022812">https://doi.org/10.1103/PhysRevE.88.022812</a>.</p>
+<div id="ref-masucci_gravity_2013" class="csl-entry">
+Masucci, A. Paolo, Joan Serras, Anders Johansson, and Michael Batty. 2013. <span>“Gravity Versus Radiation Models: On the Importance of Scale and Heterogeneity in Commuting Flows.”</span> <em>Physical Review E</em> 88 (2): 022812. <a href="https://doi.org/10.1103/PhysRevE.88.022812">https://doi.org/10.1103/PhysRevE.88.022812</a>.
 </div>
-<div id="ref-plummer_jags_2003">
-<p>Plummer, Martyn. 2003. “JAGS: A Program for Analysis of Bayesian Graphical Models Using Gibbs Sampling.” <a href="http://mcmc-jags.sourceforge.net/">http://mcmc-jags.sourceforge.net/</a>.</p>
+<div id="ref-plummer_jags_2003" class="csl-entry">
+Plummer, Martyn. 2003. <span>“JAGS: A Program for Analysis of Bayesian Graphical Models Using Gibbs Sampling.”</span> <a href="http://mcmc-jags.sourceforge.net/">http://mcmc-jags.sourceforge.net/</a>.
 </div>
-<div id="ref-plummer_rjags_2019">
-<p>———. 2019. <em>Rjags: Bayesian Graphical Models Using Mcmc</em>. <a href="https://CRAN.R-project.org/package=rjags">https://CRAN.R-project.org/package=rjags</a>.</p>
+<div id="ref-plummer_rjags_2019" class="csl-entry">
+———. 2019. <em>Rjags: Bayesian Graphical Models Using MCMC</em>. <a href="https://CRAN.R-project.org/package=rjags">https://CRAN.R-project.org/package=rjags</a>.
 </div>
-<div id="ref-simini_universal_2012">
-<p>Simini, Filippo, Marta C. González, Amos Maritan, and Albert-László Barabási. 2012. “A Universal Model for Mobility and Migration Patterns.” <em>Nature</em> 484 (7392): 96–100. <a href="https://doi.org/10.1038/nature10856">https://doi.org/10.1038/nature10856</a>.</p>
+<div id="ref-simini_universal_2012" class="csl-entry">
+Simini, Filippo, Marta C. González, Amos Maritan, and Albert-László Barabási. 2012. <span>“A Universal Model for Mobility and Migration Patterns.”</span> <em>Nature</em> 484 (7392): 96–100. <a href="https://doi.org/10.1038/nature10856">https://doi.org/10.1038/nature10856</a>.
 </div>
-<div id="ref-zipf_gravity_1946">
-<p>Zipf, George Kingsley. 1946. “The P1 P2/d Hypothesis: On the Intercity Movement of Persons.” <em>American Sociological Review</em> 11 (6): 677–86. <a href="https://doi.org/10.2307/2087063">https://doi.org/10.2307/2087063</a>.</p>
+<div id="ref-zipf_gravity_1946" class="csl-entry">
+Zipf, George Kingsley. 1946. <span>“The P1 P2/d Hypothesis: On the Intercity Movement of Persons.”</span> <em>American Sociological Review</em> 11 (6): 677–86. <a href="https://doi.org/10.2307/2087063">https://doi.org/10.2307/2087063</a>.
 </div>
 </div>
 </div>

@@ -1,11 +1,11 @@
 Package: mobility
 Type: Package
 Title: Tools for analyzing human mobility data
-Version: 0.6.3
-Date: 2020-12-17
-Authors@R: c(person("John", "Giles", role=c("aut", "cre"), email="giles@jhu.edu"),
+Version: 0.6.4
+Date: 2021-08-08
+Authors@R: c(person("John", "Giles", role=c("aut", "cre"), email="jrgiles@uw.edu"),
               person("Amy", "Wesolowski", role=c("aut", "ctb"), email="awesolowski@jhu.edu"))
-Maintainer: John Giles <giles@jhu.edu>
+Maintainer: John Giles <jrgiles@uw.edu>
 Description: Functions for parsing travel data, fitting models using Bayesian inference, and simulating mobility patterns.
 License: GPL-3 + file LICENSE
 URL: https://github.com/COVID-19-Mobility-Data-Network/mobility
@@ -19,7 +19,7 @@ Imports:
   doParallel, 
   foreach, 
   rjags,
-  spatstat,
+  spatstat.geom,
   stringr,
   abind,
   truncnorm,

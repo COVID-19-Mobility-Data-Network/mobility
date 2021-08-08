@@ -1,4 +1,4 @@
-pandoc: 2.9.2.1
+pandoc: 2.11.4
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
@@ -7,5 +7,5 @@ articles:
   V3_fitting_mobility_models: V3_fitting_mobility_models.html
   V4_fitting_prob_travel: V4_fitting_prob_travel.html
   V5_list_models: V5_list_models.html
-last_built: 2020-12-30T19:29Z
+last_built: 2021-08-08T19:51Z
 

@@ -35,8 +35,15 @@ using the mean point estimate of parameter values. If \code{nsim > 1} then retur
 \code{nsim} number of simulated replications based on the posterior distributions of each parameter.
 }
 \examples{
-mod <- mobility(data=mobility_matrices, model='gravity', type='transport')
-mod <- mobility(data=mobility_matrices, model='departure-diffusion', type='power', hierarchical = T)
+mod <- mobility(data=mobility_matrices,
+                model='gravity',
+                type='transport')
+
+mod <- mobility(data=mobility_matrices,
+                model='departure-diffusion',
+                type='power',
+                hierarchical=TRUE)
+
 predict(object=mod)
 
 n <- 5

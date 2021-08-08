@@ -1,3 +1,4 @@
+Icon*
 .Rproj
 .Rproj.user
 .Rhistory
@@ -9,3 +10,5 @@ local/
 /doc
 Meta
 doc
+/doc/
+/Meta/
