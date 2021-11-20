@@ -158,7 +158,7 @@ Please see package vignettes to explore each step in more detail.
 #### Step 1: Check that JAGS 4.3.0 is installed
 The model fitting functions in the package perform parameter estimation using the Bayesian MCMC (Markov Chain Monte Carlo) algorithm called JAGS (Just Another Gibbs Sampler), which requires the JAGS library version >= 4.3.0 to be installed. 
 
-  * If you do not have the JAGS 4.3.0 library installed, download [HERE](https://sourceforge.net/projects/mcmc-jags/files/).
+  * If you do not have the JAGS 4.3.0 library installed, download [HERE](https://mcmc-jags.sourceforge.io/).
   * If you already have an installation of the JAGS library, check that the version is >= 4.3.0 by opening your console and typing `jags` which should give you the following message:
 ```console
 user@computer:~$ jags
